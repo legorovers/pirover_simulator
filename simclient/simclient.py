@@ -27,6 +27,18 @@ class SimulatorClient:
         self.ir_right_triggered = False
         self.vx = 0
         self.vth = 0
+        self.led1red = 0
+        self.led1green = 0
+        self.led1blue = 0
+        self.led2red = 0
+        self.led2green = 0
+        self.led2blue = 0
+        self.led3red = 0
+        self.led3green = 0
+        self.led3blue = 0
+        self.led0red = 0
+        self.led0green = 0
+        self.led0blue = 0
         self.robot_name = "Not Connected"
 
         self.update_thread = threading.Thread(target=self.update_state)
@@ -109,6 +121,59 @@ class SimulatorClient:
         """Stops both motors"""
         self.vx = 0
         self.vth = 0
+    
+#======================================================================
+# Pi2Go only functions - placeholders for now
+#======================================================================
+
+    def getSwitch(self):
+        """Returns the value of the tact switch: True==pressed"""
+        return False
+    
+    def getLight(self, sensor):
+        """Returns the value 0..1023 for the selected sensor, 0 <= Sensor <= 3"""
+        return 0
+    
+    def getLightFL(self):
+        """Returns the value 0..1023 for Front-Left light sensor"""
+        return 0
+    
+    def getLightFR(self):
+        """Returns the value 0..1023 for Front-Right light sensor."""
+        return 0
+    
+    def getLightBL(self):
+        """Returns the value 0..1023 for Back-Left light sensor"""
+        return 0
+    
+    def getLightBR(self):
+        """Returns the value 0..1023 for Back-Right light sensor"""
+        return 0
+    
+    def setLED(self, LED, red, green, blue):
+        """Sets the LED specified to required RGB value. 0 >= LED <= 3; 0 <= R,G,B <= 4095"""
+        if (LED == 0):
+            self.led0red = red
+            self.led0green = green
+            self.led0blue = blue
+        elif (LED == 1):
+            self.led1red = red
+            self.led1green = green
+            self.led1blue = blue
+        elif (LED == 2):
+            self.led2red = red
+            self.led2green = green
+            self.led2blue = blue
+        else:
+            self.led3red = red
+            self.led3green = green
+            self.led3blue = blue
+
+
+    def setAllLEDs(self, red, green, blue):
+        """Sets all LEDs to required RGB. 0 <= R,G,B <= 4095"""
+        for i in range(4):
+            setLED(i, red, green, blue)
 
     def cmd_vel(self, vx, vth):
         """Control the robot by giving it a linear (vx) and angular velocity (vth)"""
