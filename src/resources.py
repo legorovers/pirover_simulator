@@ -35,6 +35,10 @@ sonar_image.height = 32
 sonar_image.anchor_x = 5
 sonar_image.anchor_y = sonar_image.height / 2
 
+switch_image = pyglet.resource.image("static_objects/switch.png")
+switch_image.width = 50
+switch_image.height = 50
+
 # Load all available line maps
 line_maps = []
 for i in range(NUM_LINE_MAPS):
@@ -116,9 +120,15 @@ class DynamicAsssets:
                                                     image_grid[index].height)
                     sprt_obj = BasicSprite(image_grid[index], x, y, fg_batch, fg_subgroup, "object", index)
                     self.static_objects.append(sprt_obj)
+                        
+            elif child.tag == "switch":
+                x = int(child.attrib['position_x'])
+                y = int(child.attrib['position_y'])
+                sw_obj = BasicSprite(switch_image, x, y, bg_batch, fg_subgroup, "switch", 5)
+                self.static_objects.append(sw_obj)
 
     def save_to_file(self):
-        """Extra the current state of the world and save it to the xml file."""
+        """Extract the current state of the world and save it to the xml file."""
         root = ET.Element("world")
         tree = ET.ElementTree(root)
         root.set("background_index", str(self.background_sprite.idx))
