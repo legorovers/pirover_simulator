@@ -91,6 +91,9 @@ class DynamicAsssets:
         # create line map members
         self.line_map_position = [0, 0]
         self.line_map_sprite = None
+        
+        # switch
+        self.switch_sprite = None
 
         # create rendering batches
         self.fg_batch = fg_batch
@@ -125,7 +128,7 @@ class DynamicAsssets:
                 x = int(child.attrib['position_x'])
                 y = int(child.attrib['position_y'])
                 sw_obj = BasicSprite(switch_image, x, y, bg_batch, fg_subgroup, "switch", 5)
-                self.static_objects.append(sw_obj)
+                self.switch_sprite = sw_obj
 
     def save_to_file(self):
         """Extract the current state of the world and save it to the xml file."""
