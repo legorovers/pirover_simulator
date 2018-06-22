@@ -144,3 +144,50 @@ def stop():
     """Stops both motors"""
     global sim
     sim.stop()
+
+#======================================================================
+# Pi2Go only functions
+#======================================================================
+
+def getSwitch():
+    """Returns the value of the tact switch: True==pressed"""
+    global sim
+    sim.getSwitch()
+
+def getLight(sensor):
+    """Returns the value 0..1023 for the selected sensor, 0 <= Sensor <= 3"""
+    global sim
+    sim.getLight(sensor)
+
+def getLightFL():
+    """Returns the value 0..1023 for Front-Left light sensor"""
+    global sim
+    sim.getLightFL()
+
+def getLightFR(sensor):
+    """Returns the value 0..1023 for Front-Right light sensor.  NB sensor input is an error"""
+    global sim
+    sim.getLightFR()
+
+def getLightBL(sensor):
+    """Returns the value 0..1023 for Back-Left light sensor"""
+    global sim
+    sim.getLightBL()
+
+def getLightBR(sensor):
+    """Returns the value 0..1023 for Back-Right light sensor"""
+    global sim
+    sim.getLightBR()
+
+def setLED(LED, red, green, blue):
+    """Sets the LED specified to required RGB value. 0 >= LED <= 3; 0 <= R,G,B <= 4095"""
+    global sim
+    sim.setLED(LED, red, green, blue)
+
+def setAllLEDs(red, green, blue):
+    """Sets all LEDs to required RGB. 0 <= R,G,B <= 4095"""
+    global sim
+    sim.setAllLEDs(red, green,blue)
+
+
+
