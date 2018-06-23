@@ -38,7 +38,7 @@ class ObjectWindow(pyglet.window.Window):
                 y = window_height - SPACING
             if x > (window_width - SPACING):
                 break
-
+		  
         # Add line map thumbnails to the toolbar
         for idx, image in enumerate(src.resources.line_maps):
             scale = 48.0 / image.width
@@ -64,6 +64,16 @@ class ObjectWindow(pyglet.window.Window):
         # Add the delete icon to the toolbar
         sp = SelectSprite("delete", -1, src.resources.erase_image, x, y, self.main_batch)
         self.sprites.append(sp)
+        		
+        # Update placement x, y coordinates again
+        y -= src.resources.light_source_image.height + PADDING
+        if y < (SPACING/2.0):
+        	x += src.resources.light_source_image.width + PADDING
+        	y = window_height - SPACING
+			
+        # Add the light icon to the toolbar
+        ls = SelectSprite("light", -1, src.resources.light_source_image, x, y, self.main_batch)
+        self.sprites.append(ls)       
 
         # Add all the mouse handlers to the window
         for sprite in self.sprites:
@@ -95,4 +105,3 @@ class ObjectWindow(pyglet.window.Window):
         self.clear()
         # self.next_button.draw()
         self.main_batch.draw()
-
