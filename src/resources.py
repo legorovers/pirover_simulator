@@ -9,6 +9,8 @@ import pyglet
 import util
 from src.sensors.sonar import Map
 from src.sprites.basicsprite import BasicSprite
+from src.sprites.basicsprite import SwitchSprite
+from src.sprites.selectablesprite import SelectSprite
 
 NUM_LINE_MAPS = 5
 NUM_BACKGROUNDS = 4
@@ -27,7 +29,7 @@ pi2go_image = pyglet.resource.image("robot/pi2go.png")
 pi2go_image.width = 110
 pi2go_image.height = 90
 util.center_image(pi2go_image)
-pi2go_image.anchor_x = 26
+#pi2go_image.anchor_x = 26
 
 sonar_image = pyglet.resource.image("robot/sonar.png")
 sonar_image.width = 50
@@ -35,9 +37,21 @@ sonar_image.height = 32
 sonar_image.anchor_x = 5
 sonar_image.anchor_y = sonar_image.height / 2
 
-switch_image = pyglet.resource.image("static_objects/switch.png")
-switch_image.width = 50
-switch_image.height = 50
+switch_image_on = pyglet.resource.image("static_objects/on_switch.png")
+switch_image_on.width = 50
+switch_image_on.height = 50
+
+switch_image_off = pyglet.resource.image("static_objects/off_switch.png")
+util.center_image(switch_image_off)
+switch_image_off.width = 50
+switch_image_off.height = 50
+
+#<Maduka>
+light_source_image = pyglet.resource.image("static_objects/light.png")
+util.center_image(light_source_image)
+light_source_image.width = 50
+light_source_image.height = 48
+#</Maduka>
 
 # Load all available line maps
 line_maps = []
@@ -49,8 +63,8 @@ for i in range(NUM_LINE_MAPS):
 erase_image = pyglet.resource.image("robot/erase.png")
 util.center_image(erase_image)
 
-sheet_image = pyglet.resource.image("static_objects/boxes.png")
-image_grid = pyglet.image.ImageGrid(sheet_image, 1, 10)
+sheet_image = pyglet.resource.image("static_objects/boxesv2.png")
+image_grid = pyglet.image.ImageGrid(sheet_image, 1, 9)
 
 # Load all available backgrounds
 backgrounds = []
@@ -94,6 +108,9 @@ class DynamicAsssets:
         
         # switch
         self.switch_sprite = None
+        
+        # light source
+        self.light_source_sprite = None
 
         # create rendering batches
         self.fg_batch = fg_batch
@@ -121,14 +138,18 @@ class DynamicAsssets:
                     util.center_image(image_grid[index])
                     self.sonar_map.insert_rectangle(x, y, image_grid[index].width,
                                                     image_grid[index].height)
-                    sprt_obj = BasicSprite(image_grid[index], x, y, fg_batch, fg_subgroup, "object", index)
+                    sprt_obj = BasicSprite(image_grid[index], x, y, bg_batch, bg_subgroup, "object", index)
                     self.static_objects.append(sprt_obj)
                         
             elif child.tag == "switch":
                 x = int(child.attrib['position_x'])
                 y = int(child.attrib['position_y'])
-                sw_obj = BasicSprite(switch_image, x, y, bg_batch, fg_subgroup, "switch", 5)
+                util.center_image(switch_image_on)
+                sw_obj = SwitchSprite(switch_image_on, x, y, fg_batch, fg_subgroup, "switch", -1)
                 self.switch_sprite = sw_obj
+                self.static_objects.append(sw_obj)
+                # let the switch stay above every other object
+                #self.fg_batch.append(sw_obj)
 
     def save_to_file(self):
         """Extract the current state of the world and save it to the xml file."""
@@ -151,7 +172,11 @@ class DynamicAsssets:
             line_map_element.set("index", str(self.line_map_sprite.idx))
 
         for sprite_object in self.static_objects:
-            static_element = ET.SubElement(root, "static_object")
+            static_element = None
+            if sprite_object.object_type.startswith("switch"):
+                static_element = ET.SubElement(root, "switch")
+            else:
+                static_element = ET.SubElement(root, "static_object")
             static_element.set("position_x", str(sprite_object.x))
             static_element.set("position_y", str(sprite_object.y))
             static_element.set("index", str(sprite_object.idx))

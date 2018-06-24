@@ -22,7 +22,6 @@ def cleanup():
     sim.stop()
     pass
 
-
 def version():
     """returns the version, in the case of the sim client this always returns 1"""
     return VERSION
@@ -52,7 +51,10 @@ def stopServod():
     """Has no effect, added to keep compatibility with real robot"""
     pass
 
-
+def getRobotName():
+    global sim
+    return sim.getRobotName()
+        
 def setServo(servo, degrees):
     """Sets the servo to position in degrees -90 to +90"""
     global sim
@@ -126,8 +128,22 @@ def spinRight(speed):
     """Sets motors to turn opposite directions at speed. 0 <= speed <= 100"""
     global sim
     sim.spinRight(speed)
+    
 
 
+# def spinLeftBriefly(speed, spin_time):
+#     """Spins left, but just briefly and then stops
+#     """
+#     global sim
+#     sim.spinLeftBriefly(speed, spin_time)
+#     
+# def spinRightBriefly(speed, spin_time):
+#     """Spins right, but just briefly and then stops
+#     """
+#     global sim
+#     sim.spinRightBriefly(speed, spin_time)
+    
+    
 def turnForward(left_speed, right_speed):
     """Moves forwards in an arc by setting different speeds. 0 <= leftSpeed,rightSpeed <= 100"""
     global sim
@@ -152,32 +168,34 @@ def stop():
 def getSwitch():
     """Returns the value of the tact switch: True==pressed"""
     global sim
-    sim.getSwitch()
+    return sim.getSwitch()
 
 def getLight(sensor):
     """Returns the value 0..1023 for the selected sensor, 0 <= Sensor <= 3"""
     global sim
-    sim.getLight(sensor)
+    return sim.getLight(sensor)
 
 def getLightFL():
     """Returns the value 0..1023 for Front-Left light sensor"""
     global sim
-    sim.getLightFL()
+    return sim.getLightFL()
 
-def getLightFR(sensor):
-    """Returns the value 0..1023 for Front-Right light sensor.  NB sensor input is an error"""
+def getLightFR():
+    """Returns the value 0..1023 for Front-Right light sensor.  
+    (NB: previous 'sensor' input parameter here was an error (now fixed by removal))
+    Another bug was: these getters were not calling 'return' before (now fixed)"""
     global sim
-    sim.getLightFR()
+    return sim.getLightFR()
 
-def getLightBL(sensor):
+def getLightBL():
     """Returns the value 0..1023 for Back-Left light sensor"""
     global sim
-    sim.getLightBL()
+    return sim.getLightBL()
 
-def getLightBR(sensor):
+def getLightBR():
     """Returns the value 0..1023 for Back-Right light sensor"""
     global sim
-    sim.getLightBR()
+    return sim.getLightBR()
 
 def setLED(LED, red, green, blue):
     """Sets the LED specified to required RGB value. 0 >= LED <= 3; 0 <= R,G,B <= 4095"""
@@ -189,5 +207,9 @@ def setAllLEDs(red, green, blue):
     global sim
     sim.setAllLEDs(red, green,blue)
 
+def getLED(LED):
+    """Gets the RGB value of the specified LED. 0 >= LED <= 3; 0 <= R,G,B <= 4095"""
+    global sim
+    return sim.getLED(LED)
 
 
