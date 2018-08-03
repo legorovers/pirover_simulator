@@ -78,6 +78,7 @@ class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
         self.sensor_x = 0
         self.sensor_y = 0
 
+        
     def set_target(self, target):
         """Set the target angle for the panning sonar."""
         if target >= self.sonar_angle_max:
@@ -88,13 +89,16 @@ class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
 
     def update_sensor(self):
         """Calculates the XY position of the sensor origin based on the current position of the robot and
-            then takes a reading."""
-        angle_radians = -math.radians(self.rotation)
-        self.sensor_x = self.x + (
+            then takes a reading."""  
+        angle_radians = -math.radians(self.parent_robot.rotation)
+        self.sensor_x = self.parent_robot.x + (
             self.sensor_offset_x * math.cos(angle_radians) - (self.sensor_offset_y * math.sin(angle_radians)))
-        self.sensor_y = self.y + (
+        self.sensor_y = self.parent_robot.y + (
             self.sensor_offset_x * math.sin(angle_radians) + (self.sensor_offset_y * math.cos(angle_radians)))
+        self.x = self.sensor_x
+        self.y = self.sensor_y
         self.sonar_range = self.sonar_sensor.update_sonar(self.sensor_x, self.sensor_y, angle_radians)
+
 
     def get_distance(self):
         """Returns the last reading taken by this sensor."""
@@ -103,14 +107,18 @@ class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
     def update(self, dt):
         """Updates the position of the sprite representing the panning servo head."""
         angle_radians = -math.radians(self.parent_robot.rotation)
-        self.x = self.parent_robot.x + (self.sonar_offset_x * math.cos(angle_radians))
-        self.y = self.parent_robot.y + (self.sonar_offset_x * math.sin(angle_radians))
+        self.sensor_x = self.parent_robot.x + (self.sonar_offset_x * math.cos(angle_radians))
+        self.sensor_y = self.parent_robot.y + (self.sonar_offset_x * math.sin(angle_radians))
+        self.x = self.sensor_x
+        self.y = self.sensor_y
 
         if (self.sonar_angle_target - self.sonar_angle) > 0:
             self.sonar_angle += 5
         elif (self.sonar_angle_target - self.sonar_angle) < 0:
             self.sonar_angle -= 5
         self.rotation = self.parent_robot.rotation - self.sonar_angle
+        self.update_sensor()
+
 
     def draw_sensor_position(self):
         """Draws a circle at the origin of the sensor."""
