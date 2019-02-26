@@ -108,8 +108,8 @@ class Simulator(pyglet.window.Window):
             self.robot.light_leds()
         
         #pyglet.clock.schedule_interval(self.print_lightsensor_values, 0.5)  # for debugging purposes.
-        self.robot.stop_robot()
-        print("Robot is switched OFF...")
+        #self.robot.stop_robot()
+        #print("Robot is switched OFF...")
 
 
     def print_lightsensor_values(self, dt):

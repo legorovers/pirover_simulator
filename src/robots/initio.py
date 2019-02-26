@@ -95,7 +95,7 @@ class Initio(basicsprite.BasicSprite):
         #self.sonar_sensor.update_sensor()
         
         self.event_handlers = [self, self.on_mouse_release, self.on_mouse_drag]
-        self.control_switch_on = False 
+        self.control_switch_on = True
         
         pyglet.clock.schedule_interval(self.update_sensors, 1.0 / 30)
         
@@ -106,9 +106,12 @@ class Initio(basicsprite.BasicSprite):
         self.cmd_thread = threading.Thread(target=self.recv_commands)
         self.cmd_thread.setDaemon(True)
         self.cmd_thread.start()
+        print "a"
+        self.start_robot()
         
         
     def start_robot(self):
+        print "b"
         self.publish_continue = True 
         self.receive_continue = True
         # this method is called when the robot control switch is switched ON
