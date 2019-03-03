@@ -59,7 +59,8 @@ class Simulator(pyglet.window.Window):
                                window_height=self.dyn_assets.background_image.height)
 
         # bind the robot to the control switch
-        self.dyn_assets.switch_sprite.set_target_robot(self.robot)
+        if selected_robot == "Pi2Go":
+            self.dyn_assets.switch_sprite.set_target_robot(self.robot)
         
         # set the robot position based on the xml file
         self.robot.x = self.dyn_assets.robot_position[0]
@@ -95,8 +96,9 @@ class Simulator(pyglet.window.Window):
             for handler in obj.event_handlers:
                 self.edit_mode_handlers.append(handler)
 
-        for handler in self.dyn_assets.switch_sprite.event_handlers:
-            self.push_handlers(handler)
+        if (selected_robot == "Pi2Go"):
+            for handler in self.dyn_assets.switch_sprite.event_handlers:
+                self.push_handlers(handler)
             
         if self.dyn_assets.line_map_sprite is not None:
             for handler in self.dyn_assets.line_map_sprite.event_handlers:
