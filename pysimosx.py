@@ -11,7 +11,7 @@ try:
     # run the start window
     start_window = StartWindow()
     selected_file, selected_robot = start_window.start()
-    print selected_file, selected_robot
+    print(selected_file, selected_robot)
 
     # load pyglet + other deps for the simulator
     import pyglet
@@ -23,4 +23,4 @@ try:
         pyglet.clock.schedule_interval(simulator.update, 1.0 / 30)
         pyglet.app.run()
 except KeyboardInterrupt:
-    print "Goodbye!"
+    print("Goodbye!")

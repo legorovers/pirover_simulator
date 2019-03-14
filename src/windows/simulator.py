@@ -116,11 +116,11 @@ class Simulator(pyglet.window.Window):
 
     def print_lightsensor_values(self, dt):
          print("printing light sensor values:\n")
-         print("FL = %f; FR = %f; BL = %f; BR = %f\n\n" % (
+         print(("FL = %f; FR = %f; BL = %f; BR = %f\n\n" % (
                self.robot.light_frontleft_sensor.value,
                self.robot.light_frontright_sensor.value,
                self.robot.light_backleft_sensor.value,
-               self.robot.light_backright_sensor.value))
+               self.robot.light_backright_sensor.value)))
                
                
     def switch_handlers(self):
@@ -266,7 +266,7 @@ class Simulator(pyglet.window.Window):
                     operation = "light_source"
                 else:
                     operation = "add"
-                print operation
+                print(operation)
                 selected_obj = None
                 too_close = False
 
@@ -393,7 +393,7 @@ class Simulator(pyglet.window.Window):
                         del(self.light_ray)
                         self.switch_handlers()  
         except AttributeError as e:
-            print str(e)
+            print(str(e))
 
     def on_key_press(self, symbol, modifiers):
         """Handler user keypresses
@@ -402,14 +402,14 @@ class Simulator(pyglet.window.Window):
         ."""
         if symbol == key.E:
             if self.edit_mode:
-                print "edit mode disabled"
+                print("edit mode disabled")
                 self.edit_mode = False
                 self.object_window.close()
                 self.object_window = None
                 self.redraw_sonar_map()
                 self.dyn_assets.save_to_file()
             else:
-                print "edit mode enabled"
+                print("edit mode enabled")
                 self.edit_mode = True
                 self.spawn_edit_window()
             self.switch_handlers()
@@ -533,7 +533,7 @@ class Simulator(pyglet.window.Window):
             if self.edit_mode:
                 # handle to closing of the edit toolbar
                 if self.object_window is not None and self.object_window.close_me:
-                    print "edit mode disabled"
+                    print("edit mode disabled")
                     self.edit_mode = False
                     self.object_window.close()
                     self.object_window = None

@@ -35,6 +35,10 @@
 
 These extend and correct ctypes functions.
 '''
+from __future__ import print_function
+from builtins import str
+from builtins import object
+from past.builtins import basestring
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -51,7 +55,7 @@ import pyglet
 _debug_lib = pyglet.options['debug_lib']
 _debug_trace = pyglet.options['debug_trace']
 
-_is_epydoc = hasattr(sys, 'is_epydoc') and sys.is_epydoc
+_is_pyglet_docgen = hasattr(sys, 'is_pyglet_docgen') and sys.is_pyglet_docgen
 
 if pyglet.options['search_local_libs']:
     script_path = pyglet.resource.get_script_home()
@@ -78,14 +82,14 @@ class _TraceFunction(object):
 class _TraceLibrary(object):
     def __init__(self, library):
         self._library = library
-        print library
+        print(library)
 
     def __getattr__(self, name):
         func = getattr(self._library, name)
         f = _TraceFunction(func)
         return f
 
-if _is_epydoc:
+if _is_pyglet_docgen:
     class LibraryMock(object):
         """Mock library used when generating documentation."""
         def __getattr__(self, name):
@@ -99,8 +103,6 @@ if _is_epydoc:
 
 
 class LibraryLoader(object):
-    darwin_not_found_error = "image not found"
-    linux_not_found_error  = "No such file or directory"
     def load_library(self, *names, **kwargs):
         '''Find and load a library.  
         
@@ -109,7 +111,7 @@ class LibraryLoader(object):
 
         Raises ImportError if library is not found.
         '''
-        if _is_epydoc:
+        if _is_pyglet_docgen:
             return LibraryMock()
 
         if 'framework' in kwargs and self.platform == 'darwin':
@@ -119,7 +121,7 @@ class LibraryLoader(object):
             raise ImportError("No library name specified")
         
         platform_names = kwargs.get(self.platform, [])
-        if type(platform_names) in (str, unicode):
+        if isinstance(platform_names, basestring):
             platform_names = [platform_names]
         elif type(platform_names) is tuple:
             platform_names = list(platform_names)
@@ -134,24 +136,20 @@ class LibraryLoader(object):
             try:
                 lib = ctypes.cdll.LoadLibrary(name)
                 if _debug_lib:
-                    print name
+                    print(name)
                 if _debug_trace:
                     lib = _TraceLibrary(lib)
                 return lib
-            except OSError, o:
-                if ((self.platform == "win32" and o.winerror != 126) or
-                    (self.platform.startswith("linux") and
-                     self.linux_not_found_error not in o.args[0]) or
-                    (self.platform == "darwin" and
-                     self.darwin_not_found_error not in o.args[0])):
-                    print "Unexpected error loading library %s: %s" % (name, str(o))
+            except OSError as o:
+                if self.platform == "win32" and o.winerror != 126:
+                    print("Unexpected error loading library %s: %s" % (name, str(o)))
                     raise
                 path = self.find_library(name)
                 if path:
                     try:
                         lib = ctypes.cdll.LoadLibrary(path)
                         if _debug_lib:
-                            print path
+                            print(path)
                         if _debug_trace:
                             lib = _TraceLibrary(lib)
                         return lib
@@ -280,7 +278,7 @@ class MachOLibraryLoader(LibraryLoader):
         if realpath:
             lib = ctypes.cdll.LoadLibrary(realpath)
             if _debug_lib:
-                print realpath
+                print(realpath)
             if _debug_trace:
                 lib = _TraceLibrary(lib)
             return lib

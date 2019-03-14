@@ -4,7 +4,7 @@ with appropriate sensros. This module also handles communication between
 the simulator and any external scripts. Communicate is done via simple
 string messeages passed via UDP socket.
 """
-from __future__ import division
+
 import math
 import random
 import socket
@@ -19,7 +19,7 @@ from src.sensors.led import FixedLED
 from src.sensors.distancesensors import FixedTransformDistanceSensor
 from src.sensors.linesensor import LineSensorMap, FixedLineSensor
 from src.sprites import basicsprite
-from robotconstants import SONAR_BEAM_ANGLE, SONAR_MAX_RANGE, SONAR_MIN_RANGE, IR_MAX_RANGE, IR_MIN_RANGE, \
+from .robotconstants import SONAR_BEAM_ANGLE, SONAR_MAX_RANGE, SONAR_MIN_RANGE, IR_MAX_RANGE, IR_MIN_RANGE, \
     UDP_COMMAND_PORT, UDP_DATA_PORT, UDP_IP
 
 # Constants specific to the PI2GO robot.
@@ -267,7 +267,8 @@ class Pi2Go(basicsprite.BasicSprite):
         sock.bind((UDP_IP, UDP_COMMAND_PORT))
         while True:
             while self.receive_continue is True:
-                data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
+                data_e, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
+                data = data_e.decode()
                 if data.startswith("<<") and data.endswith(">>"):
                     data = data.replace("<<", "")
                     data = data.replace(">>", "")
@@ -275,7 +276,7 @@ class Pi2Go(basicsprite.BasicSprite):
                     if len(values_list) == 26:
                         self.vx = float(values_list[0])
                         self.vth = float(values_list[1])
-                        if self.vx == 0 and self.vth <> 0:
+                        if self.vx == 0 and self.vth != 0:
                             self.is_rotating = True
                         else: self.is_rotating = False
                         
@@ -375,7 +376,7 @@ class Pi2Go(basicsprite.BasicSprite):
                            int(self.left_led2.green_value),
                            int(self.left_led2.blue_value),
                            int(self.control_switch_on))
-                sock.sendto(message, (UDP_IP, UDP_DATA_PORT))
+                sock.sendto(message.encode('utf-8'), (UDP_IP, UDP_DATA_PORT))
                 updated_switch_finally = False   
                 time.sleep(0.03)
             # send again, once, to update the control switch    
@@ -412,7 +413,7 @@ class Pi2Go(basicsprite.BasicSprite):
                            int(self.left_led2.green_value),
                            int(self.left_led2.blue_value),
                            int(self.control_switch_on))
-                sock.sendto(message, (UDP_IP, UDP_DATA_PORT))
+                sock.sendto(message.encode('utf-8'), (UDP_IP, UDP_DATA_PORT))
                 updated_switch_finally = True
                 time.sleep(0.03)
 

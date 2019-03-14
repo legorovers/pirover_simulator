@@ -333,7 +333,7 @@ class SimulatorClient:
                 int(self.left_led2_red_value),
                 int(self.left_led2_green_value),
                 int(self.left_led2_blue_value))
-                sock.sendto(message, (UDP_IP, UDP_COMMAND_PORT))
+                sock.sendto(message.encode('utf-8'), (UDP_IP, UDP_COMMAND_PORT))
             time.sleep(PUBLISH_INTERVAL)
 
     def update_state(self):
@@ -357,7 +357,8 @@ class SimulatorClient:
                              socket.SOCK_DGRAM)  # UDP
         sock.bind((UDP_IP, UDP_DATA_PORT))
         while True:         
-            data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes        
+            data_e, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
+            data = data_e.decode();
             if data.startswith("<<") and data.endswith(">>"):
                 data = data.replace("<<", "")
                 data = data.replace(">>", "")

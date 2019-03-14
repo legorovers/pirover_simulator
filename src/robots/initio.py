@@ -4,7 +4,7 @@ with appropriate sensros. This module also handles communication between
 the simulator and any external scripts. Communicate is done via simple
 string messeages passed via UDP socket.
 """
-from __future__ import division
+
 import math
 import socket
 import threading
@@ -17,7 +17,7 @@ from src.sprites import basicsprite
 import pyglet
 import src.resources
 import src.util
-from robotconstants import SONAR_BEAM_ANGLE, SONAR_MAX_RANGE, SONAR_MIN_RANGE, IR_MAX_RANGE, IR_MIN_RANGE, \
+from .robotconstants import SONAR_BEAM_ANGLE, SONAR_MAX_RANGE, SONAR_MIN_RANGE, IR_MAX_RANGE, IR_MIN_RANGE, \
     UDP_COMMAND_PORT, UDP_DATA_PORT, UDP_IP, IR_BEAM_ANGLE
 
 
@@ -106,12 +106,12 @@ class Initio(basicsprite.BasicSprite):
         self.cmd_thread = threading.Thread(target=self.recv_commands)
         self.cmd_thread.setDaemon(True)
         self.cmd_thread.start()
-        print "a"
+        print("a")
         self.start_robot()
         
         
     def start_robot(self):
-        print "b"
+        print("b")
         self.publish_continue = True 
         self.receive_continue = True
         # this method is called when the robot control switch is switched ON
@@ -183,7 +183,7 @@ class Initio(basicsprite.BasicSprite):
 #                                     self.is_rotating = True
 #                         else:
                         self.vth = float(values_list[1])
-                        if self.vx == 0 and self.vth <> 0:
+                        if self.vx == 0 and self.vth != 0:
                             self.is_rotating = True
                         else: self.is_rotating = False
                 

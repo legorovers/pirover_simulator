@@ -3,8 +3,8 @@ startwindow.py as opposed to all other windows uses TKinter instead of pyglet to
 interface. It allows the user to select the world model and robot on startup.
 """
 import os
-from Tkinter import *
-import tkSimpleDialog, tkMessageBox
+from tkinter import *
+import tkinter.simpledialog, tkinter.messagebox
 import src.util as util
 
 ROBOTS = ["Initio", "Pi2Go"]
@@ -98,8 +98,8 @@ class StartWindow(object):
     def start_callback(self):
         """Start button callback, the function extract the users selection from the world file listbox and robot
         radio buttons. Once extracted the window will be closed."""
-        print "starting simulator"
-        selected_items = map(int, self.files_listbox.curselection())
+        print("starting simulator")
+        selected_items = list(map(int, self.files_listbox.curselection()))
         if len(selected_items) > 0:
             self.selected_file = self.world_files_list[selected_items[0]]
             selected_robot_idx = self.selected_robot.get()
@@ -109,12 +109,12 @@ class StartWindow(object):
                 self.selected_robot_name = "None"
             self.quit_callback()
         else:
-            print "no world file selected"
+            print("no world file selected")
 
     def new_file_callback(self):
         """New file callback, this spawns a dialog box to allow the user to enter the new world file name. The new file
         is created with some default values and added to the list of available world files."""
-        new_file = tkSimpleDialog.askstring("New File", "Enter new filename")
+        new_file = tkinter.simpledialog.askstring("New File", "Enter new filename")
         if new_file is None:
             return
         new_file += ".xml"
@@ -124,23 +124,23 @@ class StartWindow(object):
             text_file.close()
             self.files_listbox.insert(END, new_file)
             self.world_files_list.append(new_file)
-            print "new file created"
+            print("new file created")
         except IOError as e:
-            print "Error creating new file: " + str(e)
+            print("Error creating new file: " + str(e))
 
     def delete_file_callback(self):
         """Delete file callback, this extracts the selected world file and deletes the file from both the disk and
         the available world file list."""
-        selected_items = map(int, self.files_listbox.curselection())
+        selected_items = list(map(int, self.files_listbox.curselection()))
         if len(selected_items) > 0:
             selected_file = self.world_files_list[selected_items[0]]
-            result = tkMessageBox.askquestion("Delete", "Delete world file:" + selected_file + "?", icon='warning')
+            result = tkinter.messagebox.askquestion("Delete", "Delete world file:" + selected_file + "?", icon='warning')
             if result == 'yes':
                 try:
                     self.files_listbox.delete(selected_items[0])
                     to_remove = os.path.join(self.world_file_path, selected_file)
-                    print to_remove
+                    print(to_remove)
                     os.remove(to_remove)
                     self.world_files_list.remove(selected_file)
                 except IOError as e:
-                    print "Error deleting file: " + str(e)
+                    print("Error deleting file: " + str(e))

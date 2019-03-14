@@ -12,7 +12,7 @@ import pyglet
 import src.resources
 import src.sprites.basicsprite
 import src.util
-from sonar import Sonar
+from .sonar import Sonar
 
 
 class FixedTransformDistanceSensor(object):

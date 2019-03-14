@@ -62,10 +62,10 @@ class LineSensorMap(object):
                 # print 'a = ' + str(ord(pix[3]))
 
                 if len(pix) > 3:
-                    r = int(ord(pix[0]))
-                    g = int(ord(pix[1]))
-                    b = int(ord(pix[2]))
-                    a = int(ord(pix[3]))
+                    r = int(pix[0])
+                    g = int(pix[1])
+                    b = int(pix[2])
+                    a = int(pix[3])
                     avg = float(r + g + b + a) / 4.0
                     # print r, g, b, a
                     return avg > 0
@@ -74,7 +74,7 @@ class LineSensorMap(object):
             else:
                 return False
         except AttributeError:
-            print "Error reading line sensor"
+            print("Error reading line sensor")
             return False
 
 

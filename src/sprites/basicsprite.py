@@ -38,8 +38,8 @@ class BasicSprite(pyglet.sprite.Sprite):
         self.sety(self.y + self.velocity_y * dt)
         self.check_bounds()
 
-	def is_rotating(self):
-	    return self.is_rotating
+    def is_rotating(self):
+        return self.is_rotating
 	    
     def check_bounds(self):
         """Check window bounds"""

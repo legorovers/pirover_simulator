@@ -1,12 +1,15 @@
 #!/usr/bin/python
 # $Id: $
 
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import object
 import struct
 from ctypes import *
 
 import pyglet
-import constants
-from types import *
+from . import constants
+from .types import *
 
 IS64 = struct.calcsize("P") == 8
 
@@ -23,12 +26,12 @@ if _debug_win32:
     def format_error(err):
         msg = create_string_buffer(256)
         _FormatMessageA(constants.FORMAT_MESSAGE_FROM_SYSTEM,
-                          c_void_p(),
-                          err,
-                          0,
-                          msg,
-                          len(msg),
-                          c_void_p())
+                        c_void_p(),
+                        err,
+                        0,
+                        msg,
+                        len(msg),
+                        c_void_p())
         return msg.value
     
     class DebugLibrary(object):
@@ -37,6 +40,7 @@ if _debug_win32:
 
         def __getattr__(self, name):
             fn = getattr(self.lib, name)
+
             def f(*args):
                 _SetLastError(0)
                 result = fn(*args)
@@ -44,8 +48,9 @@ if _debug_win32:
                 if err != 0:
                     for entry in traceback.format_list(traceback.extract_stack()[:-1]):
                         _log_win32.write(entry)
-                    print >> _log_win32, format_error(err)
+                    print(format_error(err), file=_log_win32)
                 return result
+
             return f
 else:
     DebugLibrary = lambda lib: lib
@@ -98,6 +103,8 @@ _gdi32.SetPixelFormat.restype = BOOL
 _gdi32.SetPixelFormat.argtypes = [HDC, c_int, POINTER(PIXELFORMATDESCRIPTOR)]
 _gdi32.SetTextColor.restype = COLORREF
 _gdi32.SetTextColor.argtypes = [HDC, COLORREF]
+_gdi32.SwapBuffers.restype = BOOL
+_gdi32.SwapBuffers.argtypes = [HDC]
 
 _kernel32.CloseHandle.restype = BOOL
 _kernel32.CloseHandle.argtypes = [HANDLE]
@@ -227,3 +234,9 @@ _user32.UnregisterClassW.restype = BOOL
 _user32.UnregisterClassW.argtypes = [c_wchar_p, HINSTANCE]
 _user32.UnregisterHotKey.restype = BOOL
 _user32.UnregisterHotKey.argtypes = [HWND, c_int]
+# Raw inputs
+_user32.RegisterRawInputDevices.restype = BOOL
+_user32.RegisterRawInputDevices.argtypes = [PCRAWINPUTDEVICE, UINT, UINT]
+_user32.GetRawInputData.restype = UINT
+_user32.GetRawInputData.argtypes = [HRAWINPUT, UINT, LPVOID, PUINT, UINT]
+

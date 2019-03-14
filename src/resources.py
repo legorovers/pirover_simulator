@@ -6,7 +6,7 @@ import os
 import xml.etree.ElementTree as ET
 
 import pyglet
-import util
+from . import util
 from src.sensors.sonar import Map
 from src.sprites.basicsprite import BasicSprite
 from src.sprites.basicsprite import SwitchSprite
