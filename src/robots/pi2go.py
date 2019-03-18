@@ -273,6 +273,7 @@ class Pi2Go(basicsprite.BasicSprite):
                     data = data.replace("<<", "")
                     data = data.replace(">>", "")
                     values_list = data.split(";")
+                    #  print (data);
                     if len(values_list) == 26:
                         self.vx = float(values_list[0])
                         self.vth = float(values_list[1])

@@ -209,31 +209,31 @@ class SimulatorClient:
             self.front_led1_red_value = red
             self.front_led1_green_value = green
             self.front_led1_blue_value = blue
-        elif (LED == 1): # second front led (front-right)
+         # elif (LED == 1): # second front led (front-right)
             self.front_led2_red_value = red
             self.front_led2_green_value = green
             self.front_led2_blue_value = blue
-        elif (LED == 2): # first right-side led
+        elif (LED == 1): # first right-side led
             self.right_led1_red_value = red
             self.right_led1_green_value = green
             self.right_led1_blue_value = blue
-        elif (LED == 3): # second right-side led
+         # elif (LED == 3): # second right-side led
             self.right_led2_red_value = red
             self.right_led2_green_value = green
             self.right_led2_blue_value = blue
-        elif (LED == 4): # first back-side led
+        elif (LED == 2): # first back-side led
             self.back_led1_red_value = red
             self.back_led1_green_value = green
             self.back_led1_blue_value = blue
-        elif (LED == 5): # second back-side led
+         # elif (LED == 5): # second back-side led
             self.back_led2_red_value = red
             self.back_led2_green_value = green
             self.back_led2_blue_value = blue
-        elif (LED == 6): # first left-side led
+        elif (LED == 3): # first left-side led
             self.left_led1_red_value = red
             self.left_led1_green_value = green
             self.left_led1_blue_value = blue
-        elif (LED == 7): # second left-side led
+         # elif (LED == 7): # second left-side led
             self.left_led2_red_value = red
             self.left_led2_green_value = green
             self.left_led2_blue_value = blue
@@ -244,7 +244,7 @@ class SimulatorClient:
     def setAllLEDs(self, red, green, blue):
         """Sets all LEDs to required RGB. 0 <= R,G,B <= 4095"""
         for i in range(4):
-            setLED(i, red, green, blue)
+            self.setLED(i, red, green, blue)
     
     def getLED(self, LED):
         """Gets the RGB colour value of the LED specified. 0 >= LED <= 7; 0 <= R,G,B <= 4095"""
