@@ -40,6 +40,7 @@ class FixedTransformDistanceSensor(object):
 
     def get_distance(self):
         """Returns the last reading taken by this sensor."""
+        # print (self.sensor_range)
         return self.sensor_range
 
     def get_fixed_triggered(self, trigger_distance):

@@ -80,6 +80,7 @@ class Sonar(object):
         # create a bundle of rays to replicate a sonar beam
         sweep = np.arange(-self.cone_angle / 2.0, self.cone_angle / 2.0, SONAR_BEAM_STEP)
         # cast each ray until it hits an obstacle or the end of the map
+        # print (self.sensor_map.grid)
         for angle in sweep:
             distance = 1
             while distance <= (self.max_range / self.sensor_map.resolution):

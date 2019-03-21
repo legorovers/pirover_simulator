@@ -20,6 +20,7 @@ def cleanup():
     """stops the simulator client"""
     global sim
     sim.stop()
+    sim.cleanup()
     pass
 
 def version():

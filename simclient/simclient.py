@@ -298,7 +298,7 @@ class SimulatorClient:
         """
         sock = socket.socket(socket.AF_INET,  # Internet
                              socket.SOCK_DGRAM)  # UDP
-        while True:
+        while self.running:
             if self.robot_name == "INITIO":
                 message = "<<%f;%f;%f>>" % (
                 self.vx, self.vth, self.sonar_angle)
@@ -356,7 +356,7 @@ class SimulatorClient:
         sock = socket.socket(socket.AF_INET,  # Internet
                              socket.SOCK_DGRAM)  # UDP
         sock.bind((UDP_IP, UDP_DATA_PORT))
-        while True:         
+        while self.running:
             data_e, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
             data = data_e.decode();
             if data.startswith("<<") and data.endswith(">>"):
@@ -416,3 +416,8 @@ class SimulatorClient:
                     self.left_led2_blue_value = int(values_list[34])
                     self.robot_control_switch_on = int(values_list[35])      
                     # print "received message:", data
+            time.sleep(PUBLISH_INTERVAL)
+        sock.close()
+
+    def cleanup(self):
+        self.running = False

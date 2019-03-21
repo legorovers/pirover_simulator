@@ -181,4 +181,5 @@ class DynamicAsssets:
             static_element.set("position_y", str(sprite_object.y))
             static_element.set("index", str(sprite_object.idx))
 
+        tree.decode("UTF-8")
         tree.write(open(self.dynamic_assets_file, 'w'), encoding="UTF-8")

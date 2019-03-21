@@ -151,6 +151,7 @@ class Simulator(pyglet.window.Window):
         
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        # self.light_ray = None
         if buttons & mouse.LEFT:
             # we use the left mouse button to move the terminal points of the light ray around.
             if self.light_ray is not None:
@@ -363,6 +364,7 @@ class Simulator(pyglet.window.Window):
                         for handler in sprt_obj.event_handlers:
                             self.edit_mode_handlers.append(handler)
                         self.switch_handlers()
+                        self.redraw_sonar_map()
                 elif operation == "delete":
                     if selected_obj is not None:
                         # check if the object to delete is a line map or a regular static object
@@ -391,7 +393,8 @@ class Simulator(pyglet.window.Window):
                         # then delete the sprite and update the object handlers
                         selected_obj.delete()
                         del(self.light_ray)
-                        self.switch_handlers()  
+                        self.switch_handlers()
+                        self.redraw_sonar_map()
         except AttributeError as e:
             print(str(e))
 
@@ -399,6 +402,7 @@ class Simulator(pyglet.window.Window):
         """Handler user keypresses
             E  =  Enable/Disable edit mode
             Q  =  Quit the simulator
+            S = Save World Map???
         ."""
         if symbol == key.E:
             if self.edit_mode:
@@ -407,7 +411,7 @@ class Simulator(pyglet.window.Window):
                 self.object_window.close()
                 self.object_window = None
                 self.redraw_sonar_map()
-                self.dyn_assets.save_to_file()
+                # self.dyn_assets.save_to_file()
             else:
                 print("edit mode enabled")
                 self.edit_mode = True
@@ -415,6 +419,8 @@ class Simulator(pyglet.window.Window):
             self.switch_handlers()
         if symbol == key.Q:
             pyglet.app.exit()
+        if symbol == key.S:
+            self.dyn_assets.save_to_file()
 
     def redraw_sonar_map(self):
         """This function updates the sonar map ensuring all new objects are added."""
@@ -583,6 +589,7 @@ class Simulator(pyglet.window.Window):
                                 obj.mouse_target_y = obj.prev_y
                         obj.x = obj.mouse_target_x
                         obj.y = obj.mouse_target_y
+                        self.redraw_sonar_map()
 
                 # collision checking for static objects
                 for pair in itertools.combinations(self.dyn_assets.static_objects, 2):

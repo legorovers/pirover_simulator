@@ -308,6 +308,7 @@ class Pi2Go(basicsprite.BasicSprite):
                         self.left_led2.red_value = values_list[23]
                         self.left_led2.green_value = values_list[24]
                         self.left_led2.blue_value = values_list[25]
+            time.sleep(0.01)
             # we need to call stop_robot() again since the values for vx and vth and velocities may
             # already have been reinstated by an update from the client just before the inner while loop
             # above stopped (due to self.receive_continue being set to false)
@@ -417,6 +418,7 @@ class Pi2Go(basicsprite.BasicSprite):
                 sock.sendto(message.encode('utf-8'), (UDP_IP, UDP_DATA_PORT))
                 updated_switch_finally = True
                 time.sleep(0.03)
+            time.sleep(0.01)
 
     
     def update_sensors(self, dt):
