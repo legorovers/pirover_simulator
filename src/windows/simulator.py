@@ -505,9 +505,9 @@ class Simulator(pyglet.window.Window):
                                  length=length_of_ray, angle_width_rad=LIGHT_BEAM_ANGWIDTH,
                                  angle_dir_rad=angle_dir) 
                                   
-            self.light_ray = self.batches['fg_batch'].add(len(verts)/2, pyglet.gl.GL_TRIANGLE_FAN, None, 
+            self.light_ray = self.batches['fg_batch'].add(int(len(verts)/2), pyglet.gl.GL_TRIANGLE_FAN, None,
                     ('v2f', verts),
-                    ('c4B', (255, 255, 0, 150)*(len(verts)/2)))
+                    ('c4B', (255, 255, 0, 150)*int(len(verts)/2)))
                 
             # update the light sensors
             self.robot.update_light_sensors(self)
@@ -577,9 +577,9 @@ class Simulator(pyglet.window.Window):
                                                  length=length_of_ray, angle_width_rad=LIGHT_BEAM_ANGWIDTH,
                                                  angle_dir_rad=angle_dir) 
                                  
-                            self.light_ray = self.batches['fg_batch'].add(len(self.light_ray_vertices)/2, pyglet.gl.GL_TRIANGLE_FAN, None, 
+                            self.light_ray = self.batches['fg_batch'].add(int(len(self.light_ray_vertices)/2), pyglet.gl.GL_TRIANGLE_FAN, None,
                                     ('v2f', self.light_ray_vertices),
-                                    ('c4B', (255, 255, 0, 150)*(len(self.light_ray_vertices)/2)))
+                                    ('c4B', (255, 255, 0, 150)*int(len(self.light_ray_vertices)/2)))
                             
                             sensor_angles = self.robot.update_light_sensors(self)
                                        
