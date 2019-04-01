@@ -56,10 +56,11 @@ class LineSensorMap(object):
                     return False
 
                 pix = self.line_data.get_region(int(px), int(py), 1, 1).get_data("RGBA", 4)
-                # print 'r = ' + str(ord(pix[0]))
-                # print 'g = ' + str(ord(pix[1]))
-                # print 'b = ' + str(ord(pix[2]))
-                # print 'a = ' + str(ord(pix[3]))
+                # print (self.line_data.get_data("RGBA", 4))
+                # pprint ('r = ' + str(pix[0]))
+                # pprint ('g = ' + str(pix[1]))
+                # pprint ('b = ' + str(pix[2]))
+                # pprint ('a = ' + str(pix[3]))
 
                 if len(pix) > 3:
                     r = int(pix[0])
@@ -67,7 +68,10 @@ class LineSensorMap(object):
                     b = int(pix[2])
                     a = int(pix[3])
                     avg = float(r + g + b + a) / 4.0
-                    # print r, g, b, a
+                    # print(x, y, px, py, self.x_offset, self.y_offset)
+                    # print (r, g, b, a)
+                    # pprint(px)
+                    # print(avg)
                     return avg > 0
                 else:
                     return False
@@ -102,6 +106,7 @@ class FixedLineSensor(object):
         self.sensor_y = self.parent_robot.y + (
             self.offset_x * math.sin(angle_radians) + (self.offset_y * math.cos(angle_radians)))
 
+        # print(self.sensor_x)
         self.line_sensor_triggered = self.sensor_map.check_triggered(int(self.sensor_x), int(self.sensor_y))
 
     def draw_sensor_position(self):

@@ -145,7 +145,7 @@ class Simulator(pyglet.window.Window):
 
     def spawn_edit_window(self):
         """Opens the edit toolbar."""
-        self.object_window = ObjectWindow(160, self.dyn_assets.background_image.height, self.dyn_assets)
+        self.object_window = ObjectWindow(240, self.dyn_assets.background_image.height, self.dyn_assets)
         x, y = self.get_location()
         self.object_window.set_location(x + self.dyn_assets.background_image.width, y)
         
@@ -606,6 +606,7 @@ class Simulator(pyglet.window.Window):
                     if self.dyn_assets.line_map_sprite.mouse_move_state:
                         self.dyn_assets.line_map_sprite.x = self.dyn_assets.line_map_sprite.mouse_target_x
                         self.dyn_assets.line_map_sprite.y = self.dyn_assets.line_map_sprite.mouse_target_y
+                        self.robot.line_sensor_map.set_line_map(self.dyn_assets.line_map_sprite)
 
             # update the robot position
             self.robot.update(dt, self)

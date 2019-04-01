@@ -27,11 +27,14 @@ from .robotconstants import SONAR_BEAM_ANGLE, SONAR_MAX_RANGE, SONAR_MIN_RANGE, 
 IR_SENSOR_ANGLE = 0.785
 IR_OFFSET_X_MIDDLE = 72
 IR_OFFSET_X = 52
-IR_OFFSET_Y = 18
-LINE_OFFSET_X = 66
-LINE_OFFSET_Y = 5
+IR_OFFSET_Y = 50
+LINE_OFFSET_X = 62
+LINE_OFFSET_Y = 14
 SONAR_OFFSET_X = 65
 LED_INIT_FLASH_COUNT = 5
+
+READ_INTERVAL = 0.01
+PUBLISH_INTERVAL = 0.03
 
 
 class Pi2Go(basicsprite.BasicSprite):
@@ -308,7 +311,7 @@ class Pi2Go(basicsprite.BasicSprite):
                         self.left_led2.red_value = values_list[23]
                         self.left_led2.green_value = values_list[24]
                         self.left_led2.blue_value = values_list[25]
-            time.sleep(0.01)
+            time.sleep(READ_INTERVAL)
             # we need to call stop_robot() again since the values for vx and vth and velocities may
             # already have been reinstated by an update from the client just before the inner while loop
             # above stopped (due to self.receive_continue being set to false)
@@ -380,7 +383,7 @@ class Pi2Go(basicsprite.BasicSprite):
                            int(self.control_switch_on))
                 sock.sendto(message.encode('utf-8'), (UDP_IP, UDP_DATA_PORT))
                 updated_switch_finally = False   
-                time.sleep(0.03)
+                time.sleep(PUBLISH_INTERVAL)
             # send again, once, to update the control switch    
             if updated_switch_finally is False:
                 message = "<<%s;%f;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d>>" % (
@@ -417,8 +420,8 @@ class Pi2Go(basicsprite.BasicSprite):
                            int(self.control_switch_on))
                 sock.sendto(message.encode('utf-8'), (UDP_IP, UDP_DATA_PORT))
                 updated_switch_finally = True
-                time.sleep(0.03)
-            time.sleep(0.01)
+                time.sleep(PUBLISH_INTERVAL)
+
 
     
     def update_sensors(self, dt):
