@@ -250,6 +250,7 @@ class SwitchSprite(BasicSprite):
                 if self.switch_is_on == False:
                     self.switch_is_on = True               
                     self._set_texture(src.resources.switch_image_off)
+                    self.target_robot.switch_on()
                     # self.target_robot.start_robot()
                     # if self.target_robot.robot_name.startswith("PI2GO"):
                      #    self.target_robot.perform_led_init_animation()
@@ -257,6 +258,7 @@ class SwitchSprite(BasicSprite):
                 else:
                     self.switch_is_on = False
                     self._set_texture(src.resources.switch_image_on)
+                    self.target_robot.switch_off()
                     # self.target_robot.stop_robot()
                     # print("Robot is switched OFF...")
     

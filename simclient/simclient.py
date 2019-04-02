@@ -205,7 +205,8 @@ class SimulatorClient:
    
     def setLED(self, LED, red, green, blue):
         """Sets the LED specified to required RGB value. 0 >= LED <= 7; 0 <= R,G,B <= 4095"""
-        if (LED == 0): # first front led (front-left) 
+        # print ("setting leds")
+        if (LED == 0): # first front led (front-left)
             self.front_led1_red_value = red
             self.front_led1_green_value = green
             self.front_led1_blue_value = blue
@@ -304,6 +305,7 @@ class SimulatorClient:
                 self.vx, self.vth, self.sonar_angle)
                 sock.sendto(message, (UDP_IP, UDP_COMMAND_PORT))
             elif self.robot_name == "PI2GO":
+                # print(self.front_led1_red_value)
                 message = "<<%f;%f;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d>>" % (
                 self.vx, self.vth,
                 int(self.front_led1_red_value),
@@ -387,34 +389,34 @@ class SimulatorClient:
                     self.br_light_sensor = int(values_list[9])
                     self.bl_light_sensor = int(values_list[10])
                     
-                    self.front_led1_red_value = int(values_list[11])
-                    self.front_led1_green_value = int(values_list[12])
-                    self.front_led1_blue_value = int(values_list[13])
-                    self.front_led2_red_value = int(values_list[14])
-                    self.front_led2_green_value = int(values_list[15])
-                    self.front_led2_blue_value = int(values_list[16])
+                    # self.front_led1_red_value = int(values_list[11])
+                    # self.front_led1_green_value = int(values_list[12])
+                    # self.front_led1_blue_value = int(values_list[13])
+                    # self.front_led2_red_value = int(values_list[14])
+                    # self.front_led2_green_value = int(values_list[15])
+                    # self.front_led2_blue_value = int(values_list[16])
                     
-                    self.right_led1_red_value = int(values_list[17])
-                    self.right_led1_green_value = int(values_list[18])
-                    self.right_led1_blue_value = int(values_list[19])
-                    self.right_led2_red_value = int(values_list[20])
-                    self.right_led2_green_value = int(values_list[21])
-                    self.right_led2_blue_value = int(values_list[22]) 
+                    # self.right_led1_red_value = int(values_list[17])
+                    # self.right_led1_green_value = int(values_list[18])
+                    # self.right_led1_blue_value = int(values_list[19])
+                    # self.right_led2_red_value = int(values_list[20])
+                    # self.right_led2_green_value = int(values_list[21])
+                    # self.right_led2_blue_value = int(values_list[22])
                        
-                    self.back_led1_red_value = int(values_list[23])
-                    self.back_led1_green_value = int(values_list[24])
-                    self.back_led1_blue_value = int(values_list[25])
-                    self.back_led2_red_value = int(values_list[26])
-                    self.back_led2_green_value = int(values_list[27])
-                    self.back_led2_blue_value = int(values_list[28])
+                    # self.back_led1_red_value = int(values_list[23])
+                    # self.back_led1_green_value = int(values_list[24])
+                    # self.back_led1_blue_value = int(values_list[25])
+                    # self.back_led2_red_value = int(values_list[26])
+                    # self.back_led2_green_value = int(values_list[27])
+                    # self.back_led2_blue_value = int(values_list[28])
      
-                    self.left_led1_red_value = int(values_list[29])
-                    self.left_led1_green_value = int(values_list[30])
-                    self.left_led1_blue_value = int(values_list[31])
-                    self.left_led2_red_value = int(values_list[32])
-                    self.left_led2_green_value = int(values_list[33])
-                    self.left_led2_blue_value = int(values_list[34])
-                    self.robot_control_switch_on = int(values_list[35])      
+                    # self.left_led1_red_value = int(values_list[29])
+                    # self.left_led1_green_value = int(values_list[30])
+                    # self.left_led1_blue_value = int(values_list[31])
+                    # self.left_led2_red_value = int(values_list[32])
+                    # self.left_led2_green_value = int(values_list[33])
+                    # self.left_led2_blue_value = int(values_list[34])
+                    # self.robot_control_switch_on = int(values_list[35])
                     # print "received message:", data
             time.sleep(PUBLISH_INTERVAL)
         sock.close()

@@ -529,3 +529,9 @@ class Pi2Go(basicsprite.BasicSprite):
                 y = radius*math.sin(angle) + self.y
                 verts += [x,y]
         return verts
+
+    def switch_on(self):
+        self.control_switch_on = True
+
+    def switch_off(self):
+        self.control_switch_on = False

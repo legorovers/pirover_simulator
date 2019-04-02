@@ -115,7 +115,7 @@ class Initio(basicsprite.BasicSprite):
         self.publish_continue = True 
         self.receive_continue = True
         # this method is called when the robot control switch is switched ON
-        self.control_switch_on = True
+        self.control_switch_on = False
         # release the brakes on movement
         pyglet.clock.unschedule(self.stop_robot_movement)
 
@@ -356,3 +356,9 @@ class Initio(basicsprite.BasicSprite):
                 y = radius*math.sin(angle) + self.y
                 verts += [x,y]
         return verts
+
+    def switch_on(self):
+        self.control_switch_on = False
+    
+    def switch_off(self):
+        self.control_switch_on = False
