@@ -418,7 +418,7 @@ class SimulatorClient:
                     # self.left_led2_red_value = int(values_list[32])
                     # self.left_led2_green_value = int(values_list[33])
                     # self.left_led2_blue_value = int(values_list[34])
-                    # self.robot_control_switch_on = int(values_list[35])
+                    self.robot_control_switch_on = int(values_list[35])
                     # print "received message:", data
             time.sleep(PUBLISH_INTERVAL)
         sock.close()
