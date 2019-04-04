@@ -76,7 +76,7 @@ class FixedLED(object):
        #    colour_opacity = 0
          
         colour_opacity = 255
-        print(self.red_value, self.green_value, self.blue_value)
+        # print(self.red_value, self.green_value, self.blue_value)
         
         fill_colour = (int(self.red_value)%256, int(self.green_value)%256, int(self.blue_value)%256, colour_opacity)
         

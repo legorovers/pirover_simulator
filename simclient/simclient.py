@@ -72,6 +72,8 @@ class SimulatorClient:
         self.cmd_thread = threading.Thread(target=self.send_commands)
         self.cmd_thread.setDaemon(True)
         self.cmd_thread.start()
+        time.sleep(1)
+        print("initialisation complete")
 
     
     def getRobotName(self):
