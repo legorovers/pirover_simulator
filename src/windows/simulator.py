@@ -419,6 +419,7 @@ class Simulator(pyglet.window.Window):
             self.switch_handlers()
         if symbol == key.Q:
             pyglet.app.exit()
+            self.close()
         if symbol == key.S:
             self.dyn_assets.save_to_file()
 
