@@ -31,6 +31,9 @@ LINE_OFFSET_Y = 5
 
 SONAR_OFFSET_X = 25
 
+READ_INTERVAL = 0.01
+PUBLISH_INTERVAL = 0.03
+
 
 class Initio(basicsprite.BasicSprite):
     def __init__(self, *args, **kwargs):
@@ -106,12 +109,10 @@ class Initio(basicsprite.BasicSprite):
         self.cmd_thread = threading.Thread(target=self.recv_commands)
         self.cmd_thread.setDaemon(True)
         self.cmd_thread.start()
-        print("a")
         self.start_robot()
         
         
     def start_robot(self):
-        print("b")
         self.publish_continue = True 
         self.receive_continue = True
         # this method is called when the robot control switch is switched ON
@@ -165,7 +166,8 @@ class Initio(basicsprite.BasicSprite):
         sock_recv.bind((UDP_IP, UDP_COMMAND_PORT))
         while True: 
             while self.receive_continue is True:
-                data, addr = sock_recv.recvfrom(1024)  # buffer size is 1024 bytes
+                data_e, addr = sock_recv.recvfrom(1024)  # buffer size is 1024 bytes
+                data = data_e.decode()
                 if data.startswith("<<") and data.endswith(">>"):
                     data = data.replace("<<", "")
                     data = data.replace(">>", "")
@@ -186,6 +188,7 @@ class Initio(basicsprite.BasicSprite):
                         if self.vx == 0 and self.vth != 0:
                             self.is_rotating = True
                         else: self.is_rotating = False
+            time.sleep(READ_INTERVAL)
                 
             # we need to call stop_robot() again since the values for vx and vth and velocities may
             # already have been reinstated by an update from the client just before the inner while loop
@@ -220,9 +223,9 @@ class Initio(basicsprite.BasicSprite):
                           line_left, line_right, 
                           ir_left, ir_right,
                           light_fl, light_fr, light_br, light_bl, self.control_switch_on)
-                sock_publish.sendto(message, (UDP_IP, UDP_DATA_PORT))
+                sock_publish.sendto(message.encode('utf-8'), (UDP_IP, UDP_DATA_PORT))
                 updated_switch_finally = False   
-                time.sleep(0.03)
+                time.sleep(PUBLISH_INTERVAL)
             # send again, once, to update the control switch    
             if updated_switch_finally is False:
                 message = "<<%s;%f;%d;%d;%d;%d;%d;%d;%d;%d;%d>>" % (
@@ -230,9 +233,9 @@ class Initio(basicsprite.BasicSprite):
                           line_left, line_right, 
                           ir_left, ir_right,
                           light_fl, light_fr, light_br, light_bl, self.control_switch_on)
-                sock_publish.sendto(message, (UDP_IP, UDP_DATA_PORT))
+                sock_publish.sendto(message.encode('utf-8'), (UDP_IP, UDP_DATA_PORT))
                 updated_switch_finally = True
-                time.sleep(0.03)
+                time.sleep(PUBLISH_INTERVAL)
 
     def update_sensors(self, dt):
         """Take a new reading for each sensor."""

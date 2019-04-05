@@ -305,7 +305,7 @@ class SimulatorClient:
             if self.robot_name == "INITIO":
                 message = "<<%f;%f;%f>>" % (
                 self.vx, self.vth, self.sonar_angle)
-                sock.sendto(message, (UDP_IP, UDP_COMMAND_PORT))
+                sock.sendto(message.encode('utf-8'), (UDP_IP, UDP_COMMAND_PORT))
             elif self.robot_name == "PI2GO":
                 # print(self.front_led1_red_value)
                 message = "<<%f;%f;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d>>" % (
