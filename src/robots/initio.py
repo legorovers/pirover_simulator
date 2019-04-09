@@ -29,7 +29,7 @@ IR_OFFSET_Y = 18
 LINE_OFFSET_X = 40
 LINE_OFFSET_Y = 5
 
-SONAR_OFFSET_X = 25
+SONAR_OFFSET_X = 60
 
 READ_INTERVAL = 0.01
 PUBLISH_INTERVAL = 0.03
@@ -58,7 +58,7 @@ class Initio(basicsprite.BasicSprite):
         x_light_offset = self.image.width/2
         y_light_offset = self.image.height/2
         
-        self.sonar_sensor = PanningDistanceSensor(batch=batch, robot=self, sonar_map=self.sonar_map, offset_x=25,
+        self.sonar_sensor = PanningDistanceSensor(batch=batch, robot=self, sonar_map=self.sonar_map, offset_x=SONAR_OFFSET_X,
                                                   min_range=SONAR_MIN_RANGE, max_range=SONAR_MAX_RANGE,
                                                   beam_angle=SONAR_BEAM_ANGLE)
         

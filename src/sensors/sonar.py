@@ -74,7 +74,7 @@ class Sonar(object):
         self.current_range = -1.0
 
     def update_sonar(self, x, y, theta):
-        """Returns the distance to the nearest obstacle for a sensor a position (x, y) and at angle theta."""
+        """Returns the distance to the nearest obstacle for a sensor at position (x, y) and at angle theta."""
         # start at max range
         self.current_range = self.max_range
         # create a bundle of rays to replicate a sonar beam
@@ -100,6 +100,7 @@ class Sonar(object):
                     break
 
                 if self.sensor_map.grid[ymap][xmap]:
+                    # print(xmap)
                     break
                 distance += 1
             range = distance * self.sensor_map.resolution
