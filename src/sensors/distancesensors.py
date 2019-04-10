@@ -97,7 +97,7 @@ class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
     def update_sensor(self):
         """Calculates the XY position of the sensor origin based on the current position of the robot and
             then takes a reading."""  
-        angle_radians = -math.radians(self.parent_robot.rotation)
+        angle_radians = -math.radians(self.rotation)
         self.sensor_x = self.parent_robot.x + (
             self.sonar_offset_x * math.cos(angle_radians) - (self.sonar_offset_y * math.sin(angle_radians)))
         self.sensor_y = self.parent_robot.y + (
