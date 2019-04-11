@@ -154,7 +154,7 @@ class Simulator(pyglet.window.Window):
         # self.light_ray = None
         if buttons & mouse.LEFT:
             # we use the left mouse button to move the terminal points of the light ray around.
-            if self.light_ray is not None:
+            if not (self.light_ray is None):
                 self.is_ray_being_dragged = True
                 self.light_follow_mouse(x, y) 
     
@@ -393,6 +393,7 @@ class Simulator(pyglet.window.Window):
                         # then delete the sprite and update the object handlers
                         selected_obj.delete()
                         del(self.light_ray)
+                        self.light_ray = None
                         self.switch_handlers()
                         self.redraw_sonar_map()
         except AttributeError as e:
@@ -458,6 +459,7 @@ class Simulator(pyglet.window.Window):
             # delete its ray too
             self.light_ray.delete() 
             del(self.light_ray)
+            self.light_ray = None
     
  
     def process_light_sprite(self, mouse_xpos, mouse_ypos, sprite_idx):
@@ -486,7 +488,8 @@ class Simulator(pyglet.window.Window):
         # delete the current light ray
         if self.light_ray is not None:
             self.light_ray.delete()
-            del(self.light_ray) 
+            del(self.light_ray)
+            self.light_ray = None
                            
         if self.light_source is not None:    
             # let the light shine:
@@ -561,6 +564,7 @@ class Simulator(pyglet.window.Window):
                             # remove previous line/ray from the batch
                             self.light_ray.delete()
                             del(self.light_ray)
+                            self.light_ray = None
                             
                             # find the center of the light source sprite
                             x_light_center = obj.x 

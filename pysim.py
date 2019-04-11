@@ -19,7 +19,7 @@ if __name__ == "__main__":
             pyglet.clock.schedule_interval(simulator.update, 1.0 / 30)
             pyglet.app.run()
     except KeyboardInterrupt:
-        print "Goodbye!"
+        print("Goodbye!")
 
 
 

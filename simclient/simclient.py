@@ -11,7 +11,7 @@ import threading
 UDP_IP = "127.0.0.1"
 UDP_DATA_PORT = 5000
 UDP_COMMAND_PORT = 5001
-PAN = 0
+PAN = 1
 PUBLISH_INTERVAL = 0.02  # seconds
 
 
