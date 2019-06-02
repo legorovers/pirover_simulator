@@ -32,18 +32,42 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''pyglet is a cross-platform games and multimedia package.
+"""pyglet is a cross-platform games and multimedia package.
 
 Detailed documentation is available at http://www.pyglet.org
-'''
+"""
+from __future__ import print_function
+from __future__ import absolute_import
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
+# Check if future is installed, if not use included batteries
+try:
+    import future
+except ImportError:
+    import os.path as op
+    import sys
+    future_base = op.abspath(op.join(op.dirname(__file__), 'extlibs', 'future'))
+    sys.path.insert(0, op.join(future_base, 'py2_3'))
+    if sys.version_info[:2] < (3, 0):
+        sys.path.insert(0, op.join(future_base, 'py2'))
+    del future_base
+    del sys
+    del op
+    try:
+        import future
+    except ImportError:
+        print('Failed to get python-future')
+        raise
+
+from builtins import range
+from builtins import object
 
 import os
 import sys
+import warnings
 
-_is_epydoc = hasattr(sys, 'is_epydoc') and sys.is_epydoc
+if 'sphinx' in sys.modules:
+    setattr(sys, 'is_pyglet_docgen', True)
+_is_pyglet_docgen = hasattr(sys, 'is_pyglet_docgen') and sys.is_pyglet_docgen
 
 #: The release version of this pyglet installation.
 #:
@@ -57,21 +81,12 @@ _is_epydoc = hasattr(sys, 'is_epydoc') and sys.is_epydoc
 #:    >>> parse_version(pyglet.version) >= parse_version('1.1')
 #:    True
 #:
-version = '1.2.4'
+version = '1.3.2'
 
 # Pyglet platform treats *BSD systems as Linux
 compat_platform = sys.platform
 if "bsd" in compat_platform:
     compat_platform = "linux-compat"
-
-def _require_ctypes_version(version):
-    # Check ctypes version
-    import ctypes
-    req = [int(i) for i in version.split('.')]
-    have = [int(i) for i in ctypes.__version__.split('.')]
-    if not tuple(have) >= tuple(req):
-        raise ImportError('pyglet requires ctypes %s or later.' % version)
-_require_ctypes_version('1.0.0')
 
 _enable_optimisations = not __debug__
 if getattr(sys, 'frozen', None):
@@ -123,7 +138,7 @@ if getattr(sys, 'frozen', None):
 #:     must be loaded after the window using them was created).  Recommended
 #:     for advanced developers only.
 #:
-#:     **Since:** pyglet 1.1
+#:     .. versionadded:: 1.1
 #: vsync
 #:     If set, the `pyglet.window.Window.vsync` property is ignored, and
 #:     this option overrides it (to either force vsync on or off).  If unset,
@@ -137,14 +152,14 @@ if getattr(sys, 'frozen', None):
 #:     X11 servers supporting the Xsync extension with a window manager
 #:     that implements the _NET_WM_SYNC_REQUEST protocol.
 #:
-#:     **Since:** pyglet 1.1
+#:     .. versionadded:: 1.1
 #: darwin_cocoa
 #:     If True, the Cocoa-based pyglet implementation is used as opposed to
 #:     the 32-bit Carbon implementation.  When python is running in 64-bit mode
 #:     on Mac OS X 10.6 or later, this option is set to True by default.
 #:     Otherwise the Carbon implementation is preferred.
 #:
-#:     **Since:** pyglet 1.2
+#:     .. versionadded:: 1.2
 #:
 #: search_local_libs
 #:     If False, pyglet won't try to search for libraries in the script
@@ -152,11 +167,11 @@ if getattr(sys, 'frozen', None):
 #:     library instead of the system installed version. This option is set
 #:     to True by default.
 #:
-#:     **Since:** pyglet 1.2
+#:     .. versionadded:: 1.2
 #:
 options = {
     'audio': ('directsound', 'pulse', 'openal', 'silent'),
-    'font': ('gdiplus', 'win32'), # ignored outside win32; win32 is deprecated
+    'font': ('gdiplus', 'win32'),  # ignored outside win32; win32 is deprecated
     'debug_font': False,
     'debug_gl': not _enable_optimisations,
     'debug_gl_trace': False,
@@ -205,6 +220,7 @@ _option_types = {
     'darwin_cocoa': bool,
 }
 
+
 def _choose_darwin_platform():
     """Choose between Darwin's Carbon and Cocoa implementations."""
     if compat_platform != 'darwin':
@@ -215,14 +231,16 @@ def _choose_darwin_platform():
         import platform
         osx_version = platform.mac_ver()[0].split(".")
         if int(osx_version[0]) == 10 and int(osx_version[1]) < 6:
-            raise Exception('pyglet is not compatible with 64-bit Python for versions of Mac OS X prior to 10.6.')
+            raise Exception('pyglet is not compatible with 64-bit Python '  
+                            'for versions of Mac OS X prior to 10.6.')
         options['darwin_cocoa'] = True
     else:
         options['darwin_cocoa'] = False
 _choose_darwin_platform()  # can be overridden by an environment variable below
 
+
 def _read_environment():
-    '''Read defaults for options from environment'''
+    """Read defaults for options from environment"""
     for key in options:
         env = 'PYGLET_%s' % key.upper()
         try:
@@ -247,10 +265,15 @@ if compat_platform == 'cygwin':
     ctypes.WINFUNCTYPE = ctypes.CFUNCTYPE
     ctypes.HRESULT = ctypes.c_long
 
+if compat_platform == 'darwin' and not options['darwin_cocoa']:
+    warnings.warn('Carbon support is to be deprecated in Pyglet 1.4', PendingDeprecationWarning)
+
+
 # Call tracing
 # ------------
 
 _trace_filename_abbreviations = {}
+
 
 def _trace_repr(value, size=40):
     value = repr(value)
@@ -258,9 +281,10 @@ def _trace_repr(value, size=40):
         value = value[:size//2-2] + '...' + value[-size//2-1:]
     return value
 
+
 def _trace_frame(thread, frame, indent):
     from pyglet import lib
-    if frame.f_code is lib._TraceFunction.__call__.func_code:
+    if frame.f_code is lib._TraceFunction.__call__.__code__:
         is_ctypes = True
         func = frame.f_locals['self']._func
         name = func.__name__
@@ -292,22 +316,23 @@ def _trace_frame(thread, frame, indent):
 
     if indent:
         name = 'Called from %s' % name
-    print '[%d] %s%s %s' % (thread, indent, name, location)
+    print('[%d] %s%s %s' % (thread, indent, name, location))
 
     if _trace_args:
         if is_ctypes:
             args = [_trace_repr(arg) for arg in frame.f_locals['args']]
-            print '  %sargs=(%s)' % (indent, ', '.join(args))
+            print('  %sargs=(%s)' % (indent, ', '.join(args)))
         else:
             for argname in code.co_varnames[:code.co_argcount]:
                 try:
                     argvalue = _trace_repr(frame.f_locals[argname])
-                    print '  %s%s=%s' % (indent, argname, argvalue)
+                    print('  %s%s=%s' % (indent, argname, argvalue))
                 except:
                     pass
 
     if _trace_flush:
         sys.stdout.flush()
+
 
 def _thread_trace_func(thread):
     def _trace_func(frame, event, arg):
@@ -322,8 +347,9 @@ def _thread_trace_func(thread):
 
         elif event == 'exception':
             (exception, value, traceback) = arg
-            print 'First chance exception raised:', repr(exception)
+            print('First chance exception raised:', repr(exception))
     return _trace_func
+
 
 def _install_trace():
     global _trace_thread_count
@@ -336,6 +362,7 @@ _trace_depth = options['debug_trace_depth']
 _trace_flush = options['debug_trace_flush']
 if options['debug_trace']:
     _install_trace()
+
 
 # Lazy loading
 # ------------
@@ -395,23 +422,23 @@ if True:
 # Fool py2exe, py2app into including all top-level modules (doesn't understand
 # lazy loading)
 if False:
-    import app
-    import canvas
-    import clock
-    import com
-    import event
-    import font
-    import gl
-    import graphics
-    import input
-    import image
-    import lib
-    import media
-    import resource
-    import sprite
-    import text
-    import window
+    from . import app
+    from . import canvas
+    from . import clock
+    from . import com
+    from . import event
+    from . import font
+    from . import gl
+    from . import graphics
+    from . import input
+    from . import image
+    from . import lib
+    from . import media
+    from . import resource
+    from . import sprite
+    from . import text
+    from . import window
 
 # Hack around some epydoc bug that causes it to think pyglet.window is None.
 if False:
-    import window
+    from . import window

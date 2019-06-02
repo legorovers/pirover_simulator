@@ -60,18 +60,9 @@ default policy is to wait until all windows are closed)::
     def on_window_close(window):
         event_loop.exit()
 
-:since: pyglet 1.1
-
-
-:attr:`event_loop` is the global event loop.  Applications can replace this
-with their own subclass of :class:`EventLoop` before calling 
-:meth:`EventLoop.run`.
-
-:attr:`platform_event_loop` is the platform-dependent event loop. 
-Applications must not subclass or replace this :class:`PlatformEventLoop` 
-object.
-
+.. versionadded:: 1.1
 '''
+from builtins import object
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -79,7 +70,7 @@ __version__ = '$Id$'
 import sys
 import weakref
 
-_is_epydoc = hasattr(sys, 'is_epydoc') and sys.is_epydoc
+_is_pyglet_docgen = hasattr(sys, 'is_pyglet_docgen') and sys.is_pyglet_docgen
 
 class AppException(Exception):
     pass
@@ -98,7 +89,12 @@ class WeakSet(object):
         self._dict[value] = True
 
     def remove(self, value):
-        del self._dict[value]
+        # Value might be removed already if this is during __del__ of the item.
+        self._dict.pop(value, None)
+
+    def pop(self):
+        value, _ = self._dict.popitem()
+        return value
 
     def __iter__(self):
         for key in self._dict.keys():
@@ -109,7 +105,6 @@ class WeakSet(object):
 
     def __len__(self):
         return len(self._dict)
-
 
 
 displays = WeakSet()
@@ -158,7 +153,7 @@ def exit():
 
 from pyglet.app.base import EventLoop
 from pyglet import compat_platform
-if _is_epydoc:
+if _is_pyglet_docgen:
     from pyglet.app.base import PlatformEventLoop
 else:
     if compat_platform == 'darwin':
@@ -174,7 +169,14 @@ else:
 
 
 
+#: The global event loop.  Applications can replace this
+#: with their own subclass of :class:`EventLoop` before calling 
+#: :meth:`EventLoop.run`.
 event_loop = EventLoop()
 
 platform_event_loop = PlatformEventLoop()
 
+"""The platform-dependent event loop. 
+Applications must not subclass or replace this :class:`PlatformEventLoop` 
+object.
+"""

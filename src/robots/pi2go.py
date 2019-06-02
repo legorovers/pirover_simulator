@@ -4,7 +4,7 @@ with appropriate sensros. This module also handles communication between
 the simulator and any external scripts. Communicate is done via simple
 string messeages passed via UDP socket.
 """
-from __future__ import division
+
 import math
 import random
 import socket
@@ -19,7 +19,7 @@ from src.sensors.led import FixedLED
 from src.sensors.distancesensors import FixedTransformDistanceSensor
 from src.sensors.linesensor import LineSensorMap, FixedLineSensor
 from src.sprites import basicsprite
-from robotconstants import SONAR_BEAM_ANGLE, SONAR_MAX_RANGE, SONAR_MIN_RANGE, IR_MAX_RANGE, IR_MIN_RANGE, \
+from .robotconstants import SONAR_BEAM_ANGLE, SONAR_MAX_RANGE, SONAR_MIN_RANGE, IR_MAX_RANGE, IR_MIN_RANGE, \
     UDP_COMMAND_PORT, UDP_DATA_PORT, UDP_IP
 
 # Constants specific to the PI2GO robot.
@@ -27,11 +27,14 @@ from robotconstants import SONAR_BEAM_ANGLE, SONAR_MAX_RANGE, SONAR_MIN_RANGE, I
 IR_SENSOR_ANGLE = 0.785
 IR_OFFSET_X_MIDDLE = 72
 IR_OFFSET_X = 52
-IR_OFFSET_Y = 18
-LINE_OFFSET_X = 66
-LINE_OFFSET_Y = 5
+IR_OFFSET_Y = 50
+LINE_OFFSET_X = 62
+LINE_OFFSET_Y = 14
 SONAR_OFFSET_X = 65
 LED_INIT_FLASH_COUNT = 5
+
+READ_INTERVAL = 0.01
+PUBLISH_INTERVAL = 0.03
 
 
 class Pi2Go(basicsprite.BasicSprite):
@@ -262,50 +265,56 @@ class Pi2Go(basicsprite.BasicSprite):
         RIGHT_LED1_RED_VALUE;RIGHT_LED1_GREEN_VALUE;RIGHT_LED1_BLUE_VALUE;
         RIGHT_LED2_RED_VALUE;RIGHT_LED2_GREEN_VALUE;RIGHT_LED2_BLUE_VALUE>>
         """
-        sock = socket.socket(socket.AF_INET,  # Internet
+        self.sock_recv = socket.socket(socket.AF_INET,  # Internet
                              socket.SOCK_DGRAM)  # UDP
-        sock.bind((UDP_IP, UDP_COMMAND_PORT))
+        self.sock_recv.bind((UDP_IP, UDP_COMMAND_PORT))
         while True:
             while self.receive_continue is True:
-                data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
-                if data.startswith("<<") and data.endswith(">>"):
-                    data = data.replace("<<", "")
-                    data = data.replace(">>", "")
-                    values_list = data.split(";")
-                    if len(values_list) == 26:
-                        self.vx = float(values_list[0])
-                        self.vth = float(values_list[1])
-                        if self.vx == 0 and self.vth <> 0:
-                            self.is_rotating = True
-                        else: self.is_rotating = False
-                        
-                        self.front_led1.red_value = values_list[2]
-                        self.front_led1.green_value = values_list[3]
-                        self.front_led1.blue_value = values_list[4]
-                        self.front_led2.red_value = values_list[5]
-                        self.front_led2.green_value = values_list[6]
-                        self.front_led2.blue_value = values_list[7]
-                        
-                        self.right_led1.red_value = values_list[8]
-                        self.right_led1.green_value = values_list[9]
-                        self.right_led1.blue_value = values_list[10]
-                        self.right_led2.red_value = values_list[11]
-                        self.right_led2.green_value = values_list[12]
-                        self.right_led2.blue_value = values_list[13]
-                        
-                        self.back_led1.red_value = values_list[14]
-                        self.back_led1.green_value = values_list[15]
-                        self.back_led1.blue_value = values_list[16]
-                        self.back_led2.red_value = values_list[17]
-                        self.back_led2.green_value = values_list[18]
-                        self.back_led2.blue_value = values_list[19]
-                        
-                        self.left_led1.red_value = values_list[20]
-                        self.left_led1.green_value = values_list[21]
-                        self.left_led1.blue_value = values_list[22]
-                        self.left_led2.red_value = values_list[23]
-                        self.left_led2.green_value = values_list[24]
-                        self.left_led2.blue_value = values_list[25]
+                try:
+                    data_e, addr = self.sock_recv.recvfrom(1024)  # buffer size is 1024 bytes
+                    data = data_e.decode()
+                    if data.startswith("<<") and data.endswith(">>"):
+                        data = data.replace("<<", "")
+                        data = data.replace(">>", "")
+                        values_list = data.split(";")
+                        #  print (data);
+                        if len(values_list) == 26:
+                            self.vx = float(values_list[0])
+                            self.vth = float(values_list[1])
+                            if self.vx == 0 and self.vth != 0:
+                                self.is_rotating = True
+                            else: self.is_rotating = False
+
+                            self.front_led1.red_value = values_list[2]
+                            self.front_led1.green_value = values_list[3]
+                            self.front_led1.blue_value = values_list[4]
+                            self.front_led2.red_value = values_list[5]
+                            self.front_led2.green_value = values_list[6]
+                            self.front_led2.blue_value = values_list[7]
+
+                            self.right_led1.red_value = values_list[8]
+                            self.right_led1.green_value = values_list[9]
+                            self.right_led1.blue_value = values_list[10]
+                            self.right_led2.red_value = values_list[11]
+                            self.right_led2.green_value = values_list[12]
+                            self.right_led2.blue_value = values_list[13]
+
+                            self.back_led1.red_value = values_list[14]
+                            self.back_led1.green_value = values_list[15]
+                            self.back_led1.blue_value = values_list[16]
+                            self.back_led2.red_value = values_list[17]
+                            self.back_led2.green_value = values_list[18]
+                            self.back_led2.blue_value = values_list[19]
+
+                            self.left_led1.red_value = values_list[20]
+                            self.left_led1.green_value = values_list[21]
+                            self.left_led1.blue_value = values_list[22]
+                            self.left_led2.red_value = values_list[23]
+                            self.left_led2.green_value = values_list[24]
+                            self.left_led2.blue_value = values_list[25]
+                except Exception:
+                    pass
+            time.sleep(READ_INTERVAL)
             # we need to call stop_robot() again since the values for vx and vth and velocities may
             # already have been reinstated by an update from the client just before the inner while loop
             # above stopped (due to self.receive_continue being set to false)
@@ -328,7 +337,7 @@ class Pi2Go(basicsprite.BasicSprite):
              RIGHT_LED1_RED_VALUE;RIGHT_LED1_GREEN_VALUE;RIGHT_LED1_BLUE_VALUE;
              RIGHT_LED2_RED_VALUE;RIGHT_LED2_GREEN_VALUE;RIGHT_LED2_BLUE_VALUE; CONTROL_SWITCH>>        
         """
-        sock = socket.socket(socket.AF_INET,  # Internet
+        self.sock_publish = socket.socket(socket.AF_INET,  # Internet
                              socket.SOCK_DGRAM)  # UDP
         while True:
             while self.publish_continue is True:
@@ -375,9 +384,12 @@ class Pi2Go(basicsprite.BasicSprite):
                            int(self.left_led2.green_value),
                            int(self.left_led2.blue_value),
                            int(self.control_switch_on))
-                sock.sendto(message, (UDP_IP, UDP_DATA_PORT))
-                updated_switch_finally = False   
-                time.sleep(0.03)
+                try:
+                    self.sock_publish.sendto(message.encode('utf-8'), (UDP_IP, UDP_DATA_PORT))
+                    updated_switch_finally = False
+                    time.sleep(PUBLISH_INTERVAL)
+                except Exception:
+                    pass
             # send again, once, to update the control switch    
             if updated_switch_finally is False:
                 message = "<<%s;%f;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d>>" % (
@@ -412,9 +424,13 @@ class Pi2Go(basicsprite.BasicSprite):
                            int(self.left_led2.green_value),
                            int(self.left_led2.blue_value),
                            int(self.control_switch_on))
-                sock.sendto(message, (UDP_IP, UDP_DATA_PORT))
-                updated_switch_finally = True
-                time.sleep(0.03)
+                try:
+                    self.sock_publish.sendto(message.encode('utf-8'), (UDP_IP, UDP_DATA_PORT))
+                    updated_switch_finally = True
+                    time.sleep(PUBLISH_INTERVAL)
+                except Exception:
+                    pass
+
 
     
     def update_sensors(self, dt):
@@ -522,3 +538,9 @@ class Pi2Go(basicsprite.BasicSprite):
                 y = radius*math.sin(angle) + self.y
                 verts += [x,y]
         return verts
+
+    def switch_on(self):
+        self.control_switch_on = True
+
+    def switch_off(self):
+        self.control_switch_on = False

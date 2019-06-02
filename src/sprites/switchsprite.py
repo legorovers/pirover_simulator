@@ -1,6 +1,6 @@
 """
 switchsprite.py is a subclass of pyglets sprite class for the Pi2Go Switch.
-NOT USED FOR NOW.
+NOTE: NOT USED FOR NOW.
 """
 
 import pyglet

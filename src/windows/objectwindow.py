@@ -105,3 +105,8 @@ class ObjectWindow(pyglet.window.Window):
         self.clear()
         # self.next_button.draw()
         self.main_batch.draw()
+
+    def on_mouse_enter(self, x, y):
+        self.activate()  # activate this window whenever the mouse enters it
+
+

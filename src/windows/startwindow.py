@@ -3,8 +3,8 @@ startwindow.py as opposed to all other windows uses TKinter instead of pyglet to
 interface. It allows the user to select the world model and robot on startup.
 """
 import os
-from Tkinter import *
-import tkSimpleDialog, tkMessageBox
+from tkinter import *
+import tkinter.simpledialog, tkinter.messagebox
 import src.util as util
 
 ROBOTS = ["Initio", "Pi2Go"]
@@ -21,7 +21,9 @@ class StartWindow(object):
     def __init__(self):
         self.window = Tk()
         self.window.title("Python Simulator")
-        self.window.geometry("680x400")
+        w, h = self.window.winfo_screenwidth(), self.window.winfo_screenheight()
+        self.window.geometry("%dx%d" % (w, h))
+        #self.window.geometry("680x400")
 
         self.lbl1 = Label(self.window, text="World Files:", fg='black', font=("Helvetica", 16, "bold"))
         self.lbl1.grid(row=0, column=0, sticky=W)
@@ -42,9 +44,17 @@ class StartWindow(object):
         self.scrollbar.config(command=self.files_listbox.yview)
 
         self.world_file_path = util.get_world_path()
+        invalid_files = []
         self.world_files_list = next(os.walk(self.world_file_path))[2]
         for wrld_file in self.world_files_list:
-            self.files_listbox.insert(END, str(wrld_file))
+            if str(wrld_file).lower().endswith(".xml"):  # get only the xml files
+                self.files_listbox.insert(END, str(wrld_file))
+            else:
+                invalid_files.append(wrld_file)
+
+        # remove invalid files from the list
+        for invalid_file in invalid_files:
+            self.world_files_list.remove(invalid_file)
 
         self.files_listbox.selection_set(first=0)
 
@@ -58,6 +68,7 @@ class StartWindow(object):
         self.frm3 = Frame(self.window)
         self.frm3.grid(row=2, column=1, sticky=N + S)
         self.quit_button = Button(self.frm3, text="Quit", command=self.quit_callback)
+
         self.quit_button.pack(side=RIGHT, padx=PADDING, pady=PADDING)
         self.start_button = Button(self.frm3, text="Start Simulation", command=self.start_callback)
         self.start_button.pack(side=RIGHT, padx=PADDING, pady=PADDING)
@@ -80,9 +91,27 @@ class StartWindow(object):
         self.pi2go_radio.pack(padx=PADDING, pady=PADDING)
         self.rover_radio.select()
 
+        # Handle (x) closing of the window
+        self.window.protocol("WM_DELETE_WINDOW", self.quit_callback)
         self.selected_file = "None"
         self.selected_robot_name = "None"
 
+
+    def refresh_world_filelist(self):
+        self.world_files_list.clear()
+        self.files_listbox.delete(0, END)
+        self.world_file_path = util.get_world_path()
+        invalid_files = []
+        self.world_files_list = next(os.walk(self.world_file_path))[2]
+        for wrld_file in self.world_files_list:
+            if str(wrld_file).lower().endswith(".xml"):  # get only the xml files
+                self.files_listbox.insert(END, str(wrld_file))
+            else:
+                invalid_files.append(wrld_file)
+        # remove invalid files from the list
+        for invalid_file in invalid_files:
+            self.world_files_list.remove(invalid_file)
+        self.files_listbox.selection_set(first=0)
 
     def start(self):
         """Provides an entry point to start with gui loop and return the selected file and robot once the window is
@@ -92,14 +121,16 @@ class StartWindow(object):
 
     def quit_callback(self):
         """Callback for the quit button."""
+        self.selected_file = "None"     # readying to quit app loop in pysimosx/pysim
+        self.selected_robot = None
         self.window.destroy()
-        self.window.quit()
+        #self.window.quit()
 
     def start_callback(self):
         """Start button callback, the function extract the users selection from the world file listbox and robot
         radio buttons. Once extracted the window will be closed."""
-        print "starting simulator"
-        selected_items = map(int, self.files_listbox.curselection())
+        print("starting simulator")
+        selected_items = list(map(int, self.files_listbox.curselection()))
         if len(selected_items) > 0:
             self.selected_file = self.world_files_list[selected_items[0]]
             selected_robot_idx = self.selected_robot.get()
@@ -107,14 +138,15 @@ class StartWindow(object):
                 self.selected_robot_name = ROBOTS[selected_robot_idx]
             else:
                 self.selected_robot_name = "None"
-            self.quit_callback()
+            #self.window.destroy()
+            self.window.quit()
         else:
-            print "no world file selected"
+            print("no world file selected")
 
     def new_file_callback(self):
         """New file callback, this spawns a dialog box to allow the user to enter the new world file name. The new file
         is created with some default values and added to the list of available world files."""
-        new_file = tkSimpleDialog.askstring("New File", "Enter new filename")
+        new_file = tkinter.simpledialog.askstring("New File", "Enter new filename")
         if new_file is None:
             return
         new_file += ".xml"
@@ -124,23 +156,23 @@ class StartWindow(object):
             text_file.close()
             self.files_listbox.insert(END, new_file)
             self.world_files_list.append(new_file)
-            print "new file created"
+            print("new file created")
         except IOError as e:
-            print "Error creating new file: " + str(e)
+            print("Error creating new file: " + str(e))
 
     def delete_file_callback(self):
         """Delete file callback, this extracts the selected world file and deletes the file from both the disk and
         the available world file list."""
-        selected_items = map(int, self.files_listbox.curselection())
+        selected_items = list(map(int, self.files_listbox.curselection()))
         if len(selected_items) > 0:
             selected_file = self.world_files_list[selected_items[0]]
-            result = tkMessageBox.askquestion("Delete", "Delete world file:" + selected_file + "?", icon='warning')
+            result = tkinter.messagebox.askquestion("Delete", "Delete world file:" + selected_file + "?", icon='warning')
             if result == 'yes':
                 try:
                     self.files_listbox.delete(selected_items[0])
                     to_remove = os.path.join(self.world_file_path, selected_file)
-                    print to_remove
+                    print(to_remove)
                     os.remove(to_remove)
                     self.world_files_list.remove(selected_file)
                 except IOError as e:
-                    print "Error deleting file: " + str(e)
+                    print("Error deleting file: " + str(e))

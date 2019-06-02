@@ -36,6 +36,9 @@
 
 http://www.w3.org/Graphics/GIF/spec-gif89a.txt
 '''
+from __future__ import print_function
+from __future__ import division
+from builtins import object
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -115,7 +118,7 @@ def read(file):
                 skip_data_sub_blocks(file)
         else:
             # Skip bytes until a valid start character is found
-            print block_type
+            print(block_type)
             pass
         block_type = read_byte(file)
 

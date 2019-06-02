@@ -1,8 +1,10 @@
 #!/usr/bin/python
 # $Id:$
 
+from __future__ import absolute_import
+from builtins import zip
 from pyglet.canvas.win32 import Win32Canvas
-from base import Config, CanvasConfig, Context
+from .base import Config, CanvasConfig, Context
 
 from pyglet import gl
 from pyglet.gl import gl_info
@@ -159,8 +161,8 @@ class Win32CanvasConfigARB(CanvasConfig):
         super(Win32CanvasConfigARB, self).__init__(canvas, config)
         self._pf = pf
         
-        names = self.attribute_ids.keys()
-        attrs = self.attribute_ids.values()
+        names = list(self.attribute_ids.keys())
+        attrs = list(self.attribute_ids.values())
         attrs = (c_int * len(attrs))(*attrs)
         values = (c_int * len(attrs))()
         
@@ -221,7 +223,7 @@ class Win32Context(Context):
         super(Win32Context, self).detach()
 
     def flip(self):
-        wgl.wglSwapLayerBuffers(self.canvas.hdc, wgl.WGL_SWAP_MAIN_PLANE)
+        _gdi32.SwapBuffers(self.canvas.hdc)
 
     def get_vsync(self):
         if wgl_info.have_extension('WGL_EXT_swap_control'):

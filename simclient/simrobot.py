@@ -3,7 +3,7 @@ simrobot.py replicates the interface style of the real initio and pi2go librarie
 simulator and real robot a matter of changing an import statement.
 """
 
-from simclient import SimulatorClient
+from .simclient import SimulatorClient
 
 PAN = 1
 VERSION = 1
@@ -20,6 +20,7 @@ def cleanup():
     """stops the simulator client"""
     global sim
     sim.stop()
+    sim.cleanup()
     pass
 
 def version():

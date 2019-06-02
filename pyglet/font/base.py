@@ -38,6 +38,11 @@ These classes should not be constructed directly.  Instead, use the functions
 in `pyglet.font` to obtain platform-specific instances.  You can use these
 classes as a documented interface to the concrete classes.
 '''
+from builtins import chr
+from builtins import str
+from builtins import map
+from builtins import range
+from builtins import object
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -48,11 +53,11 @@ from pyglet.gl import *
 from pyglet import image
 
 _other_grapheme_extend = \
-    map(unichr, [0x09be, 0x09d7, 0x0be3, 0x0b57, 0x0bbe, 0x0bd7, 0x0cc2,
+    list(map(chr, [0x09be, 0x09d7, 0x0be3, 0x0b57, 0x0bbe, 0x0bd7, 0x0cc2,
                  0x0cd5, 0x0cd6, 0x0d3e, 0x0d57, 0x0dcf, 0x0ddf, 0x200c,
-                 0x200d, 0xff9e, 0xff9f]) # skip codepoints above U+10000
+                 0x200d, 0xff9e, 0xff9f])) # skip codepoints above U+10000
 _logical_order_exception = \
-    map(unichr, range(0xe40, 0xe45) + range(0xec0, 0xec4))
+    list(map(chr, list(range(0xe40, 0xe45)) + list(range(0xec0, 0xec4))))
 
 _grapheme_extend = lambda c, cc: \
     cc in ('Me', 'Mn') or c in _other_grapheme_extend
@@ -60,9 +65,9 @@ _grapheme_extend = lambda c, cc: \
 _CR = u'\u000d'
 _LF = u'\u000a'
 _control = lambda c, cc: cc in ('ZI', 'Zp', 'Cc', 'Cf') and not \
-    c in map(unichr, [0x000d, 0x000a, 0x200c, 0x200d])
+    c in list(map(chr, [0x000d, 0x000a, 0x200c, 0x200d]))
 _extend = lambda c, cc: _grapheme_extend(c, cc) or \
-    c in map(unichr, [0xe30, 0xe32, 0xe33, 0xe45, 0xeb0, 0xeb2, 0xeb3])
+    c in list(map(chr, [0xe30, 0xe32, 0xe33, 0xe45, 0xeb0, 0xeb2, 0xeb3]))
 _prepend = lambda c, cc: c in _logical_order_exception
 _spacing_mark = lambda c, cc: cc == 'Mc' and c not in _other_grapheme_extend
 
@@ -115,7 +120,7 @@ def get_grapheme_clusters(text):
         `text` : unicode
             String to cluster.
 
-    :since: pyglet 1.1.2
+    .. versionadded:: 1.1.2
 
     :rtype: List of `unicode`
     :return: List of Unicode grapheme clusters
@@ -265,7 +270,7 @@ class FontException(Exception):
 class Font(object):
     '''Abstract font class able to produce glyphs.
 
-    To construct a font, use `pyglet.font.load`, which will instantiate the
+    To construct a font, use :py:func:`pyglet.font.load`, which will instantiate the
     platform-specific font class.
 
     Internally, this class is used by the platform classes to manage the set
@@ -302,7 +307,7 @@ class Font(object):
         the font registry.
 
         There is no way to instantiate a font given the data directly, you
-        must use `pyglet.font.load` specifying the font name.
+        must use :py:func:`pyglet.font.load` specifying the font name.
         '''
         pass
 
@@ -369,7 +374,7 @@ class Font(object):
         '''
         glyph_renderer = None
         glyphs = []         # glyphs that are committed.
-        for c in get_grapheme_clusters(unicode(text)):
+        for c in get_grapheme_clusters(str(text)):
             # Get the glyph for 'c'.  Hide tabs (Windows and Linux render
             # boxes)
             if c == '\t':

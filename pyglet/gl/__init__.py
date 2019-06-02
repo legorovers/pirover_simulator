@@ -90,6 +90,9 @@ by default:
 The information modules are provided for convenience, and are documented
 below.
 '''
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import range
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -101,7 +104,7 @@ from pyglet.gl.glext_arb import *
 from pyglet.gl import gl_info
 
 import sys as _sys
-_is_epydoc = hasattr(_sys, 'is_epydoc') and _sys.is_epydoc
+_is_pyglet_docgen = hasattr(_sys, 'is_pyglet_docgen') and _sys.is_pyglet_docgen
 
 #: The active OpenGL context.
 #:
@@ -110,7 +113,7 @@ _is_epydoc = hasattr(_sys, 'is_epydoc') and _sys.is_epydoc
 #:
 #: :type: `Context`
 #:
-#: :since: pyglet 1.1
+#: .. versionadded:: 1.1
 current_context = None
 
 def get_current_context():
@@ -145,7 +148,7 @@ if _pyglet.options['debug_texture']:
         _debug_texture_sizes[texture] = size
         _debug_texture_total += size
 
-        print '%d (+%d)' % (_debug_texture_total, size)
+        print('%d (+%d)' % (_debug_texture_total, size))
 
     def _debug_texture_dealloc(texture):
         global _debug_texture_total
@@ -154,7 +157,7 @@ if _pyglet.options['debug_texture']:
         del _debug_texture_sizes[texture]
         _debug_texture_total -= size
 
-        print '%d (-%d)' % (_debug_texture_total, size)
+        print('%d (-%d)' % (_debug_texture_total, size))
 
     _glBindTexture = glBindTexture
     def glBindTexture(target, texture):
@@ -198,7 +201,7 @@ def _create_shadow_window():
     global _shadow_window
 
     import pyglet
-    if not pyglet.options['shadow_window'] or _is_epydoc:
+    if not pyglet.options['shadow_window'] or _is_pyglet_docgen:
         return
     
     from pyglet.window import Window
@@ -209,18 +212,18 @@ def _create_shadow_window():
     app.windows.remove(_shadow_window)
 
 from pyglet import compat_platform
-from base import ObjectSpace, CanvasConfig, Context
-if _is_epydoc:
-    from base import Config
+from .base import ObjectSpace, CanvasConfig, Context
+if _is_pyglet_docgen:
+    from .base import Config
 elif compat_platform in ('win32', 'cygwin'):
-    from win32 import Win32Config as Config
+    from .win32 import Win32Config as Config
 elif compat_platform.startswith('linux'):
-    from xlib import XlibConfig as Config
+    from .xlib import XlibConfig as Config
 elif compat_platform == 'darwin':
     if _pyglet.options['darwin_cocoa']:
-        from cocoa import CocoaConfig as Config
+        from .cocoa import CocoaConfig as Config
     else:
-        from carbon import CarbonConfig as Config
+        from .carbon import CarbonConfig as Config
 del base
 
 # XXX remove
@@ -228,7 +231,7 @@ _shadow_window = None
 
 # Import pyglet.window now if it isn't currently being imported (this creates
 # the shadow window).
-if (not _is_epydoc and
+if (not _is_pyglet_docgen and
     'pyglet.window' not in _sys.modules and 
     _pyglet.options['shadow_window']):
     # trickery is for circular import 

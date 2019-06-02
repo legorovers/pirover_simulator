@@ -1,3 +1,5 @@
+from builtins import str
+
 from ctypes import *
 from ctypes import util
 
@@ -57,7 +59,7 @@ def cfstring_to_string(cfstring):
     buffer = c_buffer(size + 1)
     result = cf.CFStringGetCString(cfstring, buffer, len(buffer), kCFStringEncodingUTF8)
     if result:
-        return unicode(buffer.value, 'utf-8')
+        return str(buffer.value, 'utf-8')
 
 cf.CFDataCreate.restype = c_void_p
 cf.CFDataCreate.argtypes = [c_void_p, c_void_p, CFIndex]
@@ -200,7 +202,7 @@ NSApplicationDidHideNotification = c_void_p.in_dll(appkit, 'NSApplicationDidHide
 NSApplicationDidUnhideNotification = c_void_p.in_dll(appkit, 'NSApplicationDidUnhideNotification')
 
 # /System/Library/Frameworks/AppKit.framework/Headers/NSEvent.h
-NSAnyEventMask = 0xFFFFFFFFL     # NSUIntegerMax
+NSAnyEventMask = 0xFFFFFFFF     # NSUIntegerMax
 
 NSKeyDown            = 10
 NSKeyUp              = 11
@@ -282,7 +284,12 @@ NSOpenGLPFAPixelBuffer        =  90   # can be used to render to a pbuffer
 NSOpenGLPFARemotePixelBuffer  =  91   # can be used to render offline to a pbuffer   
 NSOpenGLPFAAllowOfflineRenderers = 96 # allow use of offline renderers               
 NSOpenGLPFAAcceleratedCompute =  97   # choose a hardware accelerated compute device 
+NSOpenGLPFAOpenGLProfile      =  99   # specify an OpenGL Profile to use             
 NSOpenGLPFAVirtualScreenCount = 128   # number of virtual screens in this format     
+
+NSOpenGLProfileVersionLegacy  = 0x1000    # choose a Legacy/Pre-OpenGL 3.0 Implementation
+NSOpenGLProfileVersion3_2Core = 0x3200    # choose an OpenGL 3.2 Core Implementation
+NSOpenGLProfileVersion4_1Core = 0x4100    # choose an OpenGL 4.1 Core Implementation
 
 NSOpenGLCPSwapInterval        = 222
 

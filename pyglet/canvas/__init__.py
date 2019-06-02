@@ -39,12 +39,12 @@ off-screen buffer, the content area of a :class:`pyglet.window.Window`, or an
 entire screen. Currently, canvases can only be created with windows (though 
 windows can be set fullscreen).
 
-Windows and canvases must belong to a :class:`Display`.  On Windows and Mac OS 
+Windows and canvases must belong to a :class`~pyglet.canvas.Display`  On Windows and Mac OS 
 X there is only one display, which can be obtained with :func:`get_display`.  
 Linux supports multiple displays, corresponding to discrete X11 display 
 connections and screens.  :func:`get_display` on  Linux returns the default 
 display and screen 0 (``localhost:0.0``); if a particular screen or display is 
-required then :class:`Display` can be instantiated directly.
+required then :class`~pyglet.canvas.Display`can be instantiated directly.
 
 Within a display one or more screens are attached.  A :class:`Screen` often
 corresponds to a physical attached monitor, however a monitor or projector set
@@ -55,22 +55,22 @@ sizes and virtual positions on the desktop.
 The size of a screen is determined by its current mode, which can be changed
 by the application; see the documentation for :class:`Screen`.
 
-:since: pyglet 1.2
+.. versionadded:: 1.2
 '''
 
 import sys
-_is_epydoc = hasattr(sys, 'is_epydoc') and sys.is_epydoc
+_is_pyglet_docgen = hasattr(sys, 'is_pyglet_docgen') and sys.is_pyglet_docgen
 
 def get_display():
     '''Get the default display device.
 
-    If there is already a :class:`Display` connection, that display will be 
-    returned. Otherwise, a default :class:`Display` is created and returned.  
+    If there is already a :class`~pyglet.canvas.Display`connection, that display will be 
+    returned. Otherwise, a default :class`~pyglet.canvas.Display`is created and returned.  
     If multiple display connections are active, an arbitrary one is returned.
 
-    :since: pyglet 1.2
+    .. versionadded:: 1.2
 
-    :rtype: :class:`Display`
+    :rtype: :class`~pyglet.canvas.Display`
     '''
     # If there's an existing display, return it (return arbitrary display if
     # there are multiple).
@@ -81,7 +81,7 @@ def get_display():
     # Otherwise, create a new display and return it.
     return Display()
 
-if _is_epydoc:
+if _is_pyglet_docgen:
     from pyglet.canvas.base import Display, Screen, Canvas, ScreenMode
 else:
     from pyglet import compat_platform

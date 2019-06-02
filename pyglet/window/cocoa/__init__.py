@@ -34,6 +34,9 @@
 
 '''
 '''
+from __future__ import absolute_import
+from __future__ import division
+from past.utils import old_div
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -41,6 +44,7 @@ __version__ = '$Id: $'
 from ctypes import *
 
 import pyglet
+from pyglet import gl
 from pyglet.window import BaseWindow, WindowException
 from pyglet.window import MouseCursor, DefaultMouseCursor
 from pyglet.event import EventDispatcher
@@ -49,11 +53,11 @@ from pyglet.canvas.cocoa import CocoaCanvas
 
 from pyglet.libs.darwin.cocoapy import *
 
-from systemcursor import SystemCursor
-from pyglet_delegate import PygletDelegate
-from pyglet_textview import PygletTextView
-from pyglet_window import PygletWindow, PygletToolWindow
-from pyglet_view import PygletView
+from .systemcursor import SystemCursor
+from .pyglet_delegate import PygletDelegate
+from .pyglet_textview import PygletTextView
+from .pyglet_window import PygletWindow, PygletToolWindow
+from .pyglet_view import PygletView
 
 NSApplication = ObjCClass('NSApplication')
 NSCursor = ObjCClass('NSCursor')
@@ -233,8 +237,8 @@ class CocoaWindow(BaseWindow):
     def _center_window(self):
         # [NSWindow center] does not move the window to a true center position
         # and also always moves the window to the main display.
-        x = self.screen.x + int((self.screen.width - self._width)/2)
-        y = self.screen.y + int((self.screen.height - self._height)/2)
+        x = self.screen.x + int((self.screen.width - self._width) // 2)
+        y = self.screen.y + int((self.screen.height - self._height) // 2)
         self._nswindow.setFrameOrigin_(NSPoint(x, y))
 
     def close(self):
@@ -398,6 +402,11 @@ class CocoaWindow(BaseWindow):
         window_frame = self._nswindow.frame()
         rect = self._nswindow.contentRectForFrameRect_(window_frame)
         return int(rect.size.width), int(rect.size.height)
+
+    def get_viewport_size(self):
+        view = self.context._nscontext.view()
+        bounds = view.convertRectToBacking_(view.bounds()).size
+        return int(bounds.width), int(bounds.height)
 
     def set_size(self, width, height):
         if self._fullscreen:
@@ -602,3 +611,4 @@ class CocoaWindow(BaseWindow):
 
         NSApp = NSApplication.sharedApplication()
         NSApp.setPresentationOptions_(options)
+

@@ -12,7 +12,7 @@ import pyglet
 import src.resources
 import src.sprites.basicsprite
 import src.util
-from sonar import Sonar
+from .sonar import Sonar
 
 
 class FixedTransformDistanceSensor(object):
@@ -40,6 +40,7 @@ class FixedTransformDistanceSensor(object):
 
     def get_distance(self):
         """Returns the last reading taken by this sensor."""
+        # print (self.sensor_range)
         return self.sensor_range
 
     def get_fixed_triggered(self, trigger_distance):
@@ -66,15 +67,21 @@ class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
         sonar_group = pyglet.graphics.OrderedGroup(2)
         super(PanningDistanceSensor, self).__init__(src.resources.sonar_image, 0, 0, batch, sonar_group)
         self.parent_robot = robot
+        # x offset from ???? of actual sensor point
         self.sonar_offset_x = offset_x
+        self.sonar_offset_y = 0
+        
         self.sonar_angle_max = 90
         self.sonar_angle_min = -90
         self.sonar_angle = 0
         self.sonar_angle_target = 0
         self.sonar_sensor = Sonar(sonar_map, min_range, max_range, beam_angle)
+        # centre point of sensor image sprite
         self.sensor_offset_x = self.width - 8
         self.sensor_offset_y = 0
         self.sonar_range = 0.0
+        
+        # ????
         self.sensor_x = 0
         self.sensor_y = 0
 
@@ -90,13 +97,17 @@ class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
     def update_sensor(self):
         """Calculates the XY position of the sensor origin based on the current position of the robot and
             then takes a reading."""  
-        angle_radians = -math.radians(self.parent_robot.rotation)
+        angle_radians = -math.radians(self.rotation)
         self.sensor_x = self.parent_robot.x + (
-            self.sensor_offset_x * math.cos(angle_radians) - (self.sensor_offset_y * math.sin(angle_radians)))
+            self.sonar_offset_x * math.cos(angle_radians) - (self.sonar_offset_y * math.sin(angle_radians)))
         self.sensor_y = self.parent_robot.y + (
-            self.sensor_offset_x * math.sin(angle_radians) + (self.sensor_offset_y * math.cos(angle_radians)))
-        self.x = self.sensor_x
-        self.y = self.sensor_y
+            self.sonar_offset_x * math.sin(angle_radians) + (self.sonar_offset_y * math.cos(angle_radians)))
+        # ?self.x = self.sensor_x
+        # ?self.y = self.sensor_y
+        # print(self.sonar_offset_x)
+        # print(self.parent_robot.x)
+        # print(self.sensor_x)
+        # print(self.x)
         self.sonar_range = self.sonar_sensor.update_sonar(self.sensor_x, self.sensor_y, angle_radians)
 
 
@@ -107,8 +118,8 @@ class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
     def update(self, dt):
         """Updates the position of the sprite representing the panning servo head."""
         angle_radians = -math.radians(self.parent_robot.rotation)
-        self.sensor_x = self.parent_robot.x + (self.sonar_offset_x * math.cos(angle_radians))
-        self.sensor_y = self.parent_robot.y + (self.sonar_offset_x * math.sin(angle_radians))
+        self.sensor_x = self.parent_robot.x + (self.sensor_offset_x * math.cos(angle_radians))
+        self.sensor_y = self.parent_robot.y + (self.sensor_offset_x * math.sin(angle_radians))
         self.x = self.sensor_x
         self.y = self.sensor_y
 

@@ -2,12 +2,14 @@
 
 '''
 '''
+from __future__ import absolute_import
+from builtins import range
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
 from pyglet import app
-from base import Display, Screen, ScreenMode, Canvas
+from .base import Display, Screen, ScreenMode, Canvas
 
 from pyglet.libs.darwin import *
 from pyglet.libs.darwin import _oscheck
