@@ -4,7 +4,7 @@ main.py this script handles the loading of the simulator. Under OSX TKinter and 
 they must be imported separately. This workaround is less than elegant as it slows the loading of the simulator
 after the user has selected a world filea and robot but on ther otherhand allows the simulator to run on all platforms.
 """
-from tkinter import Tk, Toplevel
+from tkinter import Tk, Toplevel, DISABLED
 
 try:
     selected_file = ""

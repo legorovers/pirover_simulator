@@ -2,6 +2,8 @@
 """
 pysim.py this script handles the loading of the simulator.
 """
+from tkinter import DISABLED
+
 import pyglet
 from src.windows.simulator import Simulator
 from src.windows.startwindow import StartWindow
@@ -32,6 +34,7 @@ if __name__ == "__main__":
                 # if no exception by here then start_window.window is still alive, and was just quitted
                 # so simply restart the event loop
                 # start_window.window.mainloop()
+                start_window.refresh_world_filelist()
                 selected_file, selected_robot = start_window.start()
                 print(selected_file, selected_robot)
             except Exception:

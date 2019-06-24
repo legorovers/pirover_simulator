@@ -153,7 +153,7 @@ class DynamicAsssets:
                     self.line_map_position = [int(child.attrib['position_x']), int(child.attrib['position_y'])]
                     self.line_map_sprite = BasicSprite(line_maps[line_map_index], self.line_map_position[0],
                                                        self.line_map_position[1],
-                                                       bg_batch, fg_subgroup, "line_map", line_map_index)
+                                                       bg_batch, bg_subgroup, "line_map", line_map_index)
             elif child.tag == "static_object":
                 # load all static objects and create their sprites (objects are also added to the sonar map).
                 index = int(child.attrib['index'])
@@ -161,9 +161,18 @@ class DynamicAsssets:
                     x = int(child.attrib['position_x'])
                     y = int(child.attrib['position_y'])
                     util.center_image(image_grid[index])
-                    self.sonar_map.insert_rectangle(x, y, image_grid[index].width,
-                                                    image_grid[index].height)
-                    sprt_obj = BasicSprite(image_grid[index], x, y, bg_batch, bg_subgroup, "object", index)
+                    self.sonar_map.insert_rectangle(x, y, image_grid[index].width, image_grid[index].height)
+                    '''
+                    **********************
+                    # I'm loading the static objects in the foreground batch rather than in the background batch:
+                    # this resolves the problem where sometimes the loaded static objects hide away under the background image
+                    # while still in the sonar map of the robot (so the robot seems to collide with 'invisible' objects).
+                    # This approach simply means that the robot appears to come 'under' the static objects rather than
+                    # above them, but the this minor since the robot still collides with the objects and bumps around them
+                    # anyway.
+                    **********************
+                    '''
+                    sprt_obj = BasicSprite(image_grid[index], x, y, fg_batch, fg_subgroup, "object", index)
                     self.static_objects.append(sprt_obj)
 
             # elif child.tag == "switch":
@@ -298,6 +307,9 @@ class DynamicAsssets:
         fd = SaveAs(self.tk_start_window.window)
         filename = fd.show()
         if filename is not None and str(filename).strip() != "":
+            # Ensure the file ends in ".xml"
+            if not str(filename).lower().endswith(".xml"):
+                filename = filename + ".xml"
             new_file = open(filename, "w")
             new_file.write(self.current_file_str)
         return filename
