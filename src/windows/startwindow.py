@@ -46,6 +46,7 @@ class StartWindow(object):
         self.world_file_path = util.get_world_path()
         invalid_files = []
         self.world_files_list = next(os.walk(self.world_file_path))[2]
+        self.world_files_list.sort()
         for wrld_file in self.world_files_list:
             if str(wrld_file).lower().endswith(".xml"):  # get only the xml files
                 self.files_listbox.insert(END, str(wrld_file))
