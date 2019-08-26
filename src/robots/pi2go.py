@@ -473,16 +473,16 @@ class Pi2Go(basicsprite.BasicSprite):
             self.update_sensors(dt)
         self.update_light_sensors(simulator)
         self.light_leds() 
-        # Let the light ray track the robot when it moves normally
-        if simulator.light_source is not None and not simulator.is_ray_being_dragged \
+        # Let the light ray track the robot when it moves normally - NO!
+        # if simulator.light_source is not None and not simulator.is_ray_being_dragged \
            and not simulator.ray_was_dragged:
-            if simulator.light_source.x < self.x: px = self.x - self.image.width/2
-            elif simulator.light_source.x == self.x: px = self.x
-            else: px = self.x + self.image.width/2
-            if simulator.light_source.y < self.y: py = self.y - self.image.height/2
-            elif simulator.light_source.y == self.y: py = self.y
-            else: py = self.y + self.image.height/2
-            simulator.light_follow_mouse(px, py) 
+        #     if simulator.light_source.x < self.x: px = self.x - self.image.width/2
+        #     elif simulator.light_source.x == self.x: px = self.x
+        #     else: px = self.x + self.image.width/2
+        #     if simulator.light_source.y < self.y: py = self.y - self.image.height/2
+        #     elif simulator.light_source.y == self.y: py = self.y
+        #     else: py = self.y + self.image.height/2
+        #     simulator.light_follow_mouse(px, py) 
         
         
     def robot_collides_with(self, other_object):

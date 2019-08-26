@@ -174,7 +174,12 @@ class Simulator(pyglet.window.Window):
         # self.light_ray = None
         if buttons & mouse.LEFT:
             # we use the left mouse button to move the terminal points of the light ray around.
-            if not (self.light_ray is None):
+            moving_non_light_object = False;
+            for obj in self.dyn_assets.static_objects:
+                if obj.mouse_move_state:
+                    moving_non_light_object = True;
+            # print (self.robot.mouse_move_state);
+            if ((not (self.light_ray is None)) and (not moving_non_light_object) and (not self.robot.mouse_move_state)):
                 self.is_ray_being_dragged = True
                 self.light_follow_mouse(x, y)
 
@@ -581,10 +586,12 @@ class Simulator(pyglet.window.Window):
                     if obj.object_type.startswith("switch"):  # Do nothing for the switch sprite
                         continue
                     if obj.mouse_move_state:
+                        print("moving object");
                         obj.prev_x = obj.x
                         obj.prev_y = obj.y
 
                         if obj.object_type.startswith("light"):
+                            print("Moving light object");
                             self.light_source_dragged = True
 
                             # remove previous line/ray from the batch
