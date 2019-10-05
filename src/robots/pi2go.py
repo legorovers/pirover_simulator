@@ -475,7 +475,7 @@ class Pi2Go(basicsprite.BasicSprite):
         self.light_leds() 
         # Let the light ray track the robot when it moves normally - NO!
         # if simulator.light_source is not None and not simulator.is_ray_being_dragged \
-           and not simulator.ray_was_dragged:
+        #    and not simulator.ray_was_dragged:
         #     if simulator.light_source.x < self.x: px = self.x - self.image.width/2
         #     elif simulator.light_source.x == self.x: px = self.x
         #     else: px = self.x + self.image.width/2
