@@ -8,7 +8,10 @@ Note the sonar sensor will be triggered by the edges of the map/screen as well a
 """
 
 from math import pi, cos, sin
-import numpy as np
+try:
+    import numpy as np
+except ImportError:
+    import src.numpysim as np
 import pyglet
 
 SONAR_BEAM_STEP = pi / 25.0
