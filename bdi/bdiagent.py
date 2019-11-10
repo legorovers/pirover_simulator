@@ -35,7 +35,7 @@ class Agent:
         time.sleep(0.1)
         return
         
-    def getPercepts(self):
+    def perception(self):
         self.getpercepts(self.beliefbase)
 
     def manage_goals(self, beliefbase, goalbase):
@@ -44,6 +44,9 @@ class Agent:
                 print(goal, " Goal Achieved!")
                 self.achieved_goal(goal, goalbase)
         return
+        
+    def check_goals(self):
+        self.manage_goals(self.beliefbase, self.goalbase)
 
     # A goal is achieved if either it shares a name with a belief and the belief is true or its associated function returns true
     def is_achieved(self, goal):

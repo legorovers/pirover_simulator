@@ -14,9 +14,9 @@ class InitioAgent(agent.Agent):
         irL = initio.irLeft()
         beliefbase['obstacle_left'] = irL
         irLL = initio.irLeftLine()
-        beliefbase['no_line_left'] = irLL
+        beliefbase['line_left'] = irLL
         irRL = initio.irRightLine()
-        beliefbase['no_line_right'] = irRL
+        beliefbase['line_right'] = irRL
         super()
         return
         
