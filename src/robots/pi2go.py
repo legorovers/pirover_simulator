@@ -93,8 +93,8 @@ class Pi2Go(basicsprite.BasicSprite):
         self.right_led2 = FixedLED(self, 12, -y_light_offset+22, "right_led2")
         
         # front side leds
-        self.front_led1 = FixedLED(self, x_light_offset-20, -10, "front_led1")
-        self.front_led2 = FixedLED(self, x_light_offset-20, +10, "front_led2")
+        self.front_led1 = FixedLED(self, x_light_offset-17, -15, "front_led1")
+        self.front_led2 = FixedLED(self, x_light_offset-17, +15, "front_led2")
         
         # back side leds
         self.back_led1 = FixedLED(self, -x_light_offset+10, -10, "back_led1")
