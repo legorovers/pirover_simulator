@@ -5,6 +5,7 @@ class InitioAgent(agent.Agent):
     def __init__(self):
         agent.Agent.__init__(self)
         self.initialised = 0
+        self.robot = initio
 
     def getpercepts(self, beliefbase):
         dist = initio.getDistance()

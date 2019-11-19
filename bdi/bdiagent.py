@@ -218,6 +218,9 @@ class Agent:
     def drop_belief(self, key):
         self.beliefbase[key] = 0
 
+    def remove_belief(self, key):
+        self.beliefbase.pop(key)
+
     def change_belief(self, key, value):
         self.beliefbase[key] = value
 
