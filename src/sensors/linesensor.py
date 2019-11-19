@@ -63,16 +63,17 @@ class LineSensorMap(object):
                 # pprint ('a = ' + str(pix[3]))
 
                 if len(pix) > 3:
-                    r = int(pix[0])
-                    g = int(pix[1])
-                    b = int(pix[2])
+                    # r = int(pix[0])
+                    # g = int(pix[1])
+                    # b = int(pix[2])
                     a = int(pix[3])
-                    avg = float(r + g + b + a) / 4.0
+                    # avg = float(r + g + b + a) / 4.0
                     # print(x, y, px, py, self.x_offset, self.y_offset)
                     # print (r, g, b, a)
                     # pprint(px)
                     # print(avg)
-                    return avg > 0
+                    # return avg > 0
+                    return a > 0
                 else:
                     return False
             else:
