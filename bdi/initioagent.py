@@ -25,7 +25,7 @@ class InitioAgent(agent.Agent):
         self.getpercepts(self.beliefbase)
         
     def run_agent(self):
-        if not (initialised):
+        if not (self.initialised):
             initio.init()
             self.initialised = 1
         super().run_agent()

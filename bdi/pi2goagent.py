@@ -37,7 +37,7 @@ class Pi2GoAgent(agent.Agent):
         self.getpercepts(self.beliefbase)
         
     def run_agent(self):
-        if not (initialised):
+        if not (self.initialised):
             pi2go.init()
             self.initialised = 1
         super().run_agent()
