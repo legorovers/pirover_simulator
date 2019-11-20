@@ -4,6 +4,8 @@ import simclient.simrobot as pi2go
 class Pi2GoAgent(agent.Agent):
     def __init__(self):
         agent.Agent.__init__(self)
+        self.initialised = 0
+        self.robot = pi2go
 
     def getpercepts(self, beliefbase):
         dist = pi2go.getDistance()
@@ -15,9 +17,9 @@ class Pi2GoAgent(agent.Agent):
         irC = pi2go.irCentre()
         beliefbase['obstacle_centre'] = irC
         irLL = pi2go.irLeftLine()
-        beliefbase['no_line_left'] = irLL
+        beliefbase['line_left'] = irLL
         irRL = pi2go.irRightLine()
-        beliefbase['no_line_right'] = irRL
+        beliefbase['line_right'] = irRL
         switch = pi2go.getSwitch()
         beliefbase['switch_pressed']= switch
         lightFL = pi2go.getLightFL()
@@ -31,9 +33,17 @@ class Pi2GoAgent(agent.Agent):
         super()
         return
         
+    def getPercepts(self):
+        self.getpercepts(self.beliefbase)
+        
     def run_agent(self):
-        pi2go.init()
+        if not (initialised):
+            pi2go.init()
+            self.initialised = 1
         super().run_agent()
+
+    def init(self):
+        pi2go.init()
         
     def cleanup(self):
         pi2go.cleanup()
