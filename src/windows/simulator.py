@@ -133,9 +133,10 @@ class Simulator(pyglet.window.Window):
         # pyglet.clock.schedule_interval(self.print_lightsensor_values, 0.5)  # for debugging purposes.
         # self.robot.stop_robot()
         # print("Robot is switched OFF...")
+        self.objects_detected_for_move = 0
 
     def print_lightsensor_values(self, dt):
-        print("printing light sensor values:\n")
+        # print("printing light sensor values:\n")
         print(("FL = %f; FR = %f; BL = %f; BR = %f\n\n" % (
             self.robot.light_frontleft_sensor.value,
             self.robot.light_frontright_sensor.value,
@@ -175,11 +176,14 @@ class Simulator(pyglet.window.Window):
         if buttons & mouse.LEFT:
             # we use the left mouse button to move the terminal points of the light ray around.
             moving_non_light_object = False;
+
             for obj in self.dyn_assets.static_objects:
                 if obj.mouse_move_state:
                     moving_non_light_object = True;
+                    self.objects_detected_for_move = self.objects_detected_for_move + 1
+                    
             # print (self.robot.mouse_move_state);
-            if ((not (self.light_ray is None)) and (not moving_non_light_object) and (not self.robot.mouse_move_state)):
+            if ((not (self.light_ray is None)) and (not moving_non_light_object) and (not self.robot.mouse_move_state) and (not self.dyn_assets.line_map_sprite.mouse_move_state)):
                 self.is_ray_being_dragged = True
                 self.light_follow_mouse(x, y)
 
@@ -296,7 +300,7 @@ class Simulator(pyglet.window.Window):
                     operation = "light_source"
                 else:
                     operation = "add"
-                print(operation)
+                # print(operation)
                 selected_obj = None
                 too_close = False
 
@@ -336,6 +340,7 @@ class Simulator(pyglet.window.Window):
                                                                     sprite_idx)
                 # handling the change line map operation
                 elif operation == "line_map":
+                    # print("changing line map")
                     # if a line map already exists we need to delete it's handlers then delete the sprite itself
                     if self.dyn_assets.line_map_sprite is not None:
                         for handler in self.dyn_assets.line_map_sprite.event_handlers:
@@ -586,12 +591,12 @@ class Simulator(pyglet.window.Window):
                     if obj.object_type.startswith("switch"):  # Do nothing for the switch sprite
                         continue
                     if obj.mouse_move_state:
-                        print("moving object");
+                        # print("moving object");
                         obj.prev_x = obj.x
                         obj.prev_y = obj.y
 
                         if obj.object_type.startswith("light"):
-                            print("Moving light object");
+                            # print("Moving light object");
                             self.light_source_dragged = True
 
                             # remove previous line/ray from the batch
@@ -630,6 +635,7 @@ class Simulator(pyglet.window.Window):
                             if obj is not other_obj and obj.collides_with(other_obj):
                                 obj.mouse_target_x = obj.prev_x
                                 obj.mouse_target_y = obj.prev_y
+                       
                         obj.x = obj.mouse_target_x
                         obj.y = obj.mouse_target_y
                         self.redraw_sonar_map()
@@ -645,11 +651,12 @@ class Simulator(pyglet.window.Window):
                             pair[1].y = pair[1].prev_y
 
                 # mouse move for the line map
-                if self.dyn_assets.line_map_sprite is not None:
+                if self.dyn_assets.line_map_sprite is not None and self.objects_detected_for_move < 2 and not self.robot.mouse_move_state and not self.light_source_dragged and not self.is_ray_being_dragged:
                     if self.dyn_assets.line_map_sprite.mouse_move_state:
                         self.dyn_assets.line_map_sprite.x = self.dyn_assets.line_map_sprite.mouse_target_x
                         self.dyn_assets.line_map_sprite.y = self.dyn_assets.line_map_sprite.mouse_target_y
                         self.robot.line_sensor_map.set_line_map(self.dyn_assets.line_map_sprite)
+                        # print("moving line map" + str(self.objects_detected_for_move))
 
             # update the robot position
             self.robot.update(dt, self)
@@ -726,16 +733,19 @@ class Simulator(pyglet.window.Window):
                 self.robot.receiving_light_focus = True
             self.shine_light()
 
+        self.objects_detected_for_move = 0
+        # print("resetting objects detected")
+
     def edit_menu_button_handler(self):
-        print("Edit menu button pressed")
+        # print("Edit menu button pressed")
         self.on_key_press(key.E, None)
 
     def save_menu_button_handler(self):
-        print("Save menu button pressed")
+        # print("Save menu button pressed")
         self.on_key_press(key.S, None)
 
     def close_menu_button_handler(self):
-        print("Close menu button pressed")
+        # print("Close menu button pressed")
         if self.object_window is not None:  # Ensure that the object window is closed
             self.edit_mode = False
             self.object_window.close()
@@ -749,7 +759,7 @@ class Simulator(pyglet.window.Window):
         pass
 
     def close(self):
-        print("window closing....")
+        # print("window closing....")
         self.close_menu_button_handler()
         super().close()
 
