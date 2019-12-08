@@ -11,7 +11,7 @@ from src.sprites.basicsprite import BasicSprite
 from src.sprites.basicsprite import SwitchSprite
 from . import util
 
-NUM_LINE_MAPS = 6
+NUM_LINE_MAPS = 7
 NUM_BACKGROUNDS = 4
 
 # Tell pyglet where to find the resources
@@ -88,7 +88,7 @@ for i in range(NUM_BACKGROUNDS):
 
 class DynamicAsssets:
     def __init__(self, dynamic_assets_file, selected_robot_name, pyglet_sim_window, tk_start_window, bg_batch, fg_batch, bg_subgroup,
-                                                                                                    fg_subgroup):
+                                                                                                    lm_subgroup, fg_subgroup):
         # load xml file
         self.dynamic_assets_file = os.path.join(util.get_world_path(), dynamic_assets_file)
         tree = ET.parse(self.dynamic_assets_file)
@@ -153,7 +153,7 @@ class DynamicAsssets:
                     self.line_map_position = [int(child.attrib['position_x']), int(child.attrib['position_y'])]
                     self.line_map_sprite = BasicSprite(line_maps[line_map_index], self.line_map_position[0],
                                                        self.line_map_position[1],
-                                                       bg_batch, bg_subgroup, "line_map", line_map_index)
+                                                       bg_batch, lm_subgroup, "line_map", line_map_index)
             elif child.tag == "static_object":
                 # load all static objects and create their sprites (objects are also added to the sonar map).
                 index = int(child.attrib['index'])

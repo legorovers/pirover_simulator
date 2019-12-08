@@ -1663,10 +1663,13 @@ class Texture(AbstractImage):
 
         glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT)
         glPixelStorei(GL_PACK_ALIGNMENT, 1)
-        buffer = \
+        """ buffer = \
             (GLubyte * (self.width * self.height * self.images * len(format)))()
         glGetTexImage(self.target, self.level,
-                      gl_format, GL_UNSIGNED_BYTE, buffer)
+                      gl_format, GL_UNSIGNED_BYTE, buffer) """
+        buffer = \
+            (GLushort * (self.width * self.height * self.images * len(format)))()
+        glGetTexImage(self.target, self.level, gl_format, GL_UNSIGNED_SHORT, buffer)
         glPopClientAttrib()
 
         data = ImageData(self.width, self.height, format, buffer)

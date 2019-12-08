@@ -42,6 +42,6 @@ try:
             simulator.clear()
             simulator.close()
             del(simulator)
-            #pyglet.app.event_loop.exit()
+            pyglet.app.event_loop.exit()
 except KeyboardInterrupt:
     print("Goodbye!")

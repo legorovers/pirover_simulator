@@ -30,11 +30,12 @@ class Simulator(pyglet.window.Window):
         self.batches['bg_batch'] = pyglet.graphics.Batch()
         self.batches['fg_batch'] = pyglet.graphics.Batch()
         self.subgroups['background_group'] = pyglet.graphics.OrderedGroup(0)
-        self.subgroups['foreground_group'] = pyglet.graphics.OrderedGroup(1)
+        self.subgroups['line_map_group'] = pyglet.graphics.OrderedGroup(1)
+        self.subgroups['foreground_group'] = pyglet.graphics.OrderedGroup(2)
 
         # load all the dynamic assets
         self.dyn_assets = DynamicAsssets(world_file, selected_robot, self, tk_start_window, self.batches['bg_batch'], self.batches['fg_batch'],
-                                         self.subgroups['background_group'], self.subgroups['foreground_group'])
+                                         self.subgroups['background_group'], self.subgroups['line_map_group'], self.subgroups['foreground_group'])
 
         # create the window
         super(Simulator, self).__init__(self.dyn_assets.background_image.width, self.dyn_assets.background_image.height,
