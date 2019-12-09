@@ -5,11 +5,13 @@ they must be imported separately. This workaround is less than elegant as it slo
 after the user has selected a world filea and robot but on ther otherhand allows the simulator to run on all platforms.
 """
 from tkinter import Tk, Toplevel, DISABLED
+import gc
 
 try:
     selected_file = ""
     selected_robot = ""
     start_window = None
+    gc.set_debug(gc.DEBUG_LEAK)
     while selected_file == "" or (start_window is not None and start_window.selected_file is not "None"):  # if it is None then select simulator dialog did something other than "launch simulator", which then implies that window close operation was carried out and app should quit.
         # load tkinter + other deps for the start window
         from src.windows.startwindow import StartWindow
@@ -42,6 +44,7 @@ try:
             simulator.clear()
             simulator.close()
             del(simulator)
-            pyglet.app.event_loop.exit()
+            pyglet.app.exit()
+            print(gc.garbage)
 except KeyboardInterrupt:
     print("Goodbye!")

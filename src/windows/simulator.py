@@ -760,7 +760,9 @@ class Simulator(pyglet.window.Window):
         pass
 
     def close(self):
-        # print("window closing....")
+        print("window closing....")
+        for obj in self.dyn_assets.static_objects:
+            obj.delete()
         self.close_menu_button_handler()
         super().close()
 
