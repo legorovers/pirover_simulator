@@ -8,6 +8,7 @@ linesensor.py defines a map and sensor class to simulate a typical line sensor o
 """
 import math
 import src.util
+import pyglet
 
 
 class LineSensorMap(object):
@@ -50,22 +51,24 @@ class LineSensorMap(object):
                 py -= self.y_offset
 
                 if px < 0 or px > self.line_map_sprite.width:
+                     # print("out of region")
                     return False
 
                 if py < 0 or py > self.line_map_sprite.height:
+                     # print("out of region")
                     return False
 
                 pix = self.line_data.get_region(int(px), int(py), 1, 1).get_data("RGBA", 4)
                 # print (self.line_data.get_data("RGBA", 4))
-                # pprint ('r = ' + str(pix[0]))
-                # pprint ('g = ' + str(pix[1]))
-                # pprint ('b = ' + str(pix[2]))
-                # pprint ('a = ' + str(pix[3]))
+                # print ('r = ' + str(pix[0]))
+                # print ('g = ' + str(pix[1]))
+                # print ('b = ' + str(pix[2]))
+                # print ('a = ' + str(pix[3]))
 
                 if len(pix) > 3:
-                    # r = int(pix[0])
-                    # g = int(pix[1])
-                    # b = int(pix[2])
+                    r = int(pix[0])
+                    g = int(pix[1])
+                    b = int(pix[2])
                     a = int(pix[3])
                     # avg = float(r + g + b + a) / 4.0
                     # print(x, y, px, py, self.x_offset, self.y_offset)
@@ -73,7 +76,7 @@ class LineSensorMap(object):
                     # pprint(px)
                     # print(avg)
                     # return avg > 0
-                    return a > 0
+                    return a == 0
                 else:
                     return False
             else:
@@ -113,3 +116,15 @@ class FixedLineSensor(object):
     def draw_sensor_position(self):
         """Draws a circle at the origin of the sensor."""
         src.util.circle(self.sensor_x, self.sensor_y, 5)
+        
+    def make_circle(self):
+        verts = []
+        for i in range(100):
+            angle = math.radians(float(i)/100 * 360.0)
+            x = 5*math.cos(angle) + self.sensor_x
+            y = 5*math.sin(angle) + self.sensor_y
+            verts += [x,y]
+        outline_rep = self.parent_robot.batch.add(int(len(verts)/2), pyglet.gl.GL_POINTS, None,
+        ('v2f', verts),
+        ('c4B', (255, 255, 255, 255)*int(len(verts)/2)))
+        """ return verts """

@@ -763,6 +763,9 @@ class Simulator(pyglet.window.Window):
         print("window closing....")
         for obj in self.dyn_assets.static_objects:
             obj.delete()
+        if self.dyn_assets.line_map_sprite != None:
+            self.dyn_assets.line_map_sprite.delete()
+        del(self.dyn_assets)
         self.close_menu_button_handler()
         super().close()
 

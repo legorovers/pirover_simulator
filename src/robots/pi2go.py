@@ -28,7 +28,7 @@ IR_SENSOR_ANGLE = 0.785
 IR_OFFSET_X_MIDDLE = 72
 IR_OFFSET_X = 52
 IR_OFFSET_Y = 50
-LINE_OFFSET_X = 62
+LINE_OFFSET_X = 40
 LINE_OFFSET_Y = 14
 SONAR_OFFSET_X = 65
 LED_INIT_FLASH_COUNT = 5
@@ -471,8 +471,12 @@ class Pi2Go(basicsprite.BasicSprite):
             self.velocity_y = self.vx * math.sin(angle_radians)
             self.rotation -= self.vth * dt
             self.update_sensors(dt)
+        # src.util.circle(self.left_line_sensor.sensor_x, self.left_line_sensor.sensor_y, 10, 10)
+        # src.util.circle(30, 30, 30)
         self.update_light_sensors(simulator)
-        self.light_leds() 
+        self.light_leds()
+        # self.left_line_sensor.make_circle()
+        # self.right_line_sensor.make_circle()
         # Let the light ray track the robot when it moves normally - NO!
         # if simulator.light_source is not None and not simulator.is_ray_being_dragged \
         #    and not simulator.ray_was_dragged:

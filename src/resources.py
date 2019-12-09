@@ -11,7 +11,7 @@ from src.sprites.basicsprite import BasicSprite
 from src.sprites.basicsprite import SwitchSprite
 from . import util
 
-NUM_LINE_MAPS = 7
+NUM_LINE_MAPS = 8
 NUM_BACKGROUNDS = 4
 
 # Tell pyglet where to find the resources
