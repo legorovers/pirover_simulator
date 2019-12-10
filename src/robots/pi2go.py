@@ -8,7 +8,6 @@ string messeages passed via UDP socket.
 import math
 import random
 import socket
-import threading
 import time
 import pyglet
 import src.resources
@@ -132,15 +131,15 @@ class Pi2Go(basicsprite.BasicSprite):
 
         self.event_handlers = [self, self.on_mouse_release, self.on_mouse_drag]
 
-        self.publish_thread = threading.Thread(target=self.publish_state_udp)
+        self.publish_thread = src.util.StoppableThread(target=self.publish_state_udp)
         self.publish_thread.setDaemon(True)
         self.publish_thread.start()
 
-        self.cmd_thread = threading.Thread(target=self.recv_commands)
+        self.cmd_thread = src.util.StoppableThread(target=self.recv_commands)
         self.cmd_thread.setDaemon(True)
         self.cmd_thread.start()
 
-        pyglet.clock.schedule_interval(self.update_sensors, 1.0 / 30)   
+        # pyglet.clock.schedule_interval(self.update_sensors, 1.0 / 30)
 
     
     def start_robot(self):
@@ -154,7 +153,7 @@ class Pi2Go(basicsprite.BasicSprite):
         # this method is called when the robot control switch is switched ON
         self.control_switch_on = True
         # release the brakes on movement
-        pyglet.clock.unschedule(self.stop_robot_movement)
+        # pyglet.clock.unschedule(self.stop_robot_movement)
 
       
     def stop_robot(self):
@@ -164,13 +163,13 @@ class Pi2Go(basicsprite.BasicSprite):
         self.control_switch_on = False
         self.turn_off_leds()
         # stop movement
-        pyglet.clock.unschedule(self.stop_robot_movement)
+        # pyglet.clock.unschedule(self.stop_robot_movement)
         time.sleep(0.3)
         # # stop robot movement using a background thread - the target method is called continually when the robot control switch is OFF       
         #stop_movement_thread = threading.Thread(target=pyglet.clock.schedule_interval, args=(self.stop_robot_movement, 1.0 / 30))
         #stop_movement_thread.setDaemon(True)
         #stop_movement_thread.start()
-        pyglet.clock.schedule_interval(self.stop_robot_movement, 1.0 / 30)
+        # pyglet.clock.schedule_interval(self.stop_robot_movement, 1.0 / 30)
 
     def stop_robot_movement(self, dt):
         # stop movement
@@ -203,7 +202,7 @@ class Pi2Go(basicsprite.BasicSprite):
         self.led_init_anim_on = True
         self.led_init_anim_count = 0
         self.leds_prev_values = []
-        pyglet.clock.schedule_interval(self.led_init_animation, 1.0)
+        # pyglet.clock.schedule_interval(self.led_init_animation, 1.0)
         
         
     def led_init_animation(self, dt): 
@@ -433,7 +432,7 @@ class Pi2Go(basicsprite.BasicSprite):
 
 
     
-    def update_sensors(self, dt):
+    def update_sensors(self):
         """Take a new reading for each sensor."""
         self.sonar_sensor.update_sensor()
         self.ir_left_sensor.update_sensor()
@@ -470,9 +469,10 @@ class Pi2Go(basicsprite.BasicSprite):
             self.velocity_x = self.vx * math.cos(angle_radians)
             self.velocity_y = self.vx * math.sin(angle_radians)
             self.rotation -= self.vth * dt
-            self.update_sensors(dt)
+            self.update_sensors()
         # src.util.circle(self.left_line_sensor.sensor_x, self.left_line_sensor.sensor_y, 10, 10)
         # src.util.circle(30, 30, 30)
+        # self.update_sensors
         self.update_light_sensors(simulator)
         self.light_leds()
         # self.left_line_sensor.make_circle()

@@ -106,13 +106,13 @@ class Initio(basicsprite.BasicSprite):
         self.event_handlers = [self, self.on_mouse_release, self.on_mouse_drag]
         self.control_switch_on = True
 
-        pyglet.clock.schedule_interval(self.update_sensors, 1.0 / 30)
+        # pyglet.clock.schedule_interval(self.update_sensors, 1.0 / 30)
 
-        self.publish_thread = threading.Thread(target=self.publish_state_udp)
+        self.publish_thread = src.util.StoppableThread(target=self.publish_state_udp)
         self.publish_thread.setDaemon(True)
         self.publish_thread.start()
 
-        self.cmd_thread = threading.Thread(target=self.recv_commands)
+        self.cmd_thread = src.util.StoppableThread(target=self.recv_commands)
         self.cmd_thread.setDaemon(True)
         self.cmd_thread.start()
         self.start_robot()
@@ -123,7 +123,7 @@ class Initio(basicsprite.BasicSprite):
         # this method is called when the robot control switch is switched ON
         self.control_switch_on = False
         # release the brakes on movement
-        pyglet.clock.unschedule(self.stop_robot_movement)
+        # pyglet.clock.unschedule(self.stop_robot_movement)
 
     def stop_robot(self):
         # cause the publish and command threads to stop
@@ -132,13 +132,13 @@ class Initio(basicsprite.BasicSprite):
         # this method is called when the robot control switch is switched ON
         self.control_switch_on = False
         # stop movement
-        pyglet.clock.unschedule(self.stop_robot_movement)
+        # pyglet.clock.unschedule(self.stop_robot_movement)
         time.sleep(0.3)
         # stop robot movement using a background thread
         # stop_movement_thread = threading.Thread(target=pyglet.clock.schedule_interval, args=(self.stop_robot_movement, 1.0 / 30))
         # stop_movement_thread.setDaemon(True)
         # stop_movement_thread.start()
-        pyglet.clock.schedule_interval(self.stop_robot_movement, 1.0 / 30)
+        # pyglet.clock.schedule_interval(self.stop_robot_movement, 1.0 / 30)
 
     def stop_robot_movement(self, dt):
         # stop movement
@@ -301,6 +301,10 @@ class Initio(basicsprite.BasicSprite):
             self.velocity_y = self.vx * math.sin(angle_radians)
             self.rotation -= self.vth * dt
         self.sonar_sensor.update(dt)
+        self.ir_left_sensor.update_sensor()
+        self.ir_right_sensor.update_sensor()
+        self.left_line_sensor.update_sensor()
+        self.right_line_sensor.update_sensor()
         self.update_light_sensors(simulator)
         # Let the light ray track the robot when it moves normally - NO!
         # if simulator.light_source is not None and not simulator.is_ray_being_dragged \

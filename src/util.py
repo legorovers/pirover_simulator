@@ -5,6 +5,7 @@ import math
 import pyglet
 import sys
 import os
+import threading
 
 
 def resource_path(relative):
@@ -227,3 +228,22 @@ def draw_rect(x, y, width, height):
     pyglet.gl.glVertex2f(x + width, y + height)
     pyglet.gl.glVertex2f(x, y + height)
     pyglet.gl.glEnd()
+    
+class StoppableThread(threading.Thread):
+    def __init__(self, target):
+        """ constructor, setting initial variables """
+        self._stopevent = threading.Event(  )
+        self._sleepperiod = 1.0
+
+        threading.Thread.__init__(self, target=target)
+
+    def run(self):
+        """ main control loop """
+        while not self._stopevent.isSet(  ):
+            self._stopevent.wait(self._sleepperiod)
+
+    def join(self, timeout=None):
+        """ Stop the thread. """
+        self._stopevent.set(  )
+        threading.Thread.join(self, timeout)
+
