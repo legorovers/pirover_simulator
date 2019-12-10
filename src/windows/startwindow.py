@@ -8,7 +8,7 @@ import tkinter.simpledialog, tkinter.messagebox
 import src.util as util
 
 ROBOTS = ["Initio", "Pi2Go"]
-WINDOW_WIDTH = 600
+WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 500
 SPACING = 50
 PADDING = 5
@@ -21,9 +21,9 @@ class StartWindow(object):
     def __init__(self):
         self.window = Tk()
         self.window.title("Python Simulator")
-        w, h = self.window.winfo_screenwidth(), self.window.winfo_screenheight()
-        self.window.geometry("%dx%d" % (w, h))
-        #self.window.geometry("680x400")
+        #w, h = self.window.winfo_screenwidth(), self.window.winfo_screenheight()
+        #self.window.geometry("%dx%d" % (w, h))
+        self.window.geometry("%dx%d" % (WINDOW_WIDTH, WINDOW_HEIGHT))
 
         self.lbl1 = Label(self.window, text="World Files:", fg='black', font=("Helvetica", 16, "bold"))
         self.lbl1.grid(row=0, column=0, sticky=W)

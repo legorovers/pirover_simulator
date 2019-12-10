@@ -1225,7 +1225,10 @@ class BaseWindow(with_metaclass(_WindowMetaclass, EventDispatcher)):
         This is a convenience method for clearing the color and depth
         buffer.  The window must be the active context (see `switch_to`).
         """
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+        try:
+            gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+        except GLexception(msg):
+            print("Failed to Clear Simulator Window: " + msg)
     
     def dispatch_event(self, *args):
         if not self._enable_event_queue or self._allow_dispatch_event:
