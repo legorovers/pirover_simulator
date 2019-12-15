@@ -463,8 +463,7 @@ class Simulator(pyglet.window.Window):
             #self.robot.sock_recv.close()
             #self.robot.sock_publish.shutdown(socket.SHUT_WR)
             #self.robot.sock_publish.close()
-            self.robot.publish_thread.join()
-            self.robot.cmd_thread.join()
+            self.robot.stop_robot()
             super().close()
         if symbol == key.S:
             self.dyn_assets.save_to_file()

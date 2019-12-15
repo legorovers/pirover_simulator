@@ -122,6 +122,7 @@ class SimulatorClient:
 
     def reverse(self, speed):
         """reverse(speed): Sets both motors to reverse at speed. 0 <= speed <= 100"""
+        print("A")
         self.vx = -speed
         self.vth = 0
 
@@ -299,6 +300,7 @@ class SimulatorClient:
               RIGHT_LED1_RED_VALUE;RIGHT_LED1_GREEN_VALUE;RIGHT_LED1_BLUE_VALUE;
               RIGHT_LED2_RED_VALUE;RIGHT_LED2_GREEN_VALUE;RIGHT_LED2_BLUE_VALUE>>
         """
+        # print("starting sending thread")
         sock = socket.socket(socket.AF_INET,  # Internet
                              socket.SOCK_DGRAM)  # UDP
         while self.running:
@@ -337,8 +339,11 @@ class SimulatorClient:
                 int(self.left_led2_red_value),
                 int(self.left_led2_green_value),
                 int(self.left_led2_blue_value))
+                # print("sending message")
                 sock.sendto(message.encode('utf-8'), (UDP_IP, UDP_COMMAND_PORT))
             time.sleep(PUBLISH_INTERVAL)
+        print("closed send socket")
+
 
     def update_state(self):
         """Thread function which receives the state of the robot from the simulator via a UDP socket.
@@ -361,12 +366,14 @@ class SimulatorClient:
                              socket.SOCK_DGRAM)  # UDP
         sock.bind((UDP_IP, UDP_DATA_PORT))
         while self.running:
+            # print("getting data")
             data_e, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
             data = data_e.decode();
             if data.startswith("<<") and data.endswith(">>"):
                 data = data.replace("<<", "")
                 data = data.replace(">>", "")
                 values_list = data.split(";")
+                # print("getting robot name")
                 self.robot_name = str(values_list[0])
                 if self.robot_name.startswith("INITIO"):
                     self.sonar_range = float(values_list[1])
@@ -422,6 +429,7 @@ class SimulatorClient:
                     # print "received message:", data
             time.sleep(PUBLISH_INTERVAL)
         sock.close()
+        print("closed update socket")
 
     def cleanup(self):
         self.running = False

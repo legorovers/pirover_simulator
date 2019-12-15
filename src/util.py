@@ -230,16 +230,16 @@ def draw_rect(x, y, width, height):
     pyglet.gl.glEnd()
     
 class StoppableThread(threading.Thread):
-    def __init__(self, target):
+    def __init__(self, *args, **kwargs):
         """ constructor, setting initial variables """
+        super(StoppableThread, self).__init__(*args, **kwargs)
         self._stopevent = threading.Event(  )
         self._sleepperiod = 1.0
-
-        threading.Thread.__init__(self, target=target)
 
     def run(self):
         """ main control loop """
         while not self._stopevent.isSet(  ):
+            print("running stoppable thread")
             self._stopevent.wait(self._sleepperiod)
 
     def join(self, timeout=None):

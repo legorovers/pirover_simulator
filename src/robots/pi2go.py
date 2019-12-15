@@ -20,6 +20,8 @@ from src.sensors.linesensor import LineSensorMap, FixedLineSensor
 from src.sprites import basicsprite
 from .robotconstants import SONAR_BEAM_ANGLE, SONAR_MAX_RANGE, SONAR_MIN_RANGE, IR_MAX_RANGE, IR_MIN_RANGE, \
     UDP_COMMAND_PORT, UDP_DATA_PORT, UDP_IP
+    
+import threading
 
 # Constants specific to the PI2GO robot.
 
@@ -131,12 +133,12 @@ class Pi2Go(basicsprite.BasicSprite):
 
         self.event_handlers = [self, self.on_mouse_release, self.on_mouse_drag]
 
-        self.publish_thread = src.util.StoppableThread(target=self.publish_state_udp)
-        self.publish_thread.setDaemon(True)
+        self.publish_thread = threading.Thread(target=self.publish_state_udp)
+        # self.publish_thread.setDaemon(True)
         self.publish_thread.start()
 
-        self.cmd_thread = src.util.StoppableThread(target=self.recv_commands)
-        self.cmd_thread.setDaemon(True)
+        self.cmd_thread = threading.Thread(target=self.recv_commands)
+        # self.cmd_thread.setDaemon(True)
         self.cmd_thread.start()
 
         # pyglet.clock.schedule_interval(self.update_sensors, 1.0 / 30)
@@ -341,7 +343,9 @@ class Pi2Go(basicsprite.BasicSprite):
         """
         self.sock_publish = socket.socket(socket.AF_INET,  # Internet
                              socket.SOCK_DGRAM)  # UDP
+        print("a")
         while self.publish_continue is True:
+            print("b")
             while self.publish_continue is True:
                 ir_left = self.ir_left_sensor.get_fixed_triggered(IR_MAX_RANGE)
                 ir_mid = self.ir_middle_sensor.get_fixed_triggered(IR_MAX_RANGE)
@@ -427,6 +431,7 @@ class Pi2Go(basicsprite.BasicSprite):
                            int(self.left_led2.blue_value),
                            int(self.control_switch_on))
                 try:
+                    print(message)
                     self.sock_publish.sendto(message.encode('utf-8'), (UDP_IP, UDP_DATA_PORT))
                     updated_switch_finally = True
                     time.sleep(PUBLISH_INTERVAL)
