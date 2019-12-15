@@ -43,7 +43,7 @@ try:
             pyglet.clock.unschedule(simulator.update)
             simulator.clear()
             simulator.close()
-            del(simulator)
+            # del(simulator)
             pyglet.app.EventLoop.has_exit = True
             pyglet.app.exit()
             """ print(gc.garbage) """

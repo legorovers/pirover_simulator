@@ -9,8 +9,8 @@ from src.windows.simulator import *
 
 
 class BasicSprite(pyglet.sprite.Sprite):
-    def __init__(self, texture, x, y, batch, subgroup, object_type="sprite", idx=-1, window_width=800,
-                 window_height=600):
+    def __init__(self, texture, x, y, batch, subgroup, object_type="sprite", idx=-1, image_data=None, window_width=800,
+                 window_height=600, ):
         self.texture = texture
         super(BasicSprite, self).__init__(self.texture, batch=batch, group=subgroup)
         self.x = x
@@ -31,6 +31,7 @@ class BasicSprite(pyglet.sprite.Sprite):
         self.idx = idx
         self.is_rotating = False
         self.receiving_light_focus = False  # keep track of when this sprite is receiving light focus
+        self.image_data = image_data
 
     def update(self, dt):
         """Update position based on current velocity also check window bounds."""

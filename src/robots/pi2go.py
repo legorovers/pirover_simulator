@@ -267,7 +267,9 @@ class Pi2Go(basicsprite.BasicSprite):
         self.sock_recv = socket.socket(socket.AF_INET,  # Internet
                              socket.SOCK_DGRAM)  # UDP
         self.sock_recv.bind((UDP_IP, UDP_COMMAND_PORT))
-        while True:
+        
+        #  double loop is a hack - changing while True to whil self.receive_continue while debugging
+        while self.receive_continue is True:
             while self.receive_continue is True:
                 try:
                     data_e, addr = self.sock_recv.recvfrom(1024)  # buffer size is 1024 bytes
@@ -317,7 +319,8 @@ class Pi2Go(basicsprite.BasicSprite):
             # we need to call stop_robot() again since the values for vx and vth and velocities may
             # already have been reinstated by an update from the client just before the inner while loop
             # above stopped (due to self.receive_continue being set to false)
-            #self.stop_robot() 
+            #self.stop_robot()
+        self.sock_recv.close()
 
 
     def publish_state_udp(self):
@@ -338,7 +341,7 @@ class Pi2Go(basicsprite.BasicSprite):
         """
         self.sock_publish = socket.socket(socket.AF_INET,  # Internet
                              socket.SOCK_DGRAM)  # UDP
-        while True:
+        while self.publish_continue is True:
             while self.publish_continue is True:
                 ir_left = self.ir_left_sensor.get_fixed_triggered(IR_MAX_RANGE)
                 ir_mid = self.ir_middle_sensor.get_fixed_triggered(IR_MAX_RANGE)
@@ -429,6 +432,7 @@ class Pi2Go(basicsprite.BasicSprite):
                     time.sleep(PUBLISH_INTERVAL)
                 except Exception:
                     pass
+        self.sock_publish.close()
 
 
     

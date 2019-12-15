@@ -13,6 +13,7 @@ import pyglet
 
 class LineSensorMap(object):
     def __init__(self, line_map_sprite):
+        self.pixel_cache = {}
         if line_map_sprite is None:
             self.line_map_sprite = None
             self.line_data = None
@@ -22,10 +23,12 @@ class LineSensorMap(object):
             self.line_map_sprite = line_map_sprite
             self.x_offset = self.line_map_sprite.x - int(self.line_map_sprite.image.width / 2.0)
             self.y_offset = self.line_map_sprite.y - int(self.line_map_sprite.image.height / 2.0)
-            self.line_data = self.line_map_sprite.image.get_image_data()
+            self.line_data = self.line_map_sprite.image_data
 
     def set_line_map(self, line_map_sprite):
         """Update the line sensor map with a new image."""
+        print("setting  line map")
+        self.pixel_cache = {}
         if line_map_sprite is None:
             self.line_map_sprite = None
             self.line_data = None
@@ -36,6 +39,7 @@ class LineSensorMap(object):
             self.x_offset = self.line_map_sprite.x - int(self.line_map_sprite.image.width / 2.0)
             self.y_offset = self.line_map_sprite.y - int(self.line_map_sprite.image.height / 2.0)
             self.line_data = self.line_map_sprite.image.get_image_data()
+                        
 
     def check_triggered(self, x, y):
         """Takes as input the current xy position of the line sensor in screen coordinates, this function will then
@@ -47,8 +51,12 @@ class LineSensorMap(object):
                 theta = -math.radians(self.line_map_sprite.rotation)
 
                 px, py = src.util.rotate_around_og((self.line_map_sprite.x, self.line_map_sprite.y), (x, y), -theta)
+                # print(px)
+                # print(py)
                 px -= self.x_offset
                 py -= self.y_offset
+                # print(px)
+                # print(py)
 
                 if px < 0 or px > self.line_map_sprite.width:
                      # print("out of region")
@@ -58,27 +66,37 @@ class LineSensorMap(object):
                      # print("out of region")
                     return False
 
-                pix = self.line_data.get_region(int(px), int(py), 1, 1).get_data("RGBA", 4)
-                # print (self.line_data.get_data("RGBA", 4))
-                # print ('r = ' + str(pix[0]))
-                # print ('g = ' + str(pix[1]))
-                # print ('b = ' + str(pix[2]))
-                # print ('a = ' + str(pix[3]))
+                if ((int(px), int(py)) in self.pixel_cache):
+                    a = int(self.pixel_cache[(int(px), int(py))])
+                    print("cached " + str(a))
+                    return a == 0
+                else:
+                    pix = self.line_data.get_region(int(px), int(py), 1, 1).get_data("RGBA", 4)
+                    self.pixel_cache[(int(px), int(py))] = 1
+                    # print(pix)
+                    # print (self.line_data.get_data("RGBA", 4))
+                    # print ('r = ' + str(pix[0]))
+                    # print ('g = ' + str(pix[1]))
+                    # print ('b = ' + str(pix[2]))
+                    print ('a = ' + str(pix[3]))
+                    
 
-                if len(pix) > 3:
-                    r = int(pix[0])
-                    g = int(pix[1])
-                    b = int(pix[2])
-                    a = int(pix[3])
+                    if len(pix) > 3:
+                        r = int(pix[0])
+                        g = int(pix[1])
+                        b = int(pix[2])
+                        a = int(pix[3])
+                        # print(a)
+                        self.pixel_cache[(int(px), int(py))] = a
                     # avg = float(r + g + b + a) / 4.0
                     # print(x, y, px, py, self.x_offset, self.y_offset)
                     # print (r, g, b, a)
                     # pprint(px)
                     # print(avg)
                     # return avg > 0
-                    return a == 0
-                else:
-                    return False
+                        return a == 0
+                    else:
+                        return False
             else:
                 return False
         except AttributeError:

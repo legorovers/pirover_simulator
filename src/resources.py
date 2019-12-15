@@ -11,7 +11,7 @@ from src.sprites.basicsprite import BasicSprite
 from src.sprites.basicsprite import SwitchSprite
 from . import util
 
-NUM_LINE_MAPS = 8
+NUM_LINE_MAPS = 9
 NUM_BACKGROUNDS = 4
 
 # Tell pyglet where to find the resources
@@ -65,12 +65,18 @@ light_source_image.width = 50
 light_source_image.height = 48
 # </Maduka>
 
+    
 # Load all available line maps
 line_maps = []
+line_textures = []
 for i in range(NUM_LINE_MAPS):
-    line_map = pyglet.resource.image("line_maps/map" + str(i) + ".png")
+    line_map = pyglet.image.load("resources/line_maps/map" + str(i) + ".png")
+    line_texture = pyglet.resource.image("line_maps/map" + str(i) + ".png")
     util.center_image(line_map)
+    util.center_image(line_texture)
     line_maps.append(line_map)
+    line_textures.append(line_texture)
+
 
 erase_image = pyglet.resource.image("robot/erase.png")
 util.center_image(erase_image)
@@ -151,9 +157,9 @@ class DynamicAsssets:
                 line_map_index = int(child.attrib['index'])
                 if 0 <= line_map_index < len(line_maps):
                     self.line_map_position = [int(child.attrib['position_x']), int(child.attrib['position_y'])]
-                    self.line_map_sprite = BasicSprite(line_maps[line_map_index], self.line_map_position[0],
+                    self.line_map_sprite = BasicSprite(line_textures[line_map_index], self.line_map_position[0],
                                                        self.line_map_position[1],
-                                                       bg_batch, lm_subgroup, "line_map", line_map_index)
+                                                       bg_batch, lm_subgroup, "line_map", line_map_index, line_maps[line_map_index])
             elif child.tag == "static_object":
                 # load all static objects and create their sprites (objects are also added to the sonar map).
                 index = int(child.attrib['index'])

@@ -26,7 +26,7 @@ class Simulator(pyglet.window.Window):
         self.batches = {}
         self.subgroups = {}
         self._handles = {}
-
+        
         self.batches['bg_batch'] = pyglet.graphics.Batch()
         self.batches['fg_batch'] = pyglet.graphics.Batch()
         self.subgroups['background_group'] = pyglet.graphics.OrderedGroup(0)
