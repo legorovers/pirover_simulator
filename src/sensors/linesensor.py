@@ -38,7 +38,7 @@ class LineSensorMap(object):
             self.line_map_sprite = line_map_sprite
             self.x_offset = self.line_map_sprite.x - int(self.line_map_sprite.image.width / 2.0)
             self.y_offset = self.line_map_sprite.y - int(self.line_map_sprite.image.height / 2.0)
-            self.line_data = self.line_map_sprite.image.get_image_data()
+            self.line_data = self.line_map_sprite.image_data
                         
 
     def check_triggered(self, x, y):
@@ -68,7 +68,7 @@ class LineSensorMap(object):
 
                 if ((int(px), int(py)) in self.pixel_cache):
                     a = int(self.pixel_cache[(int(px), int(py))])
-                    print("cached " + str(a))
+                    # print("cached " + str(a))
                     return a == 0
                 else:
                     pix = self.line_data.get_region(int(px), int(py), 1, 1).get_data("RGBA", 4)

@@ -40,9 +40,9 @@ class ObjectWindow(pyglet.window.Window):
                 break
 		  
         # Add line map thumbnails to the toolbar
-        for idx, image in enumerate(src.resources.line_maps):
+        for idx, image in enumerate(src.resources.line_textures):
             scale = 48.0 / image.width
-            sp = SelectSprite("line_map", idx, image, x, y, self.main_batch, scale)
+            sp = SelectSprite("line_map", idx, image, x, y, self.main_batch, scale, image_data=src.resources.line_maps[idx])
             self.sprites.append(sp)
 
             y -= 48.0 + PADDING

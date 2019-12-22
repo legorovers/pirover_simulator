@@ -6,7 +6,7 @@ import pyglet
 
 
 class SelectSprite(pyglet.sprite.Sprite):
-    def __init__(self, object_type, idx, texture, x, y, batch, scale=1.0):
+    def __init__(self, object_type, idx, texture, x, y, batch, scale=1.0, image_data=None):
         self.texture = texture
         super(SelectSprite, self).__init__(self.texture, batch=batch)
         self.scale = scale
@@ -18,6 +18,7 @@ class SelectSprite(pyglet.sprite.Sprite):
         self.min_rad_sq = (0.5 * min(self.width, self.height)) ** 2
         self.opacity = 120
         self.selected = False
+        self.image_data = image_data
 
     def on_mouse_press(self, x, y, button, modifiers):
         """Uses a radius check to see if this sprite has been click and sets the opacity of the image to indicate

@@ -341,7 +341,7 @@ class Simulator(pyglet.window.Window):
                                                                     sprite_idx)
                 # handling the change line map operation
                 elif operation == "line_map":
-                    # print("changing line map")
+                    print("changing line map" + str(sprite_idx))
                     # if a line map already exists we need to delete it's handlers then delete the sprite itself
                     if self.dyn_assets.line_map_sprite is not None:
                         for handler in self.dyn_assets.line_map_sprite.event_handlers:
@@ -353,7 +353,7 @@ class Simulator(pyglet.window.Window):
                     util.center_image(sprite_image)
                     self.dyn_assets.line_map_sprite = BasicSprite(sprite_image, x, y, self.batches['bg_batch'],
                                                                   self.subgroups['foreground_group'], "line_map",
-                                                                  sprite_idx)
+                                                                  sprite_idx, src.resources.line_maps[sprite_idx])
 
                     # update the actual line sensor used by the robot
                     self.robot.line_sensor_map.set_line_map(self.dyn_assets.line_map_sprite)
