@@ -38,13 +38,16 @@ try:
         if selected_file is not "None" and selected_robot is not None:
             simulator = Simulator(selected_file, selected_robot, start_window)
             pyglet.clock.schedule_interval(simulator.update, 1.0 / 30)
+            # pyglet.app.EventLoop.has_exit = False
             pyglet.app.run()
             # Clean up when simulator window closes
+            # print("3")
             pyglet.clock.unschedule(simulator.update)
+            # print("4")
             simulator.clear()
             simulator.close()
             # del(simulator)
-            pyglet.app.EventLoop.has_exit = True
+            # pyglet.app.EventLoop.has_exit = True
             pyglet.app.exit()
             """ print(gc.garbage) """
 except KeyboardInterrupt:

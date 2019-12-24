@@ -150,7 +150,8 @@ class EventLoop(event.EventDispatcher):
         for well-behaving platforms (Mac, Linux and some Windows).
         """
         platform_event_loop = app.platform_event_loop
-        while not self.has_exit:
+        while not self._get_has_exit():
+            # print("eventloop running")
             timeout = self.idle()
             platform_event_loop.step(timeout)
 
@@ -286,16 +287,25 @@ class EventLoop(event.EventDispatcher):
         return self.clock.get_sleep_time(True)
 
     def _get_has_exit(self):
+        # print("a")
         self._has_exit_condition.acquire()
+        # print("b")
         result = self._has_exit
+        # print("c")
         self._has_exit_condition.release()
+        # print("d")
         return result
 
     def _set_has_exit(self, value):
+        # print("a1")
         self._has_exit_condition.acquire()
+        # print("b1")
         self._has_exit = value
+        # print("c1")
         self._has_exit_condition.notify()
+        # print("d1")
         self._has_exit_condition.release()
+        # print("e1")
 
     @property
     def has_exit(self):

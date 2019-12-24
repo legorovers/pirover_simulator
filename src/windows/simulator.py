@@ -454,7 +454,7 @@ class Simulator(pyglet.window.Window):
                 self.spawn_edit_window()
             self.switch_handlers()
         if symbol == key.Q:
-            #pyglet.app.exit()
+            pyglet.app.exit()
             # close sockets
             # First setup the robots to stop send/receive routine
             self.robot.publish_continue = False
@@ -463,8 +463,12 @@ class Simulator(pyglet.window.Window):
             #self.robot.sock_recv.close()
             #self.robot.sock_publish.shutdown(socket.SHUT_WR)
             #self.robot.sock_publish.close()
+            #print("stopping robot")
             self.robot.stop_robot()
+            #print("calling super method")
             super().close()
+            print("done quit")
+            #self.robot.sock_recv.close()
         if symbol == key.S:
             self.dyn_assets.save_to_file()
 
@@ -747,12 +751,13 @@ class Simulator(pyglet.window.Window):
         self.on_key_press(key.S, None)
 
     def close_menu_button_handler(self):
-        # print("Close menu button pressed")
+        print("Close menu button pressed")
         if self.object_window is not None:  # Ensure that the object window is closed
             self.edit_mode = False
             self.object_window.close()
             self.object_window = None
         self.on_key_press(key.Q, None)
+        print("close menu  handled")
 
     def on_activate(self):
         pass
@@ -764,11 +769,16 @@ class Simulator(pyglet.window.Window):
         print("window closing....")
         for obj in self.dyn_assets.static_objects:
             obj.delete()
+        print("a")
         if self.dyn_assets.line_map_sprite != None:
             self.dyn_assets.line_map_sprite.delete()
+        print("b")
         del(self.dyn_assets)
+        print("c")
         self.close_menu_button_handler()
+        print("d")
         super().close()
+        print("window closed")
 
     def close_toolbox_window(self):
         # handle the closing of the edit toolbar

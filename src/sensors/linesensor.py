@@ -69,7 +69,7 @@ class LineSensorMap(object):
                 if ((int(px), int(py)) in self.pixel_cache):
                     a = int(self.pixel_cache[(int(px), int(py))])
                     # print("cached " + str(a))
-                    return a == 0
+                    return a > 0
                 else:
                     pix = self.line_data.get_region(int(px), int(py), 1, 1).get_data("RGBA", 4)
                     self.pixel_cache[(int(px), int(py))] = 1
@@ -78,7 +78,7 @@ class LineSensorMap(object):
                     # print ('r = ' + str(pix[0]))
                     # print ('g = ' + str(pix[1]))
                     # print ('b = ' + str(pix[2]))
-                    print ('a = ' + str(pix[3]))
+                    
                     
 
                     if len(pix) > 3:
@@ -87,6 +87,7 @@ class LineSensorMap(object):
                         b = int(pix[2])
                         a = int(pix[3])
                         # print(a)
+                        print ('a = ' + str(pix[3]))
                         self.pixel_cache[(int(px), int(py))] = a
                     # avg = float(r + g + b + a) / 4.0
                     # print(x, y, px, py, self.x_offset, self.y_offset)
@@ -94,7 +95,7 @@ class LineSensorMap(object):
                     # pprint(px)
                     # print(avg)
                     # return avg > 0
-                        return a == 0
+                        return a > 0
                     else:
                         return False
             else:

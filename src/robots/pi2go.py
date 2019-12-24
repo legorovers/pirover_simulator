@@ -269,8 +269,9 @@ class Pi2Go(basicsprite.BasicSprite):
         self.sock_recv = socket.socket(socket.AF_INET,  # Internet
                              socket.SOCK_DGRAM)  # UDP
         self.sock_recv.bind((UDP_IP, UDP_COMMAND_PORT))
+        self.sock_recv.settimeout(1)
         
-        #  double loop is a hack - changing while True to whil self.receive_continue while debugging
+        #  double loop is a hack - changing while True to while self.receive_continue while debugging
         while self.receive_continue is True:
             while self.receive_continue is True:
                 try:
@@ -316,12 +317,13 @@ class Pi2Go(basicsprite.BasicSprite):
                             self.left_led2.green_value = values_list[24]
                             self.left_led2.blue_value = values_list[25]
                 except Exception:
-                    pass
+                     pass
             time.sleep(READ_INTERVAL)
             # we need to call stop_robot() again since the values for vx and vth and velocities may
             # already have been reinstated by an update from the client just before the inner while loop
             # above stopped (due to self.receive_continue being set to false)
             #self.stop_robot()
+        print("closing receive socket")
         self.sock_recv.close()
 
 
@@ -343,9 +345,7 @@ class Pi2Go(basicsprite.BasicSprite):
         """
         self.sock_publish = socket.socket(socket.AF_INET,  # Internet
                              socket.SOCK_DGRAM)  # UDP
-        print("a")
         while self.publish_continue is True:
-            print("b")
             while self.publish_continue is True:
                 ir_left = self.ir_left_sensor.get_fixed_triggered(IR_MAX_RANGE)
                 ir_mid = self.ir_middle_sensor.get_fixed_triggered(IR_MAX_RANGE)
@@ -437,6 +437,7 @@ class Pi2Go(basicsprite.BasicSprite):
                     time.sleep(PUBLISH_INTERVAL)
                 except Exception:
                     pass
+        print("closing publish socket")
         self.sock_publish.close()
 
 

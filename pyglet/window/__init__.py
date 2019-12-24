@@ -777,7 +777,7 @@ class BaseWindow(with_metaclass(_WindowMetaclass, EventDispatcher)):
         if app.event_loop:
             app.event_loop.dispatch_event('on_window_close', self)
         self._event_queue = []
-
+ 
     def draw_mouse_cursor(self):
         """Draw the custom mouse cursor.
 
@@ -1227,7 +1227,7 @@ class BaseWindow(with_metaclass(_WindowMetaclass, EventDispatcher)):
         """
         try:
             gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-        except GLexception(msg):
+        except GLException(msg):
             print("Failed to Clear Simulator Window: " + msg)
     
     def dispatch_event(self, *args):
