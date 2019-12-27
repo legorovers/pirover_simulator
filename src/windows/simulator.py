@@ -184,9 +184,10 @@ class Simulator(pyglet.window.Window):
                     self.objects_detected_for_move = self.objects_detected_for_move + 1
                     
             # print (self.robot.mouse_move_state);
-            if ((not (self.light_ray is None)) and (not moving_non_light_object) and (not self.robot.mouse_move_state) and (not self.dyn_assets.line_map_sprite.mouse_move_state)):
-                self.is_ray_being_dragged = True
-                self.light_follow_mouse(x, y)
+            if ((not (self.light_ray is None)) and (not moving_non_light_object) and (not self.robot.mouse_move_state)): # and (not self.dyn_assets.line_map_sprite.mouse_move_state)):
+                if ((self.dyn_assets.line_map_sprite is None) or (not self.dyn_assets.line_map_sprite.mouse_move_state)):
+                    self.is_ray_being_dragged = True
+                    self.light_follow_mouse(x, y)
 
 
     def robot_lightray_area_cover(self):
