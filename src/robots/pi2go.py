@@ -31,7 +31,7 @@ IR_OFFSET_X = 52
 IR_OFFSET_Y = 50
 LINE_OFFSET_X = 40
 LINE_OFFSET_Y = 14
-SONAR_OFFSET_X = 65
+SONAR_OFFSET_X = 50
 LED_INIT_FLASH_COUNT = 5
 
 READ_INTERVAL = 0.01
@@ -487,6 +487,7 @@ class Pi2Go(basicsprite.BasicSprite):
         self.light_leds()
         # self.left_line_sensor.make_circle()
         # self.right_line_sensor.make_circle()
+        # self.sonar_sensor.make_circle()
         # Let the light ray track the robot when it moves normally - NO!
         # if simulator.light_source is not None and not simulator.is_ray_being_dragged \
         #    and not simulator.ray_was_dragged:

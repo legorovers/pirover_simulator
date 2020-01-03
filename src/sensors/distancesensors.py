@@ -53,6 +53,18 @@ class FixedTransformDistanceSensor(object):
     def draw_sensor_position(self):
         """Draws a circle at the origin of the sensor"""
         src.util.circle(self.sensor_x, self.sensor_y, 5)
+        
+    def make_circle(self):
+        verts = []
+        for i in range(100):
+            angle = math.radians(float(i)/100 * 360.0)
+            x = 5*math.cos(angle) + self.sensor_x
+            y = 5*math.sin(angle) + self.sensor_y
+            verts += [x,y]
+        outline_rep = self.parent_robot.batch.add(int(len(verts)/2), pyglet.gl.GL_POINTS, None,
+        ('v2f', verts),
+        ('c4B', (255, 255, 255, 255)*int(len(verts)/2)))
+        """ return verts """
 
 
 class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
@@ -134,3 +146,15 @@ class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
     def draw_sensor_position(self):
         """Draws a circle at the origin of the sensor."""
         src.util.circle(self.sensor_x, self.sensor_y, 5)
+        
+    def make_circle(self):
+        verts = []
+        for i in range(100):
+            angle = math.radians(float(i)/100 * 360.0)
+            x = 5*math.cos(angle) + self.sensor_x
+            y = 5*math.sin(angle) + self.sensor_y
+            verts += [x,y]
+        outline_rep = self.parent_robot.batch.add(int(len(verts)/2), pyglet.gl.GL_POINTS, None,
+        ('v2f', verts),
+        ('c4B', (255, 255, 255, 255)*int(len(verts)/2)))
+        """ return verts """
