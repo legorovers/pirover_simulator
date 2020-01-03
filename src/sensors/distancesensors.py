@@ -73,15 +73,16 @@ class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
         robot = kwargs.pop('robot')
         sonar_map = kwargs.pop('sonar_map')
         offset_x = kwargs.pop('offset_x')
+        offset_y = kwargs.pop('offset_y')
         min_range = kwargs.pop('min_range')
         max_range = kwargs.pop('max_range')
         beam_angle = kwargs.pop('beam_angle')
-        sonar_group = pyglet.graphics.OrderedGroup(2)
+        sonar_group = pyglet.graphics.OrderedGroup(3)
         super(PanningDistanceSensor, self).__init__(src.resources.sonar_image, 0, 0, batch, sonar_group)
         self.parent_robot = robot
         # x offset from ???? of actual sensor point
         self.sonar_offset_x = offset_x
-        self.sonar_offset_y = 0
+        self.sonar_offset_y = offset_y
         
         self.sonar_angle_max = 90
         self.sonar_angle_min = -90
@@ -90,7 +91,7 @@ class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
         self.sonar_sensor = Sonar(sonar_map, min_range, max_range, beam_angle)
         # centre point of sensor image sprite
         self.sensor_offset_x = self.width - 8
-        self.sensor_offset_y = 0
+        self.sensor_offset_y = offset_y
         self.sonar_range = 0.0
         
         # ????
@@ -114,8 +115,9 @@ class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
             self.sonar_offset_x * math.cos(angle_radians) - (self.sonar_offset_y * math.sin(angle_radians)))
         self.sensor_y = self.parent_robot.y + (
             self.sonar_offset_x * math.sin(angle_radians) + (self.sonar_offset_y * math.cos(angle_radians)))
-        # ?self.x = self.sensor_x
-        # ?self.y = self.sensor_y
+        # Used for positioning sprite
+        # self.x = self.sensor_x - self.sensor_offset_x
+        # self.y = self.sensor_y - self.sensor_offset_y
         # print(self.sonar_offset_x)
         # print(self.parent_robot.x)
         # print(self.sensor_x)

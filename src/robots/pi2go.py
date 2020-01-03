@@ -26,9 +26,9 @@ import threading
 # Constants specific to the PI2GO robot.
 
 IR_SENSOR_ANGLE = 0.785
-IR_OFFSET_X_MIDDLE = 72
-IR_OFFSET_X = 52
-IR_OFFSET_Y = 50
+IR_OFFSET_X_MIDDLE = 52
+IR_OFFSET_X = 33
+IR_OFFSET_Y = 21
 LINE_OFFSET_X = 40
 LINE_OFFSET_Y = 14
 SONAR_OFFSET_X = 50
@@ -488,6 +488,9 @@ class Pi2Go(basicsprite.BasicSprite):
         # self.left_line_sensor.make_circle()
         # self.right_line_sensor.make_circle()
         # self.sonar_sensor.make_circle()
+        self.ir_left_sensor.make_circle()
+        self.ir_right_sensor.make_circle()
+        self.ir_middle_sensor.make_circle()
         # Let the light ray track the robot when it moves normally - NO!
         # if simulator.light_source is not None and not simulator.is_ray_being_dragged \
         #    and not simulator.ray_was_dragged:

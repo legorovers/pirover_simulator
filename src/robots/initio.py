@@ -28,7 +28,7 @@ IR_OFFSET_Y = 18
 LINE_OFFSET_X = 40
 LINE_OFFSET_Y = 5
 
-SONAR_OFFSET_X = 60
+SONAR_OFFSET_X = 80
 
 READ_INTERVAL = 0.01
 PUBLISH_INTERVAL = 0.03
@@ -59,6 +59,7 @@ class Initio(basicsprite.BasicSprite):
 
         self.sonar_sensor = PanningDistanceSensor(batch=batch, robot=self, sonar_map=self.sonar_map,
                                                   offset_x=SONAR_OFFSET_X,
+                                                  offset_y=0,
                                                   min_range=SONAR_MIN_RANGE, max_range=SONAR_MAX_RANGE,
                                                   beam_angle=SONAR_BEAM_ANGLE)
 
@@ -94,8 +95,8 @@ class Initio(basicsprite.BasicSprite):
         self.vth = 0.0
         # self.schedule_lock = False
 
-        self.sock_recv = None
-        self.sock_publish = None
+        # self.sock_recv = None
+        # self.sock_publish = None
 
         self.publish_continue = True
         self.receive_continue = True
@@ -108,14 +109,14 @@ class Initio(basicsprite.BasicSprite):
 
         # pyglet.clock.schedule_interval(self.update_sensors, 1.0 / 30)
 
-        self.publish_thread = src.util.StoppableThread(target=self.publish_state_udp)
-        self.publish_thread.setDaemon(True)
+        self.publish_thread = threading.Thread(target=self.publish_state_udp)
+        # self.publish_thread.setDaemon(True)
         self.publish_thread.start()
 
-        self.cmd_thread = src.util.StoppableThread(target=self.recv_commands)
-        self.cmd_thread.setDaemon(True)
+        self.cmd_thread = threading.Thread(target=self.recv_commands)
+        # self.cmd_thread.setDaemon(True)
         self.cmd_thread.start()
-        self.start_robot()
+        # self.start_robot()
 
     def start_robot(self):
         self.publish_continue = True
@@ -154,7 +155,7 @@ class Initio(basicsprite.BasicSprite):
             self.y = y
             self.velocity_x = 0
             self.velocity_y = 0
-            self.sonar_sensor.update(1)
+            # self.sonar_sensor.update(1)
 
     def recv_commands(self):
         """Thread function which handles incomming commands for an external python script via a UDP socket.
@@ -165,7 +166,10 @@ class Initio(basicsprite.BasicSprite):
         self.sock_recv = socket.socket(socket.AF_INET,  # Internet
                                   socket.SOCK_DGRAM)  # UDP
         self.sock_recv.bind((UDP_IP, UDP_COMMAND_PORT))
-        while True:
+        self.sock_recv.settimeout(1)
+        
+        #  double loop is a hack - changing while True to while self.receive_continue while debugging
+        while self.receive_continue is True:
             while self.receive_continue is True:
                 try:
                     data_e, addr = self.sock_recv.recvfrom(1024)  # buffer size is 1024 bytes
@@ -199,6 +203,8 @@ class Initio(basicsprite.BasicSprite):
             # already have been reinstated by an update from the client just before the inner while loop
             # above stopped (due to self.receive_continue being set to false)
             # self.stop_robot()
+        print("closing receive socket")
+        self.sock_recv.close()
 
     def publish_state_udp(self):
         """Thread function which publishes the state of the robot to an external python script via UDP socket.
@@ -210,7 +216,7 @@ class Initio(basicsprite.BasicSprite):
         # Initialise the socket used by the publish thread
         self.sock_publish = socket.socket(socket.AF_INET,  # Internet
                                      socket.SOCK_DGRAM)  # UDP
-        while True:
+        while self.publish_continue is True:
             while self.publish_continue is True:
                 try:
                     ir_left = self.ir_left_sensor.get_fixed_triggered(IR_MAX_RANGE)
@@ -246,10 +252,13 @@ class Initio(basicsprite.BasicSprite):
                     time.sleep(PUBLISH_INTERVAL)
             except Exception:
                 pass
+        print("closing publish socket")
+        self.sock_publish.close()
 
     def update_sensors(self, dt):
         """Take a new reading for each sensor."""
         self.sonar_sensor.update_sensor()
+        self.sonar_sensor.update(dt)
         self.ir_left_sensor.update_sensor()
         self.ir_right_sensor.update_sensor()
         self.left_line_sensor.update_sensor()
@@ -300,12 +309,17 @@ class Initio(basicsprite.BasicSprite):
             self.velocity_x = self.vx * math.cos(angle_radians)
             self.velocity_y = self.vx * math.sin(angle_radians)
             self.rotation -= self.vth * dt
-        self.sonar_sensor.update(dt)
-        self.ir_left_sensor.update_sensor()
-        self.ir_right_sensor.update_sensor()
-        self.left_line_sensor.update_sensor()
-        self.right_line_sensor.update_sensor()
-        self.update_light_sensors(simulator)
+            self.update_sensors(dt)
+        # self.sonar_sensor.update(dt)
+        # self.ir_left_sensor.update_sensor()
+        # self.ir_right_sensor.update_sensor()
+        # self.left_line_sensor.update_sensor()
+        # self.right_line_sensor.update_sensor()
+        # self.left_line_sensor.make_circle()
+        # self.right_line_sensor.make_circle()
+        # self.sonar_sensor.make_circle()
+
+        # self.update_light_sensors(simulator)
         # Let the light ray track the robot when it moves normally - NO!
         # if simulator.light_source is not None and not simulator.is_ray_being_dragged \
         #         and not simulator.ray_was_dragged:

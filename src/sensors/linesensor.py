@@ -27,7 +27,7 @@ class LineSensorMap(object):
 
     def set_line_map(self, line_map_sprite):
         """Update the line sensor map with a new image."""
-        print("setting  line map")
+        # print("setting  line map")
         self.pixel_cache = {}
         if line_map_sprite is None:
             self.line_map_sprite = None
@@ -87,7 +87,7 @@ class LineSensorMap(object):
                         b = int(pix[2])
                         a = int(pix[3])
                         # print(a)
-                        print ('a = ' + str(pix[3]))
+                        # print ('a = ' + str(pix[3]))
                         self.pixel_cache[(int(px), int(py))] = a
                     # avg = float(r + g + b + a) / 4.0
                     # print(x, y, px, py, self.x_offset, self.y_offset)
