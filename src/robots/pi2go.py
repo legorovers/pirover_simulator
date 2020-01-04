@@ -460,6 +460,7 @@ class Pi2Go(basicsprite.BasicSprite):
         sensor_angles = []
         for ls in self.light_sensors:
             sensor_angles.append((ls.name, ls.update_sensor(simulator)))  # ls.update_sensor() will update each sensor's value
+            # ls.make_circle()
         return sensor_angles
                 
     def reset_light_sensors(self):

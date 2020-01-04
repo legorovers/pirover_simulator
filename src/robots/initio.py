@@ -318,6 +318,8 @@ class Initio(basicsprite.BasicSprite):
         # self.left_line_sensor.make_circle()
         # self.right_line_sensor.make_circle()
         # self.sonar_sensor.make_circle()
+        # self.ir_left_sensor.make_circle()
+        # self.ir_right_sensor.make_circle()
 
         # self.update_light_sensors(simulator)
         # Let the light ray track the robot when it moves normally - NO!
