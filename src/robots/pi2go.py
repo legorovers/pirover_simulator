@@ -488,9 +488,9 @@ class Pi2Go(basicsprite.BasicSprite):
         # self.left_line_sensor.make_circle()
         # self.right_line_sensor.make_circle()
         # self.sonar_sensor.make_circle()
-        self.ir_left_sensor.make_circle()
-        self.ir_right_sensor.make_circle()
-        self.ir_middle_sensor.make_circle()
+        # self.ir_left_sensor.make_circle()
+        # self.ir_right_sensor.make_circle()
+        # self.ir_middle_sensor.make_circle()
         # Let the light ray track the robot when it moves normally - NO!
         # if simulator.light_source is not None and not simulator.is_ray_being_dragged \
         #    and not simulator.ray_was_dragged:
