@@ -284,8 +284,10 @@ class Simulator(pyglet.window.Window):
 
     def on_mouse_press(self, x, y, button, modifiers):
         """Main entry point for a lot of the world editing interface code"""
+        # print(button)
         try:
             if self.edit_mode and button == 4:
+                # print("right click")
                 # if we're in edit mode (edit toolbar visible) and the user presses the right mouse button an
                 # an operation is created
 

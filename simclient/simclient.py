@@ -122,7 +122,7 @@ class SimulatorClient:
 
     def reverse(self, speed):
         """reverse(speed): Sets both motors to reverse at speed. 0 <= speed <= 100"""
-        print("A")
+        #print("A")
         self.vx = -speed
         self.vth = 0
 
