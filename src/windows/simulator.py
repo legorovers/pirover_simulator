@@ -155,11 +155,12 @@ class Simulator(pyglet.window.Window):
 
     def on_draw(self):
         """Entry point for the main rendering function."""
+        # self.clear()
         self.render()
 
     def render(self):
         """Main rendering function."""
-        self.clear()
+        # self.clear()
         self.batches['bg_batch'].draw()
         self.batches['fg_batch'].draw()
         # self.fps_display.draw()
