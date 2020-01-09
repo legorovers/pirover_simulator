@@ -135,6 +135,7 @@ from pyglet import gl
 from pyglet.event import EventDispatcher
 import pyglet.window.key
 import pyglet.window.event
+from pyglet.gl.lib import GLException
 
 _is_pyglet_docgen = hasattr(sys, 'is_pyglet_docgen') and sys.is_pyglet_docgen
 
@@ -1225,10 +1226,10 @@ class BaseWindow(with_metaclass(_WindowMetaclass, EventDispatcher)):
         This is a convenience method for clearing the color and depth
         buffer.  The window must be the active context (see `switch_to`).
         """
-        try:
-            gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-        except GLException(msg):
-            print("Failed to Clear Simulator Window: " + msg)
+        """try:"""
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+        """except GLException:
+            print("Failed to Clear Simulator Window")"""
     
     def dispatch_event(self, *args):
         if not self._enable_event_queue or self._allow_dispatch_event:

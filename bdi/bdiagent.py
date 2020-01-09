@@ -54,10 +54,12 @@ class Agent:
             if (self.beliefbase[goal] == 1):
                 return 1
             return 0
-        else:
+        elif (goal in self.goal_functions.keys()):
             goalfunc = self.goal_functions[goal]
             if (goalfunc()):
                 return 1
+            return 0
+        else:
             return 0
 
     # When a goal is achieved it is removed from the goalbase, if it is a subgoal of some other goal then the next subgoal should now be attempted
