@@ -12,6 +12,10 @@ sim = None
 
 def init():
     """initializes the simulator client"""
+    try:
+        cleanup()
+    except:
+        pass
     global sim
     sim = SimulatorClient()
 

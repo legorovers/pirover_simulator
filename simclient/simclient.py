@@ -304,45 +304,48 @@ class SimulatorClient:
         sock = socket.socket(socket.AF_INET,  # Internet
                              socket.SOCK_DGRAM)  # UDP
         while self.running:
-            if self.robot_name == "INITIO":
-                message = "<<%f;%f;%f>>" % (
-                self.vx, self.vth, self.sonar_angle)
-                sock.sendto(message.encode('utf-8'), (UDP_IP, UDP_COMMAND_PORT))
-            elif self.robot_name == "PI2GO":
-                # print(self.front_led1_red_value)
-                message = "<<%f;%f;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d>>" % (
-                self.vx, self.vth,
-                int(self.front_led1_red_value),
-                int(self.front_led1_green_value),
-                int(self.front_led1_blue_value),
-                int(self.front_led2_red_value),
-                int(self.front_led2_green_value),
-                int(self.front_led2_blue_value),
-                
-                int(self.right_led1_red_value),
-                int(self.right_led1_green_value),
-                int(self.right_led1_blue_value),
-                int(self.right_led2_red_value),
-                int(self.right_led2_green_value),
-                int(self.right_led2_blue_value),
-                        
-                int(self.back_led1_red_value),
-                int(self.back_led1_green_value),
-                int(self.back_led1_blue_value),
-                int(self.back_led2_red_value),
-                int(self.back_led2_green_value),
-                int(self.back_led2_blue_value),
+            try:
+                if self.robot_name == "INITIO":
+                    message = "<<%f;%f;%f>>" % (
+                    self.vx, self.vth, self.sonar_angle)
+                    sock.sendto(message.encode('utf-8'), (UDP_IP, UDP_COMMAND_PORT))
+                elif self.robot_name == "PI2GO":
+                    # print(self.front_led1_red_value)
+                    message = "<<%f;%f;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d>>" % (
+                    self.vx, self.vth,
+                    int(self.front_led1_red_value),
+                    int(self.front_led1_green_value),
+                    int(self.front_led1_blue_value),
+                    int(self.front_led2_red_value),
+                    int(self.front_led2_green_value),
+                    int(self.front_led2_blue_value),
+                    
+                    int(self.right_led1_red_value),
+                    int(self.right_led1_green_value),
+                    int(self.right_led1_blue_value),
+                    int(self.right_led2_red_value),
+                    int(self.right_led2_green_value),
+                    int(self.right_led2_blue_value),
                             
-                int(self.left_led1_red_value),
-                int(self.left_led1_green_value),
-                int(self.left_led1_blue_value),
-                int(self.left_led2_red_value),
-                int(self.left_led2_green_value),
-                int(self.left_led2_blue_value))
-                # print("sending message")
-                sock.sendto(message.encode('utf-8'), (UDP_IP, UDP_COMMAND_PORT))
-            time.sleep(PUBLISH_INTERVAL)
-        print("closed send socket")
+                    int(self.back_led1_red_value),
+                    int(self.back_led1_green_value),
+                    int(self.back_led1_blue_value),
+                    int(self.back_led2_red_value),
+                    int(self.back_led2_green_value),
+                    int(self.back_led2_blue_value),
+                                
+                    int(self.left_led1_red_value),
+                    int(self.left_led1_green_value),
+                    int(self.left_led1_blue_value),
+                    int(self.left_led2_red_value),
+                    int(self.left_led2_green_value),
+                    int(self.left_led2_blue_value))
+                    # print("sending message")
+                    sock.sendto(message.encode('utf-8'), (UDP_IP, UDP_COMMAND_PORT))
+                time.sleep(PUBLISH_INTERVAL)
+            except:
+                self.running = False
+        print("closed send socket\n")
 
 
     def update_state(self):
@@ -362,9 +365,14 @@ class SimulatorClient:
              RED_LED_STATE; GREEN_LED_STATE; BLUE_LED_STATE; CONTROL_SWITCH>>
         """
         print("starting update thread")
-        sock = socket.socket(socket.AF_INET,  # Internet
+        try:
+            sock = socket.socket(socket.AF_INET,  # Internet
                              socket.SOCK_DGRAM)  # UDP
-        sock.bind((UDP_IP, UDP_DATA_PORT))
+            sock.bind((UDP_IP, UDP_DATA_PORT))
+            sock.settimeout(1)
+        except:
+            print("Could not open socket - have you cleaned up last connection?\n")
+            self.running = False
         while self.running:
             # print("getting data")
             data_e, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
@@ -429,7 +437,7 @@ class SimulatorClient:
                     # print "received message:", data
             time.sleep(PUBLISH_INTERVAL)
         sock.close()
-        print("closed update socket")
+        print("closed update socket\n")
 
     def cleanup(self):
         self.running = False

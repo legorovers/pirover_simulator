@@ -155,7 +155,7 @@ class Simulator(pyglet.window.Window):
 
     def on_draw(self):
         """Entry point for the main rendering function."""
-        # self.clear()
+        self.clear()
         self.render()
 
     def render(self):

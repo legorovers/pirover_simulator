@@ -323,7 +323,7 @@ class Pi2Go(basicsprite.BasicSprite):
             # already have been reinstated by an update from the client just before the inner while loop
             # above stopped (due to self.receive_continue being set to false)
             #self.stop_robot()
-        print("closing receive socket")
+        print("closing receive socket\n")
         self.sock_recv.close()
 
 
@@ -437,7 +437,7 @@ class Pi2Go(basicsprite.BasicSprite):
                     time.sleep(PUBLISH_INTERVAL)
                 except Exception:
                     pass
-        print("closing publish socket")
+        print("closing publish socket\n")
         self.sock_publish.close()
 
 
