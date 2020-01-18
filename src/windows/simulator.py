@@ -674,11 +674,15 @@ class Simulator(pyglet.window.Window):
 
             # robot to static object collision checking
             for obj in self.dyn_assets.static_objects:
-                if obj is not self.dyn_assets.switch_sprite and obj is not self.dyn_assets.close_menu_button and obj is not self.dyn_assets.save_menu_button and obj is not self.dyn_assets.edit_menu_button and self.robot.robot_collides_with(obj):
-                    vec_x = self.robot.x - obj.x
-                    vec_y = self.robot.y - obj.y
-                    self.robot.velocity_x += vec_x * 2
-                    self.robot.velocity_y += vec_y * 2
+                if obj is not self.dyn_assets.switch_sprite:
+                    if obj is not self.dyn_assets.close_menu_button_sprite:
+                        if obj is not self.dyn_assets.save_menu_button_sprite:
+                            if obj is not self.dyn_assets.edit_menu_button_sprite:
+                                if self.robot.robot_collides_with(obj):
+                                    vec_x = self.robot.x - obj.x
+                                    vec_y = self.robot.y - obj.y
+                                    self.robot.velocity_x += vec_x * 2
+                                    self.robot.velocity_y += vec_y * 2
 
         except AttributeError:
             pass
