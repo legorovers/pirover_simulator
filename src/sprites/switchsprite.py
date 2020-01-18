@@ -42,5 +42,6 @@ class SwitchSprite(pyglet.sprite.Sprite):
             # print dsq
             if dsq < self.min_rad_sq:
                 self.mouse_move_state = True
+                
 
 
