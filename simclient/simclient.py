@@ -369,7 +369,7 @@ class SimulatorClient:
             sock = socket.socket(socket.AF_INET,  # Internet
                              socket.SOCK_DGRAM)  # UDP
             sock.bind((UDP_IP, UDP_DATA_PORT))
-            sock.settimeout(1)
+            # sock.settimeout(1)
         except:
             print("Could not open socket - have you cleaned up last connection?\n")
             self.running = False
