@@ -236,7 +236,8 @@ class Agent:
         self.pending_goals[first_goal] = goallist
 
     def drop_goal(self, key):
-        self.goalbase.remove(key)
+        if (key in self.goalbase):
+            self.goalbase.remove(key)
 
     def goal_is_achieved_when(self, key, function):
         self.goal_functions[key] = function
