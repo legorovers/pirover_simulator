@@ -143,6 +143,7 @@ from __future__ import division
 from builtins import range
 from builtins import object
 
+import sys
 import time
 import ctypes
 from operator import attrgetter
@@ -157,24 +158,40 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 
-if compat_platform in ('win32', 'cygwin'):
+if sys.version_info[:2] < (3, 5):
+    # PYTHON2 - remove these legacy classes:
 
-    class _ClockBase(object):
-        def sleep(self, microseconds):
-            time.sleep(microseconds * 1e-6)
+    if compat_platform in ('win32', 'cygwin'):
 
-    _default_time_function = time.clock
+        class _ClockBase(object):
+
+            @staticmethod
+            def sleep(microseconds):
+                time.sleep(microseconds * 1e-6)
+
+        _default_time_function = time.clock
+
+    else:
+        _c = pyglet.lib.load_library('c')
+        _c.usleep.argtypes = [ctypes.c_ulong]
+
+        class _ClockBase(object):
+
+            @staticmethod
+            def sleep(microseconds):
+                _c.usleep(int(microseconds))
+
+        _default_time_function = time.time
 
 else:
-    _c = pyglet.lib.load_library('c')
-    _c.usleep.argtypes = [ctypes.c_ulong]
 
     class _ClockBase(object):
-        def sleep(self, microseconds):
-            _c.usleep(int(microseconds))
 
-    _default_time_function = time.time
+        @staticmethod
+        def sleep(microseconds):
+            time.sleep(microseconds * 1e-6)
 
+    _default_time_function = time.perf_counter
 
 class _ScheduledItem(object):
     __slots__ = ['func', 'args', 'kwargs']
