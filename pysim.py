@@ -52,8 +52,8 @@ if __name__ == "__main__":
                 pyglet.clock.unschedule(simulator.update)
                 simulator.clear()
                 simulator.close()
-                del(simulator)
-                # pyglet.app.event_loop.exit()
+                # del(simulator)
+                pyglet.app.exit()
     except KeyboardInterrupt:
         print("Goodbye!")
 
