@@ -137,10 +137,20 @@ class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
         self.x = self.sensor_x
         self.y = self.sensor_y
 
+        # if (self.sonar_angle_target - self.sonar_angle) > 0:
+        #     self.sonar_angle += 5
+        # elif (self.sonar_angle_target - self.sonar_angle) < 0:
+        #     self.sonar_angle -= 5
         if (self.sonar_angle_target - self.sonar_angle) > 0:
-            self.sonar_angle += 5
+            if (self.sonar_angle_target - self.sonar_angle) > 5:
+                self.sonar_angle += 5
+            else:
+                self.sonar_angle = self.sonar_angle_target
         elif (self.sonar_angle_target - self.sonar_angle) < 0:
-            self.sonar_angle -= 5
+            if (self.sonar_angle_target - self.sonar_angle) < -5:
+                self.sonar_angle -= 5
+            else:
+                self.sonar_angle = self.sonar_angle_target
         self.rotation = self.parent_robot.rotation - self.sonar_angle
         self.update_sensor()
 

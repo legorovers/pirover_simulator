@@ -36,8 +36,10 @@ class Map(object):
             delete a rectangle."""
         ctr_x_cells = int(ctr_x / self.resolution)
         ctr_y_cells = int(ctr_y / self.resolution)
-        size_x_cells = int(size_x / self.resolution)
-        size_y_cells = int(size_y / self.resolution)
+        # size_x_cells = int(size_x / self.resolution)
+        # size_y_cells = int(size_y / self.resolution)
+        size_x_cells = int(size_x / self.resolution / 2)
+        size_y_cells = int(size_y / self.resolution / 2)
         for x in range(ctr_x_cells - size_x_cells, ctr_x_cells + size_x_cells + 1):
             for y in range(ctr_y_cells - size_y_cells, ctr_y_cells + size_y_cells + 1):
                 self.set_cell(int(x), int(y), cell_value)
