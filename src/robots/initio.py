@@ -43,7 +43,7 @@ class Initio(basicsprite.BasicSprite):
         window_width = kwargs.pop('window_width')
         window_height = kwargs.pop('window_height')
 
-        robot_group = pyglet.graphics.OrderedGroup(1)
+        robot_group = pyglet.graphics.Group(1)
 
         super(Initio, self).__init__(src.resources.robot_image, 0, 0, batch, robot_group, window_width=window_width,
                                      window_height=window_height)

@@ -29,9 +29,9 @@ class Simulator(pyglet.window.Window):
         
         self.batches['bg_batch'] = pyglet.graphics.Batch()
         self.batches['fg_batch'] = pyglet.graphics.Batch()
-        self.subgroups['background_group'] = pyglet.graphics.OrderedGroup(0)
-        self.subgroups['line_map_group'] = pyglet.graphics.OrderedGroup(1)
-        self.subgroups['foreground_group'] = pyglet.graphics.OrderedGroup(2)
+        self.subgroups['background_group'] = pyglet.graphics.Group(0)
+        self.subgroups['line_map_group'] = pyglet.graphics.Group(1)
+        self.subgroups['foreground_group'] = pyglet.graphics.Group(2)
 
         # load all the dynamic assets
         self.dyn_assets = DynamicAsssets(world_file, selected_robot, self, tk_start_window, self.batches['bg_batch'], self.batches['fg_batch'],
@@ -43,7 +43,7 @@ class Simulator(pyglet.window.Window):
 
         self.object_window = None
         self.edit_mode = False
-        self.fps_display = pyglet.clock.ClockDisplay()
+        self.fps_display = pyglet.window.FPSDisplay(self)
 
         # decide which type of robot to load
         if selected_robot == "Initio":

@@ -77,7 +77,7 @@ class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
         min_range = kwargs.pop('min_range')
         max_range = kwargs.pop('max_range')
         beam_angle = kwargs.pop('beam_angle')
-        sonar_group = pyglet.graphics.OrderedGroup(3)
+        sonar_group = pyglet.graphics.Group(3)
         super(PanningDistanceSensor, self).__init__(src.resources.sonar_image, 0, 0, batch, sonar_group)
         self.parent_robot = robot
         # x offset from ???? of actual sensor point

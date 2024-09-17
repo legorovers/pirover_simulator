@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 from tkinter.filedialog import *
 
 import pyglet
+import os
 from src.sensors.sonar import Map
 from src.sprites.basicsprite import BasicSprite
 from src.sprites.basicsprite import SwitchSprite
