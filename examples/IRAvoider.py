@@ -9,7 +9,7 @@ initio.init()
 # main loop
 try:
     while True:
-        print initio.irLeft(), initio.irRight()
+        print(initio.irLeft(), initio.irRight())
         if initio.irAll():
             if initio.irLeft():
                 initio.spinRight(turn_speed)
