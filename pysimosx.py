@@ -12,7 +12,7 @@ try:
     selected_robot = ""
     start_window = None
     """ gc.set_debug(gc.DEBUG_LEAK) """
-    while selected_file == "" or (start_window is not None and start_window.selected_file is not "None"):  # if it is None then select simulator dialog did something other than "launch simulator", which then implies that window close operation was carried out and app should quit.
+    while selected_file == "" or (start_window is not None and start_window.selected_file != "None"):  # if it is None then select simulator dialog did something other than "launch simulator", which then implies that window close operation was carried out and app should quit.
         # load tkinter + other deps for the start window
         from src.windows.startwindow import StartWindow
         try:
@@ -35,7 +35,7 @@ try:
         from src.windows.simulator import Simulator
 
         # run the simulator
-        if selected_file is not "None" and selected_robot is not None:
+        if selected_file != "None" and selected_robot is not None:
             simulator = Simulator(selected_file, selected_robot, start_window)
             pyglet.clock.schedule_interval(simulator.update, 1.0 / 30)
             # pyglet.app.EventLoop.has_exit = False
