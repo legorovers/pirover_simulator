@@ -99,6 +99,8 @@ class StartWindow(object):
 
 
     def refresh_world_filelist(self):
+        """Refreshes files by clearing the word_files_list, going through the current directory and removing all .xml
+         files"""
         self.world_files_list.clear()
         self.files_listbox.delete(0, END)
         self.world_file_path = util.get_world_path()
