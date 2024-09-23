@@ -4,3 +4,4 @@
 *.orig
 build/
 dist/
+**/.DS_Store
