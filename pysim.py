@@ -28,7 +28,7 @@ if __name__ == "__main__":
         selected_file = ""
         selected_robot = ""
         start_window = None
-        while selected_file == "" or (start_window != None and start_window.selected_file != "None"):  # if it is None then select simulator dialog did something other than "launch simulator", which then implies that window close operation was carried out and app should quit.
+        while selected_file == "" or (start_window is not None and start_window.selected_file != "None"):  # if it is None then select simulator dialog did something other than "launch simulator", which then implies that window close operation was carried out and app should quit.
             try:
                 print(start_window.window.geometry) # Just a trick to check if start_window.window is anything but healthy - triggers an Exception if anything is amiss so we can create/or hold on to just one Tk() object which will serve the whole app lifecycle.
                 # if no exception by here then start_window.window is still alive, and was just quitted
@@ -56,10 +56,3 @@ if __name__ == "__main__":
                 pyglet.app.exit()
     except KeyboardInterrupt:
         print("Goodbye!")
-
-
-
-
-
-
-
