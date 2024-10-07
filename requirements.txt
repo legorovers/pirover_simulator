@@ -1,0 +1,3 @@
+pyglet==2.0.9
+tk
+numpy
