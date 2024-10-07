@@ -25,8 +25,3 @@ To run the project on Linux and Windows run `python3 pysim.py` and for MacOS run
 - Make physics more realistic
 - Make new workbooks targeted at half hour visits for about 15 children (ages 11-14)
 
-### Testing
-
-To run the docker image, first install docker and then run `sudo docker build pirover .; sudo docker run pirover`. This will not spawn the application but serves as a good basis to ensure the code works in different environments or which packages could break it
-
-TODO: Add instructions for windows and MacOS
