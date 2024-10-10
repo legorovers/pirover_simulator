@@ -47,6 +47,6 @@ try:
         # now rotate the lights
         step = (step + 1) % (NUM_LEDS+1)
         
-except KeyboardInterrupt, AssertionError:
+except (KeyboardInterrupt, AssertionError):
     initio.cleanup()
 

@@ -4,5 +4,7 @@
 *.orig
 build/
 dist/
-venv/
+.venv/
+__pycache__/
 **/.DS_Store
+venv/
