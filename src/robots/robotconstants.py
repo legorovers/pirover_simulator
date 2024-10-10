@@ -9,4 +9,5 @@ IR_BEAM_ANGLE = 0.25
 SONAR_MIN_RANGE = 5
 SONAR_MAX_RANGE = 1700
 SONAR_BEAM_ANGLE = 0.36
-SONAR_INTENSITY = 110  # Estimated as can't find a value for the HC-SR04
+SONAR_INTENSITY = 110  # Estimates for sound intensity in dB
+SONAR_MIN_INTENSITY = 100
