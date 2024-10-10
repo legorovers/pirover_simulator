@@ -8,12 +8,13 @@ Note the sonar sensor will be triggered by the edges of the map/screen as well a
 """
 
 from math import pi, cos, sin
+from src.sensors.ray import Ray
+from src.robots.robotconstants import SONAR_INTENSITY
 try:
     import numpy as np
 except ImportError:
     import src.numpysim as np
 import pyglet
-
 SONAR_BEAM_STEP = pi / 25.0
 
 
@@ -87,6 +88,7 @@ class Sonar(object):
         # cast each ray until it hits an obstacle or the end of the map
         # print (self.sensor_map.grid)
         for angle in sweep:
+            """
             distance = 1
             while distance <= (self.max_range / self.sensor_map.resolution):
 
@@ -117,5 +119,7 @@ class Sonar(object):
             self.current_range = self.min_range
         elif self.current_range >= self.max_range:
             self.current_range = self.max_range
-
+        """
+            ray = Ray(x, y, SONAR_INTENSITY, angle + theta)
+            print(f"I={ray.intensity}, theta={ray.theta}")
         return self.current_range
