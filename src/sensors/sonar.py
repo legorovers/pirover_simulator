@@ -83,15 +83,12 @@ class Map(object):
 class Sonar(object):
     """
     TODO:
-    - fix collisions with the sensor
-    - fix decibel reduction
-    - add tolerance for sensor collisions rather than using box
     - add gaussian noise / variance
     - use OpenGL to draw the rays
-    - use ray tracing formula rather than bouncing
+    - Use intensity to simulate min/max range.
     """
 
-    def __init__(self, sensor_map, min_range, max_range, cone_angle, beams=10):
+    def __init__(self, sensor_map, min_range, max_range, cone_angle, beams=30):
         self.min_range = min_range
         self.max_range = max_range
         self.cone_angle = cone_angle
@@ -110,42 +107,38 @@ class Sonar(object):
         sweep = np.arange(-self.cone_angle / 2, self.cone_angle / 2, step)
         sensor_rays = []
         ray_num = 0
+        #print("sweep")
+        #print(f"sensor position: ({x}, {y})")
         for angle in sweep:  # Emit rays in a fan
             x1 = x  # x1 represents the previous x value before collision
             y1 = y
             ray = Ray(x, y, SONAR_INTENSITY, angle + theta)
-            while ray.intensity > SONAR_MIN_INTENSITY and ray.bounces < 25:
+            while ray.intensity > SONAR_MIN_INTENSITY and ray.bounces < 10:
                 # Continue until ray is no longer detectable or has bounced
                 # too many times
-                if ray_num == 1:  # Debug first ray
-                    print(f"({ray.x}, {ray.y})")
-                # grid square that the ray is currently in
                 xmap = int(ray.x / self.sensor_map.resolution)
                 ymap = int(ray.y / self.sensor_map.resolution)
                 if xmap < 0 or xmap >= self.sensor_map.width or ymap < 0 or ymap >= self.sensor_map.height:
-                    break  # Ray is out of bounds
+                    break
 
                 if self.sensor_map.grid[ymap][xmap]:  # Obstacle detected
-                    # Reflect the ray
-                    dx = ray.x - xmap
-                    dy = ray.y - ymap
-                    normal_angle = atan2(dx, dy)
-                    ray.theta = 2 * normal_angle - ray.theta
-                    ray.reduce_intensity(alpha.BOX)  # Reduce intensity due to
-                    # collision
-                    ray.distance = ((ray.x - x1) ** 2
-                                    + (ray.y - y1) ** 2) ** 0.5
+                    ray.bounce(x1, y1, xmap, ymap)
                     x1 = ray.x
                     y1 = ray.y
-                    ray.bounces += 1
-                elif int(ray.x) == sensor_pos_map[0] and int(ray.y) == \
-                        sensor_pos_map[1]:
-                    print(f"Ray {ray_num} hit the sensor!")
-                else:
-                    # Move the ray forward by DS
-                    ray.x += DS * cos(ray.theta)
-                    ray.y += DS * sin(ray.theta)
-                    ray.bounces += 1
-        if sensor_rays:
+
+                elif int(ray.x) == int(x) and int(ray.y) == int(
+                        y) and ray.bounces != 0:
+                    sensor_rays.append(ray)
+                    break
+                else:  # Move ray forward.
+                    ray.x += cos(ray.theta)
+                    ray.y += sin(ray.theta)
+            ray_num += 1
+
+        if sensor_rays:  # Update distance if rays hit the sensor.
             self.current_range = mean([ray.distance for ray in sensor_rays])
+            print(f"Calculated range: {self.current_range}cm")
+        else:  # Blind spot so don't update
+            pass
+            #print(f"Sensor blindspot at: ({x},{y})!")
         return self.current_range

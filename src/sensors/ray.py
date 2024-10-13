@@ -1,7 +1,7 @@
 """
 ray.py defines an ultrasonic ray used for ray tracing.
 """
-import math
+from math import cos, sin, atan2, log10
 
 SPEED_OF_SOUND = 330  # Assumes no air pressure variations
 
@@ -25,5 +25,28 @@ class Ray:
     """
 
     def reduce_intensity(self, coeff):
-        reduction = 10 * math.log10(coeff)
-        self.intensity -= reduction
+        reduction = 10 * log10(coeff)
+        self.intensity += reduction
+
+    """
+    Reflects a ray given the position of the obstacle 
+    and updates distance traveled
+    """
+    def bounce(self, x1, y1, xmap, ymap):
+        # Use pythagoras to calculate distance from previous
+        # position to collision point
+        self.distance += ((self.x - x1) ** 2 + (
+                self.y - y1) ** 2) ** 0.5
+        # Calculate the new angle of the ray
+        dx = self.x - xmap
+        dy = self.y - ymap
+        normal_angle = atan2(dy, dx)
+        self.theta = 2 * normal_angle - self.theta
+        # Move the ray out of the obstacle
+        self.x -= dx
+        self.y -= dy
+        self.x += cos(self.theta)
+        self.y += sin(self.theta)
+        #self.reduce_intensity(alpha.BOX)  # Reduce intensity due to
+        # collision
+        self.bounces += 1
