@@ -2,9 +2,11 @@
 sonar.py defines a map and sensor class to simulate a typical sinar sensor. This is achieved using a 2D grid map which
 is defined in the Map class. The grid is a binary occupancy grid meaning a value of 1=occpied and 0=free.
 
-The Sonar class contains functions for ray casting in order to compute distance values based on obstacles defined
-by the grid map. The Sonar class uses multiple rays to replicate the wide conical nature of typical sonar sensor beams.
-Note the sonar sensor will be triggered by the edges of the map/screen as well as the obstacles defined in the grid map.
+The Sonar class contains functions for ray tracing in order to compute distance values based on obstacles defined by
+the grid map and the various properties of the materials. The Sonar class uses multiple rays to replicate the wide
+conical nature of typical sonar sensor beams. Note the sonar sensor will be triggered by the edges of the map/screen
+as well as the obstacles defined in the grid map.
+
 """
 
 from math import pi, cos, sin, atan2
@@ -97,6 +99,7 @@ class Sonar(object):
         self.current_range = -1.0
 
     def update_sonar(self, x, y, theta):
+        batch = pyglet.graphics.Batch()
         """Returns the distance to the nearest obstacle for a sensor at
         position (x, y) and at angle theta."""
         sensor_pos_map = [int(x / self.sensor_map.resolution),
@@ -113,22 +116,30 @@ class Sonar(object):
             x1 = x  # x1 represents the previous x value before collision
             y1 = y
             ray = Ray(x, y, SONAR_INTENSITY, angle + theta)
-            while ray.intensity > SONAR_MIN_INTENSITY and ray.bounces < 10:
+            while ray.intensity > SONAR_MIN_INTENSITY and ray.bounces < 15:
                 # Continue until ray is no longer detectable or has bounced
                 # too many times
                 xmap = int(ray.x / self.sensor_map.resolution)
                 ymap = int(ray.y / self.sensor_map.resolution)
+                # Check if ray is out of bounds, it should bounce.
                 if xmap < 0 or xmap >= self.sensor_map.width or ymap < 0 or ymap >= self.sensor_map.height:
-                    break
-
-                if self.sensor_map.grid[ymap][xmap]:  # Obstacle detected
+                    print(f"Ray {ray_num} (out of bounds) bounced at: ({x1},{y1})!")
                     ray.bounce(x1, y1, xmap, ymap)
                     x1 = ray.x
                     y1 = ray.y
+                elif self.sensor_map.grid[ymap][xmap]:  # Obstacle detected or hit the edge.
+                    #print(f"Ray {ray_num} bounced at: ({x1},{y1})!")
+                    ray.bounce(x1, y1, xmap, ymap)
+                    # Draw line in pyglet 2
+                    x1 = ray.x
+                    y1 = ray.y
+                    #ray.reduce_intensity(alpha.BOX)  # Reduce intensity due to collision
+                    #print(f"Ray {ray_num} intensity is now: {ray.intensity}")
 
                 elif int(ray.x) == int(x) and int(ray.y) == int(
                         y) and ray.bounces != 0:
                     sensor_rays.append(ray)
+                    print(f"Ray {ray_num} hit the sensor at: ({x},{y})!")
                     break
                 else:  # Move ray forward.
                     ray.x += cos(ray.theta)
