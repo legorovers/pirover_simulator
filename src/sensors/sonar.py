@@ -80,14 +80,11 @@ class Map(object):
                     pyglet.graphics.draw_indexed(4, pyglet.gl.GL_TRIANGLES,
                                                  [0, 1, 2, 1, 2, 3],
                                                  ('v2i', square_coords))
-
-
 class Sonar(object):
     """
     TODO:
     - add gaussian noise / variance
     - use OpenGL to draw the rays
-    - Use intensity to simulate min/max range.
     """
 
     def __init__(self, sensor_map, min_range, max_range, cone_angle, beams=30):
@@ -99,7 +96,6 @@ class Sonar(object):
         self.current_range = -1.0
 
     def update_sonar(self, x, y, theta):
-        batch = pyglet.graphics.Batch()
         """Returns the distance to the nearest obstacle for a sensor at
         position (x, y) and at angle theta."""
         sensor_pos_map = [int(x / self.sensor_map.resolution),
@@ -123,21 +119,19 @@ class Sonar(object):
                 ymap = int(ray.y / self.sensor_map.resolution)
                 # Check if ray is out of bounds, it should bounce.
                 if xmap < 0 or xmap >= self.sensor_map.width or ymap < 0 or ymap >= self.sensor_map.height:
-                    print(f"Ray {ray_num} (out of bounds) bounced at: ({x1},{y1})!")
+                    #print(f"Ray {ray_num} (out of bounds) bounced at: ({x1},{y1})!")
                     ray.bounce(x1, y1, xmap, ymap)
                     x1 = ray.x
                     y1 = ray.y
                 elif self.sensor_map.grid[ymap][xmap]:  # Obstacle detected or hit the edge.
                     #print(f"Ray {ray_num} bounced at: ({x1},{y1})!")
                     ray.bounce(x1, y1, xmap, ymap)
-                    # Draw line in pyglet 2
                     x1 = ray.x
                     y1 = ray.y
                     #ray.reduce_intensity(alpha.BOX)  # Reduce intensity due to collision
                     #print(f"Ray {ray_num} intensity is now: {ray.intensity}")
 
-                elif int(ray.x) == int(x) and int(ray.y) == int(
-                        y) and ray.bounces != 0:
+                elif int(ray.x) == int(x) and int(ray.y) == int(y) and ray.bounces != 0:
                     sensor_rays.append(ray)
                     print(f"Ray {ray_num} hit the sensor at: ({x},{y})!")
                     break
@@ -146,9 +140,11 @@ class Sonar(object):
                     ray.y += sin(ray.theta)
             ray_num += 1
 
-        if sensor_rays:  # Update distance if rays hit the sensor.
-            self.current_range = mean([ray.distance for ray in sensor_rays])
-            print(f"Calculated range: {self.current_range}cm")
+        if sensor_rays:  # Update distance if rays hit the sensor and is in range.
+            if self.min_range > self.current_range > self.max_range:
+                self.current_range = mean([ray.distance for ray in sensor_rays])
+            else:
+                pass
         else:  # Blind spot so don't update
             pass
             #print(f"Sensor blindspot at: ({x},{y})!")
