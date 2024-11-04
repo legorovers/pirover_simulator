@@ -87,7 +87,7 @@ class Sonar(object):
     - use OpenGL to draw the rays
     """
 
-    def __init__(self, sensor_map, min_range, max_range, cone_angle, beams=30):
+    def __init__(self, sensor_map, min_range, max_range, cone_angle, beams):
         self.min_range = min_range
         self.max_range = max_range
         self.cone_angle = cone_angle
@@ -128,7 +128,7 @@ class Sonar(object):
                     ray.bounce(x1, y1, xmap, ymap)
                     x1 = ray.x
                     y1 = ray.y
-                    #ray.reduce_intensity(alpha.BOX)  # Reduce intensity due to collision
+                    ray.reduce_intensity(alpha.BOX)  # Reduce intensity due to collision
                     #print(f"Ray {ray_num} intensity is now: {ray.intensity}")
 
                 elif int(ray.x) == int(x) and int(ray.y) == int(y) and ray.bounces != 0:
@@ -141,7 +141,7 @@ class Sonar(object):
             ray_num += 1
 
         if sensor_rays:  # Update distance if rays hit the sensor and is in range.
-            if self.min_range > self.current_range > self.max_range:
+            if self.min_range >= self.current_range >= self.max_range:
                 self.current_range = mean([ray.distance for ray in sensor_rays])
             else:
                 pass

@@ -16,7 +16,7 @@ from .sonar import Sonar
 
 
 class FixedTransformDistanceSensor(object):
-    def __init__(self, parent_robot, sensor_map, offset_x, offset_y, sensor_rot, min_range, max_range, beam_angle):
+    def __init__(self, parent_robot, sensor_map, offset_x, offset_y, sensor_rot, min_range, max_range, beam_angle, beams):
         self.parent_robot = parent_robot
         self.sensor = Sonar(sensor_map, min_range, max_range, beam_angle)
         self.sensor_offset_x = offset_x
@@ -25,6 +25,7 @@ class FixedTransformDistanceSensor(object):
         self.sensor_range = 0
         self.sensor_x = 0
         self.sensor_y = 0
+        self.beams = 30
 
     def update_sensor(self):
         """Calculates the XY position of the sensor origin based on the current position of the robot and

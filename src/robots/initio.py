@@ -32,6 +32,7 @@ SONAR_OFFSET_X = 80
 
 READ_INTERVAL = 0.01
 PUBLISH_INTERVAL = 0.03
+BEAMS = 30
 
 
 class Initio(basicsprite.BasicSprite):
@@ -64,10 +65,10 @@ class Initio(basicsprite.BasicSprite):
                                                   beam_angle=SONAR_BEAM_ANGLE)
 
         self.ir_left_sensor = FixedTransformDistanceSensor(self, self.sonar_map, IR_OFFSET_X, IR_OFFSET_Y,
-                                                           IR_SENSOR_ANGLE, IR_MIN_RANGE, IR_MAX_RANGE, IR_BEAM_ANGLE)
+                                                           IR_SENSOR_ANGLE, IR_MIN_RANGE, IR_MAX_RANGE, IR_BEAM_ANGLE,BEAMS)
 
         self.ir_right_sensor = FixedTransformDistanceSensor(self, self.sonar_map, IR_OFFSET_X, -IR_OFFSET_Y,
-                                                            -IR_SENSOR_ANGLE, IR_MIN_RANGE, IR_MAX_RANGE, IR_BEAM_ANGLE)
+                                                            -IR_SENSOR_ANGLE, IR_MIN_RANGE, IR_MAX_RANGE, IR_BEAM_ANGLE, BEAMS)
 
         self.light_frontleft_sensor = FixedLightSensor(self, x_light_offset, y_light_offset - 10, "FrontLeft",
                                                        drawing_colour=(255, 0, 0, 255))
