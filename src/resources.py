@@ -322,5 +322,5 @@ class DynamicAsssets:
                 new_file.write(self.current_file_str)
             return filename
         else:
-            print('Canceled Saving!')
+            print('Cancelled Saving!')
             return None
