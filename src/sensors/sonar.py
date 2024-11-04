@@ -86,7 +86,7 @@ class Sonar(object):
     - add gaussian noise / variance
     - use OpenGL to draw the rays
     """
-
+    BEAMS = 30
     def __init__(self, sensor_map, min_range, max_range, cone_angle, beams):
         self.min_range = min_range
         self.max_range = max_range

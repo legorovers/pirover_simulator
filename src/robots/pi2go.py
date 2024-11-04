@@ -445,7 +445,7 @@ class Pi2Go(basicsprite.BasicSprite):
     
     def update_sensors(self):
         """Take a new reading for each sensor."""
-        self.sonar_sensor.update_sensor()
+        #self.sonar_sensor.update_sensor()
         self.ir_left_sensor.update_sensor()
         self.ir_middle_sensor.update_sensor()
         self.ir_right_sensor.update_sensor()
