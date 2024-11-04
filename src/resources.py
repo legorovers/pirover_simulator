@@ -313,10 +313,14 @@ class DynamicAsssets:
         # root.withdraw()
         fd = SaveAs(self.tk_start_window.window)
         filename = fd.show()
-        if filename is not None and str(filename).strip() != "":
-            # Ensure the file ends in ".xml"
-            if not str(filename).lower().endswith(".xml"):
-                filename = filename + ".xml"
-            new_file = open(filename, "w")
-            new_file.write(self.current_file_str)
-        return filename
+        if type(filename) == str:
+            if filename is not None and str(filename).strip() != "":
+                # Ensure the file ends in ".xml"
+                if not str(filename).lower().endswith(".xml"):
+                    filename = filename + ".xml" 
+                new_file = open(filename, "w")
+                new_file.write(self.current_file_str)
+            return filename
+        else:
+            print('Canceled Saving!')
+            return None
