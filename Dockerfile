@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:22.04
+FROM alpine:3.12
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Copy current working directory
@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y python3 python3-pip python3-tk libgl1-m
 RUN pip install -r requirements.txt
 
 ENV DISPLAY=:99
+
+EXPOSE 3000
 
 # Run APP
 
