@@ -44,5 +44,26 @@ def test_turn_off(init_led):
 
 def test_get_color(init_led):
     init_led.set_colour(0, 0, 0)
-    # print(init_led.red_value)
     assert init_led.get_colour() == (0, 0, 0)
+
+@pytest.mark.parametrize("led, xval", [
+    ("init_led", 0),
+    ("init_led", 2),
+    ("init_led", -1),
+])
+def test_set_xvalue(led, xval, request):
+    led = request.getfixturevalue(led)
+    led.set_xvalue(xval)
+    assert led.x == xval
+
+@pytest.mark.parametrize("led, yval", [
+    ("init_led", 0),
+    ("init_led", 2),
+    ("init_led", -1),
+])
+def test_set_yvalue(led, yval, request):
+    led = request.getfixturevalue(led)
+    led.set_yvalue(yval)
+    assert led.y == yval
+
+
