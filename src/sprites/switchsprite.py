@@ -7,8 +7,18 @@ import pyglet
 
 
 class SwitchSprite(pyglet.sprite.Sprite):
-    def __init__(self, texture, x, y, batch, subgroup, object_type="sprite", idx=-1, window_width=800,
-                 window_height=600):
+    def __init__(
+        self,
+        texture,
+        x,
+        y,
+        batch,
+        subgroup,
+        object_type="sprite",
+        idx=-1,
+        window_width=800,
+        window_height=600,
+    ):
         self.texture = texture
         super(BasicSprite, self).__init__(self.texture, batch=batch, group=subgroup)
         self.x = x
@@ -28,7 +38,7 @@ class SwitchSprite(pyglet.sprite.Sprite):
         self.object_type = object_type
         self.idx = idx
 
-# want to get it to change colour on press - then it is pressed or released.
+    # want to get it to change colour on press - then it is pressed or released.
     def update(self, dt):
         """Update position based on current velocity also check window bounds."""
         self.x += self.velocity_x * dt
@@ -42,6 +52,3 @@ class SwitchSprite(pyglet.sprite.Sprite):
             # print dsq
             if dsq < self.min_rad_sq:
                 self.mouse_move_state = True
-                
-
-

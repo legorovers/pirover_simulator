@@ -12,13 +12,25 @@ import time
 from src.sensors.linesensor import FixedLineSensor
 from src.sensors.lightsensor import FixedLightSensor
 from src.sensors.linesensor import LineSensorMap
-from src.sensors.distancesensors import FixedTransformDistanceSensor, PanningDistanceSensor
+from src.sensors.distancesensors import (
+    FixedTransformDistanceSensor,
+    PanningDistanceSensor,
+)
 from src.sprites import basicsprite
 import pyglet
 import src.resources
 import src.util
-from .robotconstants import SONAR_BEAM_ANGLE, SONAR_MAX_RANGE, SONAR_MIN_RANGE, IR_MAX_RANGE, IR_MIN_RANGE, \
-    UDP_COMMAND_PORT, UDP_DATA_PORT, UDP_IP, IR_BEAM_ANGLE
+from .robotconstants import (
+    SONAR_BEAM_ANGLE,
+    SONAR_MAX_RANGE,
+    SONAR_MIN_RANGE,
+    IR_MAX_RANGE,
+    IR_MIN_RANGE,
+    UDP_COMMAND_PORT,
+    UDP_DATA_PORT,
+    UDP_IP,
+    IR_BEAM_ANGLE,
+)
 
 # Constants specific to the Initio robot.
 
@@ -36,17 +48,24 @@ PUBLISH_INTERVAL = 0.03
 
 class Initio(basicsprite.BasicSprite):
     def __init__(self, *args, **kwargs):
-        self.sonar_map = kwargs.pop('sonar_map')
-        line_map_sprite = kwargs.pop('line_map_sprite')
-        self.static_objects = kwargs.pop('static_objects')
-        batch = kwargs.pop('batch')
-        window_width = kwargs.pop('window_width')
-        window_height = kwargs.pop('window_height')
+        self.sonar_map = kwargs.pop("sonar_map")
+        line_map_sprite = kwargs.pop("line_map_sprite")
+        self.static_objects = kwargs.pop("static_objects")
+        batch = kwargs.pop("batch")
+        window_width = kwargs.pop("window_width")
+        window_height = kwargs.pop("window_height")
 
         robot_group = pyglet.graphics.Group(1)
 
-        super(Initio, self).__init__(src.resources.robot_image, 0, 0, batch, robot_group, window_width=window_width,
-                                     window_height=window_height)
+        super(Initio, self).__init__(
+            src.resources.robot_image,
+            0,
+            0,
+            batch,
+            robot_group,
+            window_width=window_width,
+            window_height=window_height,
+        )
 
         # drawing batch
         self.batch = batch
@@ -57,26 +76,67 @@ class Initio(basicsprite.BasicSprite):
         x_light_offset = self.image.width / 2
         y_light_offset = self.image.height / 2
 
-        self.sonar_sensor = PanningDistanceSensor(batch=batch, robot=self, sonar_map=self.sonar_map,
-                                                  offset_x=SONAR_OFFSET_X,
-                                                  offset_y=0,
-                                                  min_range=SONAR_MIN_RANGE, max_range=SONAR_MAX_RANGE,
-                                                  beam_angle=SONAR_BEAM_ANGLE)
+        self.sonar_sensor = PanningDistanceSensor(
+            batch=batch,
+            robot=self,
+            sonar_map=self.sonar_map,
+            offset_x=SONAR_OFFSET_X,
+            offset_y=0,
+            min_range=SONAR_MIN_RANGE,
+            max_range=SONAR_MAX_RANGE,
+            beam_angle=SONAR_BEAM_ANGLE,
+        )
 
-        self.ir_left_sensor = FixedTransformDistanceSensor(self, self.sonar_map, IR_OFFSET_X, IR_OFFSET_Y,
-                                                           IR_SENSOR_ANGLE, IR_MIN_RANGE, IR_MAX_RANGE, IR_BEAM_ANGLE)
+        self.ir_left_sensor = FixedTransformDistanceSensor(
+            self,
+            self.sonar_map,
+            IR_OFFSET_X,
+            IR_OFFSET_Y,
+            IR_SENSOR_ANGLE,
+            IR_MIN_RANGE,
+            IR_MAX_RANGE,
+            IR_BEAM_ANGLE,
+        )
 
-        self.ir_right_sensor = FixedTransformDistanceSensor(self, self.sonar_map, IR_OFFSET_X, -IR_OFFSET_Y,
-                                                            -IR_SENSOR_ANGLE, IR_MIN_RANGE, IR_MAX_RANGE, IR_BEAM_ANGLE)
+        self.ir_right_sensor = FixedTransformDistanceSensor(
+            self,
+            self.sonar_map,
+            IR_OFFSET_X,
+            -IR_OFFSET_Y,
+            -IR_SENSOR_ANGLE,
+            IR_MIN_RANGE,
+            IR_MAX_RANGE,
+            IR_BEAM_ANGLE,
+        )
 
-        self.light_frontleft_sensor = FixedLightSensor(self, x_light_offset, y_light_offset - 10, "FrontLeft",
-                                                       drawing_colour=(255, 0, 0, 255))
-        self.light_frontright_sensor = FixedLightSensor(self, x_light_offset, -y_light_offset + 10, "FrontRight",
-                                                        drawing_colour=(0, 255, 0, 255))
-        self.light_backleft_sensor = FixedLightSensor(self, -x_light_offset, y_light_offset - 10, "BackLeft",
-                                                      drawing_colour=(0, 0, 255, 255))
-        self.light_backright_sensor = FixedLightSensor(self, -x_light_offset, -y_light_offset + 10, "BackRight",
-                                                       drawing_colour=(255, 255, 255, 255))
+        self.light_frontleft_sensor = FixedLightSensor(
+            self,
+            x_light_offset,
+            y_light_offset - 10,
+            "FrontLeft",
+            drawing_colour=(255, 0, 0, 255),
+        )
+        self.light_frontright_sensor = FixedLightSensor(
+            self,
+            x_light_offset,
+            -y_light_offset + 10,
+            "FrontRight",
+            drawing_colour=(0, 255, 0, 255),
+        )
+        self.light_backleft_sensor = FixedLightSensor(
+            self,
+            -x_light_offset,
+            y_light_offset - 10,
+            "BackLeft",
+            drawing_colour=(0, 0, 255, 255),
+        )
+        self.light_backright_sensor = FixedLightSensor(
+            self,
+            -x_light_offset,
+            -y_light_offset + 10,
+            "BackRight",
+            drawing_colour=(255, 255, 255, 255),
+        )
 
         self.light_sensors = []
         self.light_sensors.append(self.light_frontleft_sensor)
@@ -85,8 +145,12 @@ class Initio(basicsprite.BasicSprite):
         self.light_sensors.append(self.light_backright_sensor)
 
         self.line_sensor_map = LineSensorMap(line_map_sprite)
-        self.left_line_sensor = FixedLineSensor(self, self.line_sensor_map, LINE_OFFSET_X, LINE_OFFSET_Y)
-        self.right_line_sensor = FixedLineSensor(self, self.line_sensor_map, LINE_OFFSET_X, -LINE_OFFSET_Y)
+        self.left_line_sensor = FixedLineSensor(
+            self, self.line_sensor_map, LINE_OFFSET_X, LINE_OFFSET_Y
+        )
+        self.right_line_sensor = FixedLineSensor(
+            self, self.line_sensor_map, LINE_OFFSET_X, -LINE_OFFSET_Y
+        )
 
         self.mouse_move_state = False
         self.mouse_position = [0, 0]
@@ -163,16 +227,19 @@ class Initio(basicsprite.BasicSprite):
         Commands are strings and take the form: <<LINEAR_VELOCITY;ANGULAR_VELOCITY;SONAR_SERVO_ANGLE>>
         """
         # Initialise the socket used by the command/receiving thread
-        self.sock_recv = socket.socket(socket.AF_INET,  # Internet
-                                  socket.SOCK_DGRAM)  # UDP
+        self.sock_recv = socket.socket(
+            socket.AF_INET, socket.SOCK_DGRAM  # Internet
+        )  # UDP
         self.sock_recv.bind((UDP_IP, UDP_COMMAND_PORT))
         self.sock_recv.settimeout(1)
-        
+
         #  double loop is a hack - changing while True to while self.receive_continue while debugging
         while self.receive_continue is True:
             while self.receive_continue is True:
                 try:
-                    data_e, addr = self.sock_recv.recvfrom(1024)  # buffer size is 1024 bytes
+                    data_e, addr = self.sock_recv.recvfrom(
+                        1024
+                    )  # buffer size is 1024 bytes
                     data = data_e.decode()
                     if data.startswith("<<") and data.endswith(">>"):
                         data = data.replace("<<", "")
@@ -210,12 +277,13 @@ class Initio(basicsprite.BasicSprite):
         """Thread function which publishes the state of the robot to an external python script via UDP socket.
 
         State strings take the form: <<ROBOT_NAME;SONAR_RANGE;LEFT_LINE;RIGHT_LINE;LEFT_IR;RIGHT_IR;
-                                        FRONT_LEFT_LIGHTSENSOR, FRONT_RIGHT_LIGHTSENSOR, 
+                                        FRONT_LEFT_LIGHTSENSOR, FRONT_RIGHT_LIGHTSENSOR,
                                         BACK_LEFT_LIGHTSENSOR, BACK_RIGHT_LIGHTSENSOR; CONTROL_SWITCH>>
         """
         # Initialise the socket used by the publish thread
-        self.sock_publish = socket.socket(socket.AF_INET,  # Internet
-                                     socket.SOCK_DGRAM)  # UDP
+        self.sock_publish = socket.socket(
+            socket.AF_INET, socket.SOCK_DGRAM  # Internet
+        )  # UDP
         while self.publish_continue is True:
             while self.publish_continue is True:
                 try:
@@ -230,11 +298,21 @@ class Initio(basicsprite.BasicSprite):
                     light_br = int(self.light_backright_sensor.value)
 
                     message = "<<%s;%f;%d;%d;%d;%d;%d;%d;%d;%d;%d>>" % (
-                        self.robot_name, self.sonar_sensor.sonar_range,
-                        line_left, line_right,
-                        ir_left, ir_right,
-                        light_fl, light_fr, light_br, light_bl, self.control_switch_on)
-                    self.sock_publish.sendto(message.encode('utf-8'), (UDP_IP, UDP_DATA_PORT))
+                        self.robot_name,
+                        self.sonar_sensor.sonar_range,
+                        line_left,
+                        line_right,
+                        ir_left,
+                        ir_right,
+                        light_fl,
+                        light_fr,
+                        light_br,
+                        light_bl,
+                        self.control_switch_on,
+                    )
+                    self.sock_publish.sendto(
+                        message.encode("utf-8"), (UDP_IP, UDP_DATA_PORT)
+                    )
                     updated_switch_finally = False
                     time.sleep(PUBLISH_INTERVAL)
                 except Exception:
@@ -243,11 +321,21 @@ class Initio(basicsprite.BasicSprite):
                 # send again, once, to update the control switch
                 if updated_switch_finally is False:
                     message = "<<%s;%f;%d;%d;%d;%d;%d;%d;%d;%d;%d>>" % (
-                        self.robot_name, self.sonar_sensor.sonar_range,
-                        line_left, line_right,
-                        ir_left, ir_right,
-                        light_fl, light_fr, light_br, light_bl, self.control_switch_on)
-                    self.sock_publish.sendto(message.encode('utf-8'), (UDP_IP, UDP_DATA_PORT))
+                        self.robot_name,
+                        self.sonar_sensor.sonar_range,
+                        line_left,
+                        line_right,
+                        ir_left,
+                        ir_right,
+                        light_fl,
+                        light_fr,
+                        light_br,
+                        light_bl,
+                        self.control_switch_on,
+                    )
+                    self.sock_publish.sendto(
+                        message.encode("utf-8"), (UDP_IP, UDP_DATA_PORT)
+                    )
                     updated_switch_finally = True
                     time.sleep(PUBLISH_INTERVAL)
             except Exception:
@@ -279,7 +367,7 @@ class Initio(basicsprite.BasicSprite):
     #         print("unscheduled*******************+++++++++++++++++++++++++++................")
 
     def update_light_sensors(self, simulator):
-        """ Updates the light sensors """
+        """Updates the light sensors"""
         # light_source = self.get_shining_light()
         # compute the angular distance of each light sensor to the light source.
         # based on the angular distance, use a gaussian to determine the sensor
@@ -287,7 +375,8 @@ class Initio(basicsprite.BasicSprite):
         sensor_angles = []
         for ls in self.light_sensors:
             sensor_angles.append(
-                (ls.name, ls.update_sensor(simulator)))  # ls.update_sensor() will update each sensor's value
+                (ls.name, ls.update_sensor(simulator))
+            )  # ls.update_sensor() will update each sensor's value
             # if self.position_changed() and not self.is_rotating:
             # update sensor values based on euclidean distance from ray end
             # dist = ls.angdistance_to_rayend(simulator)
@@ -302,7 +391,7 @@ class Initio(basicsprite.BasicSprite):
     def update(self, dt, simulator):
         """Update the state of the robot. This updates the velocity of the robot based on the current velocity commands
         self.vx and self.vth. Also updates the position of the sonar sensor sprite accordingly. This function will not
-        update the robots state if the robot is currently being moved by the user (via mouse drag). """
+        update the robots state if the robot is currently being moved by the user (via mouse drag)."""
         super(Initio, self).update(dt)
         if not self.mouse_move_state:
             angle_radians = -math.radians(self.rotation)
@@ -327,7 +416,7 @@ class Initio(basicsprite.BasicSprite):
         #         and not simulator.ray_was_dragged:
         #     if simulator.light_source.x < self.x:
         #         px = self.x - self.image.width / 2
-         #    elif simulator.light_source.x == self.x:
+        #    elif simulator.light_source.x == self.x:
         #         px = self.x
         #     else:
         #         px = self.x + self.image.width / 2
@@ -337,7 +426,7 @@ class Initio(basicsprite.BasicSprite):
         #         py = self.y
         #     else:
         #         py = self.y + self.image.height / 2
-         #    simulator.light_follow_mouse(px, py)
+        #    simulator.light_follow_mouse(px, py)
 
     def robot_collides_with(self, other_object):
         """Collision checking between the robot and another object. This function uses ver simple radius based collision
@@ -350,8 +439,7 @@ class Initio(basicsprite.BasicSprite):
         return actual_distance <= collision_distance
 
     def get_shining_light(self):
-        """Checks if there is a light source in the world and returns it
-        """
+        """Checks if there is a light source in the world and returns it"""
         if self.static_objects is not None:
             for obj in self.static_objects:
                 if obj.object_type.startswith("light"):
@@ -367,8 +455,7 @@ class Initio(basicsprite.BasicSprite):
         src.util.circle(self.x, self.y, 5)
 
     def indicate_position(self):
-        """ lights up the led at its position with its colour value
-        """
+        """lights up the led at its position with its colour value"""
         vertices_fill = self.make_circle_filled()
 
         colour_opacity = 255
@@ -376,13 +463,19 @@ class Initio(basicsprite.BasicSprite):
         fill_colour = (255, 255, 255, colour_opacity)
 
         # now fill the LED with the current light setting
-        self.batch.add(int(len(vertices_fill) / 2), pyglet.gl.GL_POINTS, None,
-                       ('v2f', vertices_fill),
-                       ('c4B', fill_colour * int(len(vertices_fill) / 2)))
+        self.batch.add(
+            int(len(vertices_fill) / 2),
+            pyglet.gl.GL_POINTS,
+            None,
+            ("v2f", vertices_fill),
+            ("c4B", fill_colour * int(len(vertices_fill) / 2)),
+        )
 
     def make_circle_filled(self):
         verts = []
-        for radius in range(4, 0, -1):  # LED_RADIUS-1 so we don't cover the outline of the circle
+        for radius in range(
+            4, 0, -1
+        ):  # LED_RADIUS-1 so we don't cover the outline of the circle
             num_points = int(100.0 * radius / 4.0)
             for i in range(num_points):
                 angle = math.radians(float(i) / num_points * 360.0)
