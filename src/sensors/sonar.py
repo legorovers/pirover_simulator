@@ -85,6 +85,7 @@ class Sonar(object):
     TODO:
     - add gaussian noise / variance
     - use OpenGL to draw the rays
+    - profile this, view call stack for previous distance function
     """
     BEAMS = 30
     def __init__(self, sensor_map, min_range, max_range, cone_angle, beams):
