@@ -14,17 +14,17 @@ import src.sprites.basicsprite
 import src.util
 from .sonar import Sonar
 
-
 class FixedTransformDistanceSensor(object):
-    def __init__(self, parent_robot, sensor_map, offset_x, offset_y, sensor_rot, min_range, max_range, beam_angle):
+    def __init__(self, parent_robot, sensor_map, offset_x, offset_y, sensor_rot, min_range, max_range, beam_angle, beams):
         self.parent_robot = parent_robot
-        self.sensor = Sonar(sensor_map, min_range, max_range, beam_angle)
+        self.sensor = Sonar(sensor_map, min_range, max_range, beam_angle, Sonar.BEAMS)
         self.sensor_offset_x = offset_x
         self.sensor_offset_y = offset_y
         self.sensor_rotation = sensor_rot
         self.sensor_range = 0
         self.sensor_x = 0
         self.sensor_y = 0
+        self.beams = beams
 
     def update_sensor(self):
         """Calculates the XY position of the sensor origin based on the current position of the robot and
@@ -41,6 +41,7 @@ class FixedTransformDistanceSensor(object):
     def get_distance(self):
         """Returns the last reading taken by this sensor."""
         # print (self.sensor_range)
+        self.update_sensor()
         return self.sensor_range
 
     def get_fixed_triggered(self, trigger_distance):
@@ -88,7 +89,7 @@ class PanningDistanceSensor(src.sprites.basicsprite.BasicSprite):
         self.sonar_angle_min = -90
         self.sonar_angle = 0
         self.sonar_angle_target = 0
-        self.sonar_sensor = Sonar(sonar_map, min_range, max_range, beam_angle)
+        self.sonar_sensor = Sonar(sonar_map, min_range, max_range, beam_angle, Sonar.BEAMS)
         # centre point of sensor image sprite
         self.sensor_offset_x = self.width - 8
         self.sensor_offset_y = offset_y

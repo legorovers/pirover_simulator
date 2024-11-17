@@ -33,6 +33,7 @@ LINE_OFFSET_X = 40
 LINE_OFFSET_Y = 14
 SONAR_OFFSET_X = 50
 LED_INIT_FLASH_COUNT = 5
+BEAMS = 30
 
 READ_INTERVAL = 0.01
 PUBLISH_INTERVAL = 0.03
@@ -62,16 +63,16 @@ class Pi2Go(basicsprite.BasicSprite):
         y_light_offset = self.image.height/2
         
         self.sonar_sensor = FixedTransformDistanceSensor(self, self.sonar_map, SONAR_OFFSET_X, 0, 0, SONAR_MIN_RANGE,
-                                                         SONAR_MAX_RANGE, SONAR_BEAM_ANGLE)
+                                                         SONAR_MAX_RANGE, SONAR_BEAM_ANGLE, BEAMS)
 
         self.ir_left_sensor = FixedTransformDistanceSensor(self, self.sonar_map, IR_OFFSET_X, IR_OFFSET_Y,
-                                                           IR_SENSOR_ANGLE, IR_MIN_RANGE, IR_MAX_RANGE, 0.25)
+                                                           IR_SENSOR_ANGLE, IR_MIN_RANGE, IR_MAX_RANGE, 0.25, BEAMS)
 
         self.ir_middle_sensor = FixedTransformDistanceSensor(self, self.sonar_map, IR_OFFSET_X_MIDDLE, 0,
-                                                             0, IR_MIN_RANGE, IR_MAX_RANGE, 0.25)
+                                                             0, IR_MIN_RANGE, IR_MAX_RANGE, 0.25, BEAMS)
 
         self.ir_right_sensor = FixedTransformDistanceSensor(self, self.sonar_map, IR_OFFSET_X, -IR_OFFSET_Y,
-                                                            -IR_SENSOR_ANGLE, IR_MIN_RANGE, IR_MAX_RANGE, 0.25)
+                                                            -IR_SENSOR_ANGLE, IR_MIN_RANGE, IR_MAX_RANGE, 0.25, BEAMS)
                                                             
         self.light_frontleft_sensor = FixedLightSensor(self, x_light_offset, y_light_offset-10, "FrontLeft", drawing_colour=(255,0,0,255))
         self.light_frontright_sensor = FixedLightSensor(self, x_light_offset, -y_light_offset+10, "FrontRight", drawing_colour=(0,255,0,255))
@@ -444,7 +445,7 @@ class Pi2Go(basicsprite.BasicSprite):
     
     def update_sensors(self):
         """Take a new reading for each sensor."""
-        self.sonar_sensor.update_sensor()
+        #self.sonar_sensor.update_sensor()
         self.ir_left_sensor.update_sensor()
         self.ir_middle_sensor.update_sensor()
         self.ir_right_sensor.update_sensor()

@@ -25,6 +25,8 @@ from src.windows.startwindow import StartWindow
 
 if __name__ == "__main__":
     try:
+        print(pyglet.version)
+        assert (pyglet.version=="2.0.9")
         selected_file = ""
         selected_robot = ""
         start_window = None
