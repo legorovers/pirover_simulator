@@ -34,35 +34,35 @@ class SimulatorClient:
         self.front_led2_red_value = 0
         self.front_led2_green_value = 0
         self.front_led2_blue_value = 0
-        
+
         self.left_led1_red_value = 0
         self.left_led1_green_value = 0
         self.left_led1_blue_value = 0
         self.left_led2_red_value = 0
         self.left_led2_green_value = 0
         self.left_led2_blue_value = 0
-        
+
         self.right_led1_red_value = 0
         self.right_led1_green_value = 0
         self.right_led1_blue_value = 0
         self.right_led2_red_value = 0
         self.right_led2_green_value = 0
         self.right_led2_blue_value = 0
-        
+
         self.back_led1_red_value = 0
         self.back_led1_green_value = 0
         self.back_led1_blue_value = 0
         self.back_led2_red_value = 0
         self.back_led2_green_value = 0
         self.back_led2_blue_value = 0
-        
+
         self.fr_light_sensor = 0
         self.fl_light_sensor = 0
         self.br_light_sensor = 0
         self.bl_light_sensor = 0
-        
+
         self.robot_control_switch_on = False
-        
+
         self.robot_name = "Not Connected"
 
         self.update_thread = threading.Thread(target=self.update_state)
@@ -75,10 +75,9 @@ class SimulatorClient:
         time.sleep(1)
         print("initialisation complete")
 
-    
     def getRobotName(self):
         return self.robot_name
-        
+
     def setServo(self, servo, degrees):
         """Set the angle of the panning sonar on the robot."""
         if servo == PAN:
@@ -105,7 +104,11 @@ class SimulatorClient:
         if self.robot_name == "Initio":
             return self.ir_left_triggered or self.ir_right_triggered
         else:
-            return self.ir_left_triggered or self.ir_right_triggered or self.ir_middle_triggered
+            return (
+                self.ir_left_triggered
+                or self.ir_right_triggered
+                or self.ir_middle_triggered
+            )
 
     def irLeftLine(self):
         """Returns the state of the LEFT line sensor, returns True if a line is detected."""
@@ -122,7 +125,7 @@ class SimulatorClient:
 
     def reverse(self, speed):
         """reverse(speed): Sets both motors to reverse at speed. 0 <= speed <= 100"""
-        #print("A")
+        # print("A")
         self.vx = -speed
         self.vth = 0
 
@@ -136,25 +139,25 @@ class SimulatorClient:
         self.vx = 0
         self.vth = -speed
 
-#   def spinLeftBriefly(self, speed, spin_time):
-#         """spinLeft(speed): Sets motors to turn opposite directions at speed. 0 <= speed <= 100"""
-#         self.spinLeft(speed)
-#         self.spin_time = spin_time
-# 
-#     def spinRightBriefly(self, speed, spin_time):
-#         """spinRight(speed): Sets motors to turn opposite directions at speed. 0 <= speed <= 100"""
-#         self.spinRight(speed)
-#         self.spin_time = spin_time
-        
+    #   def spinLeftBriefly(self, speed, spin_time):
+    #         """spinLeft(speed): Sets motors to turn opposite directions at speed. 0 <= speed <= 100"""
+    #         self.spinLeft(speed)
+    #         self.spin_time = spin_time
+    #
+    #     def spinRightBriefly(self, speed, spin_time):
+    #         """spinRight(speed): Sets motors to turn opposite directions at speed. 0 <= speed <= 100"""
+    #         self.spinRight(speed)
+    #         self.spin_time = spin_time
+
     def turnForward(self, left_speed, right_speed):
         """turnForward(leftSpeed, rightSpeed): Moves forwards in an arc by setting different speeds.
-            0 <= leftSpeed,rightSpeed <= 100"""
+        0 <= leftSpeed,rightSpeed <= 100"""
         self.vx = left_speed + right_speed / 2.0
         self.vth = right_speed - left_speed
 
     def turnReverse(self, left_speed, right_speed):
         """turnReverse(leftSpeed, rightSpeed): Moves backwards in an arc by setting different speeds.
-            0 <= leftSpeed,rightSpeed <= 100"""
+        0 <= leftSpeed,rightSpeed <= 100"""
         self.vx = -(left_speed + right_speed / 2.0)
         self.vth = right_speed - left_speed
 
@@ -162,12 +165,11 @@ class SimulatorClient:
         """Stops both motors"""
         self.vx = 0
         self.vth = 0
-        
-    
+
     def getSwitch(self):
         """Returns the value of the tact switch: True==pressed"""
         return self.robot_control_switch_on
-    
+
     def getLight(self, sensor):
         """Returns the value 0..1023 for the selected sensor, 0 <= Sensor <= 3"""
         if sensor == 0:
@@ -180,19 +182,19 @@ class SimulatorClient:
             return self.getLightBL()
         else:
             return 0
-    
+
     def getLightFL(self):
         """Returns the value 0..1023 for Front-Left light sensor"""
         return self.fl_light_sensor
-    
+
     def getLightFR(self):
         """Returns the value 0..1023 for Front-Right light sensor."""
         return self.fr_light_sensor
-    
+
     def getLightBL(self):
         """Returns the value 0..1023 for Back-Left light sensor"""
         return self.bl_light_sensor
-    
+
     def getLightBR(self):
         """Returns the value 0..1023 for Back-Right light sensor"""
         return self.br_light_sensor
@@ -201,76 +203,106 @@ class SimulatorClient:
         """Control the robot by giving it a linear (vx) and angular velocity (vth)"""
         self.vx = vx
         self.vth = vth
- 
-#======================================================================
-# Pi2Go only functions - placeholders for now
-#======================================================================
-   
+
+    # ======================================================================
+    # Pi2Go only functions - placeholders for now
+    # ======================================================================
+
     def setLED(self, LED, red, green, blue):
         """Sets the LED specified to required RGB value. 0 >= LED <= 7; 0 <= R,G,B <= 4095"""
         # print ("setting leds")
-        if (LED == 0): # first front led (front-left)
+        if LED == 0:  # first front led (front-left)
             self.front_led1_red_value = red
             self.front_led1_green_value = green
             self.front_led1_blue_value = blue
-         # elif (LED == 1): # second front led (front-right)
+            # elif (LED == 1): # second front led (front-right)
             self.front_led2_red_value = red
             self.front_led2_green_value = green
             self.front_led2_blue_value = blue
-        elif (LED == 1): # first right-side led
+        elif LED == 1:  # first right-side led
             self.right_led1_red_value = red
             self.right_led1_green_value = green
             self.right_led1_blue_value = blue
-         # elif (LED == 3): # second right-side led
+            # elif (LED == 3): # second right-side led
             self.right_led2_red_value = red
             self.right_led2_green_value = green
             self.right_led2_blue_value = blue
-        elif (LED == 2): # first back-side led
+        elif LED == 2:  # first back-side led
             self.back_led1_red_value = red
             self.back_led1_green_value = green
             self.back_led1_blue_value = blue
-         # elif (LED == 5): # second back-side led
+            # elif (LED == 5): # second back-side led
             self.back_led2_red_value = red
             self.back_led2_green_value = green
             self.back_led2_blue_value = blue
-        elif (LED == 3): # first left-side led
+        elif LED == 3:  # first left-side led
             self.left_led1_red_value = red
             self.left_led1_green_value = green
             self.left_led1_blue_value = blue
-         # elif (LED == 7): # second left-side led
+            # elif (LED == 7): # second left-side led
             self.left_led2_red_value = red
             self.left_led2_green_value = green
             self.left_led2_blue_value = blue
-        #else:
+        # else:
         #    self.setAllLEDs(red, green, blue)
-
 
     def setAllLEDs(self, red, green, blue):
         """Sets all LEDs to required RGB. 0 <= R,G,B <= 4095"""
         for i in range(4):
             self.setLED(i, red, green, blue)
-    
+
     def getLED(self, LED):
         """Gets the RGB colour value of the LED specified. 0 >= LED <= 7; 0 <= R,G,B <= 4095"""
-        if (LED == 0): # first front led (front-left) 
-            return (self.front_led1_red_value, self.front_led1_green_value, self.front_led1_blue_value)
-        elif (LED == 1): # second front led (front-right)
-            return (self.front_led2_red_value, self.front_led2_green_value, self.front_led2_blue_value)
-        elif (LED == 2): # first right-side led
-            return (self.right_led1_red_value, self.right_led1_green_value, self.right_led1_blue_value)
-        elif (LED == 3): # second right-side led
-            return (self.right_led2_red_value, self.right_led2_green_value, self.right_led2_blue_value)
-        elif (LED == 4): # first back-side led
-            return (self.back_led1_red_value, self.back_led1_green_value, self.back_led1_blue_value)
-        elif (LED == 5): # second back-side led
-            return (self.back_led2_red_value, self.back_led2_green_value, self.back_led2_blue_value)
-        elif (LED == 6): # first left-side led
-            return (self.left_led1_red_value, self.left_led1_green_value, self.left_led1_blue_value)
-        elif (LED == 7): # second left-side led
-            return (self.left_led2_red_value, self.left_led2_green_value, self.left_led2_blue_value)
-        #else:
+        if LED == 0:  # first front led (front-left)
+            return (
+                self.front_led1_red_value,
+                self.front_led1_green_value,
+                self.front_led1_blue_value,
+            )
+        elif LED == 1:  # second front led (front-right)
+            return (
+                self.front_led2_red_value,
+                self.front_led2_green_value,
+                self.front_led2_blue_value,
+            )
+        elif LED == 2:  # first right-side led
+            return (
+                self.right_led1_red_value,
+                self.right_led1_green_value,
+                self.right_led1_blue_value,
+            )
+        elif LED == 3:  # second right-side led
+            return (
+                self.right_led2_red_value,
+                self.right_led2_green_value,
+                self.right_led2_blue_value,
+            )
+        elif LED == 4:  # first back-side led
+            return (
+                self.back_led1_red_value,
+                self.back_led1_green_value,
+                self.back_led1_blue_value,
+            )
+        elif LED == 5:  # second back-side led
+            return (
+                self.back_led2_red_value,
+                self.back_led2_green_value,
+                self.back_led2_blue_value,
+            )
+        elif LED == 6:  # first left-side led
+            return (
+                self.left_led1_red_value,
+                self.left_led1_green_value,
+                self.left_led1_blue_value,
+            )
+        elif LED == 7:  # second left-side led
+            return (
+                self.left_led2_red_value,
+                self.left_led2_green_value,
+                self.left_led2_blue_value,
+            )
+        # else:
         #    self.setAllLEDs(red, green, blue)
-
 
     def getAllLEDs(self):
         """Gets the RGB values of all LEDs. 0 <= R,G,B <= 4095"""
@@ -278,8 +310,6 @@ class SimulatorClient:
         for i in range(8):
             all_led_values.append(getLED(i))
         return all_led_values
-        
-        
 
     def send_commands(self):
         """Thread function which sends commands to the simulator via a UDP socket.
@@ -290,7 +320,7 @@ class SimulatorClient:
 
         Commands for the pi2go robot take the form:
 
-            <<LINEAR_VELOCITY;ANGULAR_VELOCITY; RED_LED; 
+            <<LINEAR_VELOCITY;ANGULAR_VELOCITY; RED_LED;
               FRONT_LED1_RED_VALUE;FRONT_LED1_GREEN_VALUE;FRONT_LED1_BLUE_VALUE;
               FRONT_LED2_RED_VALUE;FRONT_LED2_GREEN_VALUE;FRONT_LED2_BLUE_VALUE;
               LEFT_LED1_RED_VALUE;LEFT_LED1_GREEN_VALUE;LEFT_LED1_BLUE_VALUE;
@@ -301,52 +331,51 @@ class SimulatorClient:
               RIGHT_LED2_RED_VALUE;RIGHT_LED2_GREEN_VALUE;RIGHT_LED2_BLUE_VALUE>>
         """
         # print("starting sending thread")
-        sock = socket.socket(socket.AF_INET,  # Internet
-                             socket.SOCK_DGRAM)  # UDP
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # Internet  # UDP
         while self.running:
             try:
                 if self.robot_name == "INITIO":
-                    message = "<<%f;%f;%f>>" % (
-                    self.vx, self.vth, self.sonar_angle)
-                    sock.sendto(message.encode('utf-8'), (UDP_IP, UDP_COMMAND_PORT))
+                    message = "<<%f;%f;%f>>" % (self.vx, self.vth, self.sonar_angle)
+                    sock.sendto(message.encode("utf-8"), (UDP_IP, UDP_COMMAND_PORT))
                 elif self.robot_name == "PI2GO":
                     # print(self.front_led1_red_value)
-                    message = "<<%f;%f;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d>>" % (
-                    self.vx, self.vth,
-                    int(self.front_led1_red_value),
-                    int(self.front_led1_green_value),
-                    int(self.front_led1_blue_value),
-                    int(self.front_led2_red_value),
-                    int(self.front_led2_green_value),
-                    int(self.front_led2_blue_value),
-                    
-                    int(self.right_led1_red_value),
-                    int(self.right_led1_green_value),
-                    int(self.right_led1_blue_value),
-                    int(self.right_led2_red_value),
-                    int(self.right_led2_green_value),
-                    int(self.right_led2_blue_value),
-                            
-                    int(self.back_led1_red_value),
-                    int(self.back_led1_green_value),
-                    int(self.back_led1_blue_value),
-                    int(self.back_led2_red_value),
-                    int(self.back_led2_green_value),
-                    int(self.back_led2_blue_value),
-                                
-                    int(self.left_led1_red_value),
-                    int(self.left_led1_green_value),
-                    int(self.left_led1_blue_value),
-                    int(self.left_led2_red_value),
-                    int(self.left_led2_green_value),
-                    int(self.left_led2_blue_value))
+                    message = (
+                        "<<%f;%f;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d>>"
+                        % (
+                            self.vx,
+                            self.vth,
+                            int(self.front_led1_red_value),
+                            int(self.front_led1_green_value),
+                            int(self.front_led1_blue_value),
+                            int(self.front_led2_red_value),
+                            int(self.front_led2_green_value),
+                            int(self.front_led2_blue_value),
+                            int(self.right_led1_red_value),
+                            int(self.right_led1_green_value),
+                            int(self.right_led1_blue_value),
+                            int(self.right_led2_red_value),
+                            int(self.right_led2_green_value),
+                            int(self.right_led2_blue_value),
+                            int(self.back_led1_red_value),
+                            int(self.back_led1_green_value),
+                            int(self.back_led1_blue_value),
+                            int(self.back_led2_red_value),
+                            int(self.back_led2_green_value),
+                            int(self.back_led2_blue_value),
+                            int(self.left_led1_red_value),
+                            int(self.left_led1_green_value),
+                            int(self.left_led1_blue_value),
+                            int(self.left_led2_red_value),
+                            int(self.left_led2_green_value),
+                            int(self.left_led2_blue_value),
+                        )
+                    )
                     # print("sending message")
-                    sock.sendto(message.encode('utf-8'), (UDP_IP, UDP_COMMAND_PORT))
+                    sock.sendto(message.encode("utf-8"), (UDP_IP, UDP_COMMAND_PORT))
                 time.sleep(PUBLISH_INTERVAL)
             except:
                 self.running = False
         print("closed send socket\n")
-
 
     def update_state(self):
         """Thread function which receives the state of the robot from the simulator via a UDP socket.
@@ -354,20 +383,19 @@ class SimulatorClient:
         State strings for the initio take the form:
 
             <<ROBOT_NAME;SONAR_RANGE;LEFT_LINE;RIGHT_LINE;LEFT_IR;RIGHT_IR;
-            FRONT_LEFT_LIGHT_SENSOR;FRONT_RIGHT_LIGHT_SENSOR; 
+            FRONT_LEFT_LIGHT_SENSOR;FRONT_RIGHT_LIGHT_SENSOR;
              BACK_RIGHT_LIGHT_SENSOR;BACK_LEFT_LIGHT_SENSOR;>>
 
         State strings for the pi2go take the form:
 
              <<ROBOT_NAME;SONAR_RANGE;LEFT_LINE;RIGHT_LINE;LEFT_IR;MIDDLE_IR;RIGHT_IR;
-             FRONT_LEFT_LIGHT_SENSOR;FRONT_RIGHT_LIGHT_SENSOR; 
+             FRONT_LEFT_LIGHT_SENSOR;FRONT_RIGHT_LIGHT_SENSOR;
               BACK_RIGHT_LIGHT_SENSOR; BACK_LEFT_LIGHT_SENSOR;
              RED_LED_STATE; GREEN_LED_STATE; BLUE_LED_STATE; CONTROL_SWITCH>>
         """
         print("starting update thread")
         try:
-            sock = socket.socket(socket.AF_INET,  # Internet
-                             socket.SOCK_DGRAM)  # UDP
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # Internet  # UDP
             sock.bind((UDP_IP, UDP_DATA_PORT))
             # sock.settimeout(1)
         except:
@@ -376,7 +404,7 @@ class SimulatorClient:
         while self.running:
             # print("getting data")
             data_e, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
-            data = data_e.decode();
+            data = data_e.decode()
             if data.startswith("<<") and data.endswith(">>"):
                 data = data.replace("<<", "")
                 data = data.replace(">>", "")
@@ -405,28 +433,28 @@ class SimulatorClient:
                     self.fr_light_sensor = int(values_list[8])
                     self.br_light_sensor = int(values_list[9])
                     self.bl_light_sensor = int(values_list[10])
-                    
+
                     # self.front_led1_red_value = int(values_list[11])
                     # self.front_led1_green_value = int(values_list[12])
                     # self.front_led1_blue_value = int(values_list[13])
                     # self.front_led2_red_value = int(values_list[14])
                     # self.front_led2_green_value = int(values_list[15])
                     # self.front_led2_blue_value = int(values_list[16])
-                    
+
                     # self.right_led1_red_value = int(values_list[17])
                     # self.right_led1_green_value = int(values_list[18])
                     # self.right_led1_blue_value = int(values_list[19])
                     # self.right_led2_red_value = int(values_list[20])
                     # self.right_led2_green_value = int(values_list[21])
                     # self.right_led2_blue_value = int(values_list[22])
-                       
+
                     # self.back_led1_red_value = int(values_list[23])
                     # self.back_led1_green_value = int(values_list[24])
                     # self.back_led1_blue_value = int(values_list[25])
                     # self.back_led2_red_value = int(values_list[26])
                     # self.back_led2_green_value = int(values_list[27])
                     # self.back_led2_blue_value = int(values_list[28])
-     
+
                     # self.left_led1_red_value = int(values_list[29])
                     # self.left_led1_green_value = int(values_list[30])
                     # self.left_led1_blue_value = int(values_list[31])

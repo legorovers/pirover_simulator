@@ -10,10 +10,10 @@ initio.init()
 try:
     while True:
         if initio.irLeftLine():
-            initio.turnForward(speed-turn_speed, speed+turn_speed)
+            initio.turnForward(speed - turn_speed, speed + turn_speed)
             time.sleep(0.1)
         elif initio.irRightLine():
-            initio.turnForward(speed+turn_speed, speed-turn_speed)
+            initio.turnForward(speed + turn_speed, speed - turn_speed)
             time.sleep(0.1)
         else:
             initio.forward(speed)

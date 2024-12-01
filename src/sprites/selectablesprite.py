@@ -6,7 +6,9 @@ import pyglet
 
 
 class SelectSprite(pyglet.sprite.Sprite):
-    def __init__(self, object_type, idx, texture, x, y, batch, scale=1.0, image_data=None):
+    def __init__(
+        self, object_type, idx, texture, x, y, batch, scale=1.0, image_data=None
+    ):
         self.texture = texture
         super(SelectSprite, self).__init__(self.texture, batch=batch)
         self.scale = scale

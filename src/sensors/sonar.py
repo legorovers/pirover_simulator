@@ -8,6 +8,7 @@ Note the sonar sensor will be triggered by the edges of the map/screen as well a
 """
 
 from math import pi, cos, sin
+
 try:
     import numpy as np
 except ImportError:
@@ -32,8 +33,8 @@ class Map(object):
 
     def insert_rectangle(self, ctr_x, ctr_y, size_x, size_y, cell_value=1):
         """Insert a rectangle into the Grid Map at position defined by (ctr_x, ctr_y) and
-            size (size_x, size_y). The optional cell value allows this function to be used to
-            delete a rectangle."""
+        size (size_x, size_y). The optional cell value allows this function to be used to
+        delete a rectangle."""
         ctr_x_cells = int(ctr_x / self.resolution)
         ctr_y_cells = int(ctr_y / self.resolution)
         # size_x_cells = int(size_x / self.resolution)
@@ -46,8 +47,8 @@ class Map(object):
 
     def delete_rectangle(self, ctr_x, ctr_y, size_x, size_y):
         """Delete a rectangle into the Grid Map at position defined by (ctr_x, ctr_y) and
-            size (size_x, size_y). Uses the code from the insert_rectangle function to
-            avoid duplication."""
+        size (size_x, size_y). Uses the code from the insert_rectangle function to
+        avoid duplication."""
         self.insert_rectangle(ctr_x, ctr_y, size_x, size_y, 0)
 
     def set_cell(self, x, y, val):
@@ -61,13 +62,22 @@ class Map(object):
         for x in range(self.width):
             for y in range(self.height):
                 if self.grid[y][x]:
-                    square_coords = (x * cell_size, y * cell_size,
-                                     x * cell_size, y * cell_size + cell_size,
-                                     x * cell_size + cell_size, y * cell_size,
-                                     x * cell_size + cell_size, y * cell_size + cell_size)
-                    pyglet.graphics.draw_indexed(4, pyglet.gl.GL_TRIANGLES,
-                                                 [0, 1, 2, 1, 2, 3],
-                                                 ('v2i', square_coords))
+                    square_coords = (
+                        x * cell_size,
+                        y * cell_size,
+                        x * cell_size,
+                        y * cell_size + cell_size,
+                        x * cell_size + cell_size,
+                        y * cell_size,
+                        x * cell_size + cell_size,
+                        y * cell_size + cell_size,
+                    )
+                    pyglet.graphics.draw_indexed(
+                        4,
+                        pyglet.gl.GL_TRIANGLES,
+                        [0, 1, 2, 1, 2, 3],
+                        ("v2i", square_coords),
+                    )
 
 
 class Sonar(object):
@@ -83,7 +93,9 @@ class Sonar(object):
         # start at max range
         self.current_range = self.max_range
         # create a bundle of rays to replicate a sonar beam
-        sweep = np.arange(-self.cone_angle / 2.0, self.cone_angle / 2.0, SONAR_BEAM_STEP)
+        sweep = np.arange(
+            -self.cone_angle / 2.0, self.cone_angle / 2.0, SONAR_BEAM_STEP
+        )
         # cast each ray until it hits an obstacle or the end of the map
         # print (self.sensor_map.grid)
         for angle in sweep:
@@ -98,7 +110,10 @@ class Sonar(object):
                 ymap += distance * sin(angle + theta)
                 ymap = int(ymap)
 
-                if ymap > self.sensor_map.height - 1 or xmap > self.sensor_map.width - 1:
+                if (
+                    ymap > self.sensor_map.height - 1
+                    or xmap > self.sensor_map.width - 1
+                ):
                     break
 
                 if ymap < 1 or xmap < 1:
