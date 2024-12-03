@@ -28,4 +28,4 @@ To run the project on Linux and Windows run `python3 pysim.py` and for MacOS run
 ## Contributing
 
 This project makes use of the [`pre-commit`](https://pre-commit.com/) package to ensure code is up to standard,
-before committing any changes, ensure you have installed all it from the instructions in [Install](#install) and then run `pre-commit install` in the repository
+before committing any changes, ensure you have installed the pip packages from the instructions in [Install](#install) and then run `pre-commit install` in the repository
