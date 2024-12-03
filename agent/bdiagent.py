@@ -45,7 +45,7 @@ class Agent:
 
     # A goal is achieved if either it shares a name with a belief and the belief is true or its associated function returns true
     def is_achieved(self, goal):
-        if goal in self.beliefbase.keys():
+        if goal in self.beliefbase:
             if self.beliefbase[goal] == 1:
                 return 1
             return 0
@@ -58,27 +58,27 @@ class Agent:
     # When a goal is achieved it is removed from the goalbase, if it is a subgoal of some other goal then the next subgoal should now be attempted
     def achieved_goal(self, goal, goalbase):
         goalbase.remove(goal)
-        if goal in self.pending_goals.keys():
+        if goal in self.pending_goals:
             next_goallist = self.pending_goals[goal]
             next_goal = next_goallist.pop(0)
             self.add_goal(next_goal)
             self.pending_goals.pop(goal, None)
-            if len(next_goallist) > 0:
+            if len(next_goallist):
                 self.pending_goals[next_goal] = next_goallist
         return
 
     def selectRule(self, beliefbase, goalbase):
-        for key in self.rules.keys():
+        for key in self.rules:
             tuple = self.rules[key]
             guard = tuple[0]
             evaluated_guard = guard()
             if evaluated_guard == 1:
                 selected_rule = tuple[1]
                 return selected_rule
-            elif type(evaluated_guard) == list:
+            elif type(evaluated_guard) is list:
                 rule = tuple[1]
-                if len(evaluated_guard) > 0:
-                    selected_rule = lambda: rule(evaluated_guard[0])
+                if len(evaluated_guard):
+                    def selected_rule(): return rule(evaluated_guard[0])
                     return selected_rule
 
     def execute(self, rule, robot, rule_info):
@@ -183,7 +183,7 @@ class Agent:
         self.num_rules = self.num_rules + 1
 
     def add_pick_best_rule(self, set, cmp_function, rule):
-        bestof = lambda: self.best_of(set, cmp_function)
+        def bestof(): return self.best_of(set, cmp_function)
         self.rules[self.num_rules] = (bestof, rule)
         self.num_rules = self.num_rules + 1
 
