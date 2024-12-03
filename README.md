@@ -25,3 +25,7 @@ To run the project on Linux and Windows run `python3 pysim.py` and for MacOS run
 - Make physics more realistic
 - Make new workbooks targeted at half hour visits for about 15 children (ages 11-14)
 
+## Contributing
+
+This project makes use of the [`pre-commit`](https://pre-commit.com/) package to ensure code is up to standard,
+before committing any changes, ensure you have installed all it from the instructions in [Install](#install) and then run `pre-commit install` in the repository
