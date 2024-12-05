@@ -36,7 +36,7 @@ try:
                 print("right wins")
                 initio.spinRight(turn_speed)
             else:
-                initio.spinLeft(turn_speed+20)
+                initio.spinLeft(turn_speed + 20)
             while True:
                 print("turning")
                 time.sleep(0.25)

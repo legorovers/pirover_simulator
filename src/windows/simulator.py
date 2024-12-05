@@ -17,29 +17,44 @@ from src.sprites.basicsprite import BasicSprite
 from src.windows.objectwindow import ObjectWindow
 
 LIGHT_BEAM_ANGWIDTH = src.sensors.lightsensor.LIGHT_BEAM_ANGWIDTH
-PADDING=5
+PADDING = 5
+
 
 class Simulator(pyglet.window.Window):
-    def __init__(self, world_file="default.xml", selected_robot="Initio", tk_start_window=None):
+    def __init__(
+        self, world_file="default.xml", selected_robot="Initio", tk_start_window=None
+    ):
         # create the rendering batches and groups
         self.sprites = {}
         self.batches = {}
         self.subgroups = {}
         self._handles = {}
-        
-        self.batches['bg_batch'] = pyglet.graphics.Batch()
-        self.batches['fg_batch'] = pyglet.graphics.Batch()
-        self.subgroups['background_group'] = pyglet.graphics.Group(0)
-        self.subgroups['line_map_group'] = pyglet.graphics.Group(1)
-        self.subgroups['foreground_group'] = pyglet.graphics.Group(2)
+
+        self.batches["bg_batch"] = pyglet.graphics.Batch()
+        self.batches["fg_batch"] = pyglet.graphics.Batch()
+        self.subgroups["background_group"] = pyglet.graphics.Group(0)
+        self.subgroups["line_map_group"] = pyglet.graphics.Group(1)
+        self.subgroups["foreground_group"] = pyglet.graphics.Group(2)
 
         # load all the dynamic assets
-        self.dyn_assets = DynamicAsssets(world_file, selected_robot, self, tk_start_window, self.batches['bg_batch'], self.batches['fg_batch'],
-                                         self.subgroups['background_group'], self.subgroups['line_map_group'], self.subgroups['foreground_group'])
+        self.dyn_assets = DynamicAsssets(
+            world_file,
+            selected_robot,
+            self,
+            tk_start_window,
+            self.batches["bg_batch"],
+            self.batches["fg_batch"],
+            self.subgroups["background_group"],
+            self.subgroups["line_map_group"],
+            self.subgroups["foreground_group"],
+        )
 
         # create the window
-        super(Simulator, self).__init__(self.dyn_assets.background_image.width, self.dyn_assets.background_image.height,
-                                        fullscreen=False)
+        super(Simulator, self).__init__(
+            self.dyn_assets.background_image.width,
+            self.dyn_assets.background_image.height,
+            fullscreen=False,
+        )
 
         self.object_window = None
         self.edit_mode = False
@@ -47,19 +62,23 @@ class Simulator(pyglet.window.Window):
 
         # decide which type of robot to load
         if selected_robot == "Initio":
-            self.robot = Initio(line_map_sprite=self.dyn_assets.line_map_sprite,
-                                sonar_map=self.dyn_assets.sonar_map,
-                                static_objects=self.dyn_assets.static_objects,
-                                batch=self.batches['fg_batch'],
-                                window_width=self.dyn_assets.background_image.width,
-                                window_height=self.dyn_assets.background_image.height)
+            self.robot = Initio(
+                line_map_sprite=self.dyn_assets.line_map_sprite,
+                sonar_map=self.dyn_assets.sonar_map,
+                static_objects=self.dyn_assets.static_objects,
+                batch=self.batches["fg_batch"],
+                window_width=self.dyn_assets.background_image.width,
+                window_height=self.dyn_assets.background_image.height,
+            )
         elif selected_robot == "Pi2Go":
-            self.robot = Pi2Go(line_map_sprite=self.dyn_assets.line_map_sprite,
-                               sonar_map=self.dyn_assets.sonar_map,
-                               static_objects=self.dyn_assets.static_objects,
-                               batch=self.batches['fg_batch'],
-                               window_width=self.dyn_assets.background_image.width,
-                               window_height=self.dyn_assets.background_image.height)
+            self.robot = Pi2Go(
+                line_map_sprite=self.dyn_assets.line_map_sprite,
+                sonar_map=self.dyn_assets.sonar_map,
+                static_objects=self.dyn_assets.static_objects,
+                batch=self.batches["fg_batch"],
+                window_width=self.dyn_assets.background_image.width,
+                window_height=self.dyn_assets.background_image.height,
+            )
 
         # bind the robot to the control switch
         if selected_robot == "Pi2Go":
@@ -88,15 +107,21 @@ class Simulator(pyglet.window.Window):
         pyglet.gl.glBlendFunc(pyglet.gl.GL_SRC_ALPHA, pyglet.gl.GL_ONE_MINUS_SRC_ALPHA)
 
         # Add event handlers to some of the dynamic assets, notably the menu buttons
-        self.dyn_assets.edit_menu_button_sprite.set_mouse_press_handler(self.edit_menu_button_handler)
-        self.dyn_assets.save_menu_button_sprite.set_mouse_press_handler(self.save_menu_button_handler)
-        self.dyn_assets.close_menu_button_sprite.set_mouse_press_handler(self.close_menu_button_handler)
+        self.dyn_assets.edit_menu_button_sprite.set_mouse_press_handler(
+            self.edit_menu_button_handler
+        )
+        self.dyn_assets.save_menu_button_sprite.set_mouse_press_handler(
+            self.save_menu_button_handler
+        )
+        self.dyn_assets.close_menu_button_sprite.set_mouse_press_handler(
+            self.close_menu_button_handler
+        )
 
         # to activate an event handler we need to 'push' it
         # # First for the menu buttons
-        #self.push_handlers(self.dyn_assets.edit_menu_button_sprite.on_mouse_press)
-        #self.push_handlers(self.dyn_assets.save_menu_button_sprite.on_mouse_press)
-        #self.push_handlers(self.dyn_assets.close_menu_button_sprite.on_mouse_press)
+        # self.push_handlers(self.dyn_assets.edit_menu_button_sprite.on_mouse_press)
+        # self.push_handlers(self.dyn_assets.save_menu_button_sprite.on_mouse_press)
+        # self.push_handlers(self.dyn_assets.close_menu_button_sprite.on_mouse_press)
 
         # Now for other handlers - for this window and others
         self.push_handlers(self.on_mouse_drag)
@@ -111,7 +136,7 @@ class Simulator(pyglet.window.Window):
             for handler in obj.event_handlers:
                 self.edit_mode_handlers.append(handler)
 
-        if (selected_robot == "Pi2Go"):
+        if selected_robot == "Pi2Go":
             for handler in self.dyn_assets.switch_sprite.event_handlers:
                 self.push_handlers(handler)
 
@@ -138,11 +163,17 @@ class Simulator(pyglet.window.Window):
 
     def print_lightsensor_values(self, dt):
         # print("printing light sensor values:\n")
-        print(("FL = %f; FR = %f; BL = %f; BR = %f\n\n" % (
-            self.robot.light_frontleft_sensor.value,
-            self.robot.light_frontright_sensor.value,
-            self.robot.light_backleft_sensor.value,
-            self.robot.light_backright_sensor.value)))
+        print(
+            (
+                "FL = %f; FR = %f; BL = %f; BR = %f\n\n"
+                % (
+                    self.robot.light_frontleft_sensor.value,
+                    self.robot.light_frontright_sensor.value,
+                    self.robot.light_backleft_sensor.value,
+                    self.robot.light_backright_sensor.value,
+                )
+            )
+        )
 
     def switch_handlers(self):
         """Switches between the edit mode and non edit mode handlers."""
@@ -161,13 +192,15 @@ class Simulator(pyglet.window.Window):
     def render(self):
         """Main rendering function."""
         # self.clear()
-        self.batches['bg_batch'].draw()
-        self.batches['fg_batch'].draw()
+        self.batches["bg_batch"].draw()
+        self.batches["fg_batch"].draw()
         # self.fps_display.draw()
 
     def spawn_edit_window(self):
         """Opens the edit toolbar."""
-        self.object_window = ObjectWindow(240, self.dyn_assets.background_image.height, self.dyn_assets)
+        self.object_window = ObjectWindow(
+            240, self.dyn_assets.background_image.height, self.dyn_assets
+        )
         x, y = self.get_location()
         self.object_window.set_location(x + self.dyn_assets.background_image.width, y)
         self.object_window.set_visible(True)
@@ -177,54 +210,68 @@ class Simulator(pyglet.window.Window):
         # self.light_ray = None
         if buttons & mouse.LEFT:
             # we use the left mouse button to move the terminal points of the light ray around.
-            moving_non_light_object = False;
+            moving_non_light_object = False
 
             for obj in self.dyn_assets.static_objects:
                 if obj.mouse_move_state:
-                    moving_non_light_object = True;
+                    moving_non_light_object = True
                     self.objects_detected_for_move = self.objects_detected_for_move + 1
-                    
+
             # print (self.robot.mouse_move_state);
-            if ((not (self.light_ray is None)) and (not moving_non_light_object) and (not self.robot.mouse_move_state)): # and (not self.dyn_assets.line_map_sprite.mouse_move_state)):
-                if ((self.dyn_assets.line_map_sprite is None) or (not self.dyn_assets.line_map_sprite.mouse_move_state)):
+            if (
+                (not (self.light_ray is None))
+                and (not moving_non_light_object)
+                and (not self.robot.mouse_move_state)
+            ):  # and (not self.dyn_assets.line_map_sprite.mouse_move_state)):
+                if (self.dyn_assets.line_map_sprite is None) or (
+                    not self.dyn_assets.line_map_sprite.mouse_move_state
+                ):
                     self.is_ray_being_dragged = True
                     self.light_follow_mouse(x, y)
 
-
     def robot_lightray_area_cover(self):
-        """ obtain the span of the robot that the light beam/ray can encapsulate (this depends 
+        """obtain the span of the robot that the light beam/ray can encapsulate (this depends
         on the position of the light source with respect to the position of the robot,
         and the angle of the robot).
         for the ray to be touching/crossing the radius, the ray terminal has to fall into
-        the field enclosed by angle 'thresh_theta' computed above, i.e. the field covered 
-        by the maximum span of the robot given the direction of the light ray and the rotation 
-        of the robot. so below we compute the maximum angle of seperation of the ray from 
+        the field enclosed by angle 'thresh_theta' computed above, i.e. the field covered
+        by the maximum span of the robot given the direction of the light ray and the rotation
+        of the robot. so below we compute the maximum angle of seperation of the ray from
         either of the vertices that mark the span of the robot.
         """
-        thresh_theta, ray_boundaries_robot = self.robot.light_ray_boundary_vertices(self.light_source.x,
-                                                                                    self.light_source.y)
+        thresh_theta, ray_boundaries_robot = self.robot.light_ray_boundary_vertices(
+            self.light_source.x, self.light_source.y
+        )
         vertex_a = ray_boundaries_robot[0]
         vertex_b = ray_boundaries_robot[1]
         ray_terminus = (self.x_ray_end, self.y_ray_end)
 
         # "max" below because we need to use the boundary vertex that is farther from the ray terminal to calculate
         # the maximum span deviation of the ray from the robot
-        angle_sep = max(self.robot.positive_angle_radians(
-            self.robot.seperation_angle(vertex_a, ray_terminus, self.light_source.x, self.light_source.y)),
-                        self.robot.positive_angle_radians(
-                            self.robot.seperation_angle(vertex_b, ray_terminus, self.light_source.x,
-                                                        self.light_source.y)))
+        angle_sep = max(
+            self.robot.positive_angle_radians(
+                self.robot.seperation_angle(
+                    vertex_a, ray_terminus, self.light_source.x, self.light_source.y
+                )
+            ),
+            self.robot.positive_angle_radians(
+                self.robot.seperation_angle(
+                    vertex_b, ray_terminus, self.light_source.x, self.light_source.y
+                )
+            ),
+        )
         return angle_sep, thresh_theta
 
     def light_follow_mouse(self, x, y):
-        """ compute the ray end based on the direction of the ray: if it is touching the robot, stop it on the body
+        """compute the ray end based on the direction of the ray: if it is touching the robot, stop it on the body
         of the robot; but if it is not touching the robot, allow it to continue to the boundaries of the window
         """
         self.x_ray_end = x
         self.y_ray_end = y
 
         # begin by checking that the light is ON
-        if self.light_source is None: return
+        if self.light_source is None:
+            return
 
         angle_sep, thresh_theta = self.robot_lightray_area_cover()
 
@@ -232,7 +279,9 @@ class Simulator(pyglet.window.Window):
         # of the robot; but if it is not touching the robot, allow it to continue to the boundaries of the window
         window_x, window_y = self.get_location()
         if angle_sep > thresh_theta:
-            if angle_sep > thresh_theta + LIGHT_BEAM_ANGWIDTH / 2:  # set sensor values to zero only when the ray is not touching the robot at all
+            if (
+                angle_sep > thresh_theta + LIGHT_BEAM_ANGWIDTH / 2
+            ):  # set sensor values to zero only when the ray is not touching the robot at all
                 self.robot.receiving_light_focus = False
             else:
                 self.robot.receiving_light_focus = True
@@ -246,17 +295,19 @@ class Simulator(pyglet.window.Window):
                 else:
                     incr_y = y - 10
             elif math.fabs(y - self.light_source.y) / delta_x > 1:
-                inv_grad = (delta_x / math.fabs(y - self.light_source.y))
+                inv_grad = delta_x / math.fabs(y - self.light_source.y)
                 if self.light_source.x < x:
-                    incr_x = ((self.dyn_assets.background_image.width - 10) - x) * inv_grad
+                    incr_x = (
+                        (self.dyn_assets.background_image.width - 10) - x
+                    ) * inv_grad
                 else:
-                    incr_x = (x - 10)
+                    incr_x = x - 10
                 incr_y = incr_x * math.fabs(y - self.light_source.y) / delta_x
             elif math.fabs(y - self.light_source.y) / delta_x <= 1:
                 if self.light_source.x < x:
-                    incr_x = ((self.dyn_assets.background_image.width - 10) - x)
+                    incr_x = (self.dyn_assets.background_image.width - 10) - x
                 else:
-                    incr_x = (x - 10)
+                    incr_x = x - 10
                 incr_y = incr_x * math.fabs(y - self.light_source.y) / delta_x
 
             if self.light_source.x < x:
@@ -318,7 +369,10 @@ class Simulator(pyglet.window.Window):
                 objects_list = self.dyn_assets.static_objects[:]
 
                 # here we add the line map to our list of editable objects (only if we are looking to delete)
-                if operation == "delete" and self.dyn_assets.line_map_sprite is not None:
+                if (
+                    operation == "delete"
+                    and self.dyn_assets.line_map_sprite is not None
+                ):
                     objects_list.append(self.dyn_assets.line_map_sprite)
 
                 # here we loop through all objects and do a radius check to see if the point at which the user
@@ -337,12 +391,15 @@ class Simulator(pyglet.window.Window):
                     self.dyn_assets.background_sprite.delete()
                     sprite_image = self.object_window.get_selected_sprite_image()
                     util.center_image(sprite_image)
-                    self.dyn_assets.background_sprite = BasicSprite(sprite_image,
-                                                                    sprite_image.width / 2,
-                                                                    sprite_image.height / 2,
-                                                                    self.batches['bg_batch'],
-                                                                    self.subgroups['background_group'], "background",
-                                                                    sprite_idx)
+                    self.dyn_assets.background_sprite = BasicSprite(
+                        sprite_image,
+                        sprite_image.width / 2,
+                        sprite_image.height / 2,
+                        self.batches["bg_batch"],
+                        self.subgroups["background_group"],
+                        "background",
+                        sprite_idx,
+                    )
                 # handling the change line map operation
                 elif operation == "line_map":
                     # print("changing line map" + str(sprite_idx))
@@ -355,12 +412,21 @@ class Simulator(pyglet.window.Window):
                     # create a new line map sprite
                     sprite_image = self.object_window.get_selected_sprite_image()
                     util.center_image(sprite_image)
-                    self.dyn_assets.line_map_sprite = BasicSprite(sprite_image, x, y, self.batches['bg_batch'],
-                                                                  self.subgroups['foreground_group'], "line_map",
-                                                                  sprite_idx, src.resources.line_maps[sprite_idx])
+                    self.dyn_assets.line_map_sprite = BasicSprite(
+                        sprite_image,
+                        x,
+                        y,
+                        self.batches["bg_batch"],
+                        self.subgroups["foreground_group"],
+                        "line_map",
+                        sprite_idx,
+                        src.resources.line_maps[sprite_idx],
+                    )
 
                     # update the actual line sensor used by the robot
-                    self.robot.line_sensor_map.set_line_map(self.dyn_assets.line_map_sprite)
+                    self.robot.line_sensor_map.set_line_map(
+                        self.dyn_assets.line_map_sprite
+                    )
 
                     # add the new line maps handlers
                     for handler in self.dyn_assets.line_map_sprite.event_handlers:
@@ -371,7 +437,7 @@ class Simulator(pyglet.window.Window):
                     # a new light source have been placed in the world
                     # first delete any other light source -- here, I assume only one light source can be in the world.
                     self.delete_light_source_any()
-                    # process the light sprite image and shine the light 
+                    # process the light sprite image and shine the light
                     self.light_source = self.process_light_sprite(x, y, sprite_idx)
                     # initialising x_ray_end and y_ray_end for when the light source is introduced
                     # into the world.
@@ -389,14 +455,20 @@ class Simulator(pyglet.window.Window):
                     self.robot.receiving_light_focus = True
                     self.shine_light()
 
-
                 elif operation == "add" and not too_close:
                     # get the new object image
                     sprite_image = self.object_window.get_selected_sprite_image()
                     if sprite_image is not None:
                         # create the new sprite
-                        sprt_obj = BasicSprite(sprite_image, x, y, self.batches['fg_batch'],
-                                               self.subgroups['foreground_group'], "object", sprite_idx)
+                        sprt_obj = BasicSprite(
+                            sprite_image,
+                            x,
+                            y,
+                            self.batches["fg_batch"],
+                            self.subgroups["foreground_group"],
+                            "object",
+                            sprite_idx,
+                        )
 
                         # add it to the list of dynamic objects and update the object handlers
                         self.dyn_assets.static_objects.append(sprt_obj)
@@ -411,7 +483,9 @@ class Simulator(pyglet.window.Window):
                             self.robot.line_sensor_map.set_line_map(None)
                             self.dyn_assets.line_map_sprite = None
                         else:
-                            self.dyn_assets.sonar_map.delete_rectangle(x, y, selected_obj.width, selected_obj.height)
+                            self.dyn_assets.sonar_map.delete_rectangle(
+                                x, y, selected_obj.width, selected_obj.height
+                            )
                             self.dyn_assets.static_objects.remove(selected_obj)
 
                         # remove the object handlers
@@ -431,7 +505,7 @@ class Simulator(pyglet.window.Window):
 
                         # then delete the sprite and update the object handlers
                         selected_obj.delete()
-                        del (self.light_ray)
+                        del self.light_ray
                         self.light_ray = None
                         self.switch_handlers()
                         self.redraw_sonar_map()
@@ -440,9 +514,9 @@ class Simulator(pyglet.window.Window):
 
     def on_key_press(self, symbol, modifiers):
         """Handler user keypresses
-            E  =  Enable/Disable edit mode
-            Q  =  Quit the simulator
-            S = Save World Map???
+        E  =  Enable/Disable edit mode
+        Q  =  Quit the simulator
+        S = Save World Map???
         """
         if symbol == key.E:
             if self.edit_mode:
@@ -463,16 +537,16 @@ class Simulator(pyglet.window.Window):
             # First setup the robots to stop send/receive routine
             self.robot.publish_continue = False
             self.robot.receive_continue = False
-            #self.robot.sock_recv.shutdown(socket.SHUT_RD)
-            #self.robot.sock_recv.close()
-            #self.robot.sock_publish.shutdown(socket.SHUT_WR)
-            #self.robot.sock_publish.close()
-            #print("stopping robot")
+            # self.robot.sock_recv.shutdown(socket.SHUT_RD)
+            # self.robot.sock_recv.close()
+            # self.robot.sock_publish.shutdown(socket.SHUT_WR)
+            # self.robot.sock_publish.close()
+            # print("stopping robot")
             self.robot.stop_robot()
-            #print("calling super method")
+            # print("calling super method")
             super().close()
             # print("done quit")
-            #self.robot.sock_recv.close()
+            # self.robot.sock_recv.close()
         if symbol == key.S:
             self.dyn_assets.save_to_file()
 
@@ -480,10 +554,12 @@ class Simulator(pyglet.window.Window):
         """This function updates the sonar map ensuring all new objects are added."""
         self.dyn_assets.sonar_map.clear_map()
         for obj in self.dyn_assets.static_objects:
-            self.dyn_assets.sonar_map.insert_rectangle(obj.x, obj.y, obj.width, obj.height)
+            self.dyn_assets.sonar_map.insert_rectangle(
+                obj.x, obj.y, obj.width, obj.height
+            )
 
     def delete_light_source_any(self):
-        """delete any already existing light source 
+        """delete any already existing light source
         (for now we assume there can only be one light source in the world at a time)
         """
         obj_to_delete = None
@@ -493,13 +569,17 @@ class Simulator(pyglet.window.Window):
                 break
         if obj_to_delete is not None:
             # remove any existing handlers
-            if hasattr(obj_to_delete, 'event_handlers'):
+            if hasattr(obj_to_delete, "event_handlers"):
                 for handler in obj_to_delete.event_handlers:
                     self.edit_mode_handlers.remove(handler)
-            # then delete the light source sprite 
+            # then delete the light source sprite
             # remove it from visuals
-            self.dyn_assets.sonar_map.delete_rectangle(obj_to_delete.x, obj_to_delete.y, obj_to_delete.width,
-                                                       obj_to_delete.height)
+            self.dyn_assets.sonar_map.delete_rectangle(
+                obj_to_delete.x,
+                obj_to_delete.y,
+                obj_to_delete.width,
+                obj_to_delete.height,
+            )
             # remove it from the static objects data structure
             self.dyn_assets.static_objects.remove(obj_to_delete)
             # remove the object from the rendering batches and order
@@ -510,19 +590,24 @@ class Simulator(pyglet.window.Window):
             obj_to_delete.delete()
             # delete its ray too
             self.light_ray.delete()
-            del (self.light_ray)
+            del self.light_ray
             self.light_ray = None
 
-
     def process_light_sprite(self, mouse_xpos, mouse_ypos, sprite_idx):
-        """ Get a new light source image
-        """
+        """Get a new light source image"""
         sprite_image = self.object_window.get_selected_sprite_image()
         light_sprite_obj = None
         if sprite_image is not None:
             # create the new sprite
-            light_sprite_obj = BasicSprite(sprite_image, mouse_xpos, mouse_ypos, self.batches['fg_batch'],
-                                           self.subgroups['foreground_group'], "light", sprite_idx)
+            light_sprite_obj = BasicSprite(
+                sprite_image,
+                mouse_xpos,
+                mouse_ypos,
+                self.batches["fg_batch"],
+                self.subgroups["foreground_group"],
+                "light",
+                sprite_idx,
+            )
 
             # add it to the list of dynamic objects and update the object handlers
             self.dyn_assets.static_objects.append(light_sprite_obj)
@@ -531,15 +616,14 @@ class Simulator(pyglet.window.Window):
             self.switch_handlers()
         return light_sprite_obj
 
-
     def shine_light(self):  # , light_sprite_obj
-        """ Given a valid light source, produce a ray from that light source towards the center 
+        """Given a valid light source, produce a ray from that light source towards the center
         of the robot in the world. I assume there can be only one robot, for now, in the world.
         """
         # delete the current light ray
         if self.light_ray is not None:
             self.light_ray.delete()
-            del (self.light_ray)
+            del self.light_ray
             self.light_ray = None
 
         if self.light_source is not None:
@@ -552,17 +636,32 @@ class Simulator(pyglet.window.Window):
             x_robot_center = self.robot.x
             y_robot_center = self.robot.y
 
-            length_of_ray = math.sqrt((x_light_center - self.x_ray_end) ** 2 + (y_light_center - self.y_ray_end) ** 2)
-            delta_x = (x_light_center - self.x_ray_end)
-            angle_dir = math.pi / 2 if delta_x == 0 else math.atan2((y_light_center - self.y_ray_end), delta_x)
+            length_of_ray = math.sqrt(
+                (x_light_center - self.x_ray_end) ** 2
+                + (y_light_center - self.y_ray_end) ** 2
+            )
+            delta_x = x_light_center - self.x_ray_end
+            angle_dir = (
+                math.pi / 2
+                if delta_x == 0
+                else math.atan2((y_light_center - self.y_ray_end), delta_x)
+            )
 
-            verts = self.make_ray(source_x=x_light_center, source_y=y_light_center,
-                                  length=length_of_ray, angle_width_rad=LIGHT_BEAM_ANGWIDTH,
-                                  angle_dir_rad=angle_dir)
+            verts = self.make_ray(
+                source_x=x_light_center,
+                source_y=y_light_center,
+                length=length_of_ray,
+                angle_width_rad=LIGHT_BEAM_ANGWIDTH,
+                angle_dir_rad=angle_dir,
+            )
 
-            self.light_ray = self.batches['fg_batch'].add(int(len(verts) / 2), pyglet.gl.GL_TRIANGLE_FAN, None,
-                                                          ('v2f', verts),
-                                                          ('c4B', (255, 255, 0, 150) * int(len(verts) / 2)))
+            self.light_ray = self.batches["fg_batch"].add(
+                int(len(verts) / 2),
+                pyglet.gl.GL_TRIANGLE_FAN,
+                None,
+                ("v2f", verts),
+                ("c4B", (255, 255, 0, 150) * int(len(verts) / 2)),
+            )
 
             # update the light sensors
             self.robot.update_light_sensors(self)
@@ -581,24 +680,26 @@ class Simulator(pyglet.window.Window):
 
     def update(self, dt):
         """This function updates the simulator at each time step during normal operation this involves
-         updating the position of the robot and checking for any collisions between the robot and static
-         objects.
+        updating the position of the robot and checking for any collisions between the robot and static
+        objects.
 
-         In edit mode this function also handles the destruction of the edit mode toolbar, allows static objects to
-         be dragged around the screen using the mouse. Allows the line map to be moved using the mouse. And finally
-          does collision checking between the static objects (which can be moved as we are in edit mode).
-         """
+        In edit mode this function also handles the destruction of the edit mode toolbar, allows static objects to
+        be dragged around the screen using the mouse. Allows the line map to be moved using the mouse. And finally
+         does collision checking between the static objects (which can be moved as we are in edit mode).
+        """
         try:
             self.update_background_image_transform()  # useful for when the window is resized or maximised.
             self.update_menu_buttons_transform()
             if self.robot.robot_name == "Pi2Go":
-                self.update_switch_sprite_transform()     # useful for when the window is resized or maximised.
+                self.update_switch_sprite_transform()  # useful for when the window is resized or maximised.
             if self.edit_mode:
                 self.close_toolbox_window()
 
                 # handle mouse move for the static objects
                 for obj in self.dyn_assets.static_objects:
-                    if obj.object_type.startswith("switch"):  # Do nothing for the switch sprite
+                    if obj.object_type.startswith(
+                        "switch"
+                    ):  # Do nothing for the switch sprite
                         continue
                     if obj.mouse_move_state:
                         # print("moving object");
@@ -611,7 +712,7 @@ class Simulator(pyglet.window.Window):
 
                             # remove previous line/ray from the batch
                             self.light_ray.delete()
-                            del (self.light_ray)
+                            del self.light_ray
                             self.light_ray = None
 
                             # find the center of the light source sprite
@@ -623,21 +724,37 @@ class Simulator(pyglet.window.Window):
 
                             # for effect: light ray points/flickers in the direction of motion as the light source is dragged around.
                             length_of_ray = math.sqrt(
-                                (x_light_center - self.x_ray_end) ** 2 + (y_light_center - self.y_ray_end) ** 2)
-                            delta_x = (x_light_center - self.x_ray_end)
-                            angle_dir = math.pi / 2 if delta_x == 0 else math.atan2((y_light_center - self.y_ray_end),
-                                                                                    delta_x)
+                                (x_light_center - self.x_ray_end) ** 2
+                                + (y_light_center - self.y_ray_end) ** 2
+                            )
+                            delta_x = x_light_center - self.x_ray_end
+                            angle_dir = (
+                                math.pi / 2
+                                if delta_x == 0
+                                else math.atan2(
+                                    (y_light_center - self.y_ray_end), delta_x
+                                )
+                            )
 
-                            self.light_ray_vertices = self.make_ray(source_x=x_light_center, source_y=y_light_center,
-                                                                    length=length_of_ray,
-                                                                    angle_width_rad=LIGHT_BEAM_ANGWIDTH,
-                                                                    angle_dir_rad=angle_dir)
+                            self.light_ray_vertices = self.make_ray(
+                                source_x=x_light_center,
+                                source_y=y_light_center,
+                                length=length_of_ray,
+                                angle_width_rad=LIGHT_BEAM_ANGWIDTH,
+                                angle_dir_rad=angle_dir,
+                            )
 
-                            self.light_ray = self.batches['fg_batch'].add(int(len(self.light_ray_vertices) / 2),
-                                                                          pyglet.gl.GL_TRIANGLE_FAN, None,
-                                                                          ('v2f', self.light_ray_vertices),
-                                                                          ('c4B', (255, 255, 0, 150) * int(
-                                                                              len(self.light_ray_vertices) / 2)))
+                            self.light_ray = self.batches["fg_batch"].add(
+                                int(len(self.light_ray_vertices) / 2),
+                                pyglet.gl.GL_TRIANGLE_FAN,
+                                None,
+                                ("v2f", self.light_ray_vertices),
+                                (
+                                    "c4B",
+                                    (255, 255, 0, 150)
+                                    * int(len(self.light_ray_vertices) / 2),
+                                ),
+                            )
 
                             sensor_angles = self.robot.update_light_sensors(self)
 
@@ -645,7 +762,7 @@ class Simulator(pyglet.window.Window):
                             if obj is not other_obj and obj.collides_with(other_obj):
                                 obj.mouse_target_x = obj.prev_x
                                 obj.mouse_target_y = obj.prev_y
-                       
+
                         obj.x = obj.mouse_target_x
                         obj.y = obj.mouse_target_y
                         self.redraw_sonar_map()
@@ -661,11 +778,23 @@ class Simulator(pyglet.window.Window):
                             pair[1].y = pair[1].prev_y
 
                 # mouse move for the line map
-                if self.dyn_assets.line_map_sprite is not None and self.objects_detected_for_move < 2 and not self.robot.mouse_move_state and not self.light_source_dragged and not self.is_ray_being_dragged:
+                if (
+                    self.dyn_assets.line_map_sprite is not None
+                    and self.objects_detected_for_move < 2
+                    and not self.robot.mouse_move_state
+                    and not self.light_source_dragged
+                    and not self.is_ray_being_dragged
+                ):
                     if self.dyn_assets.line_map_sprite.mouse_move_state:
-                        self.dyn_assets.line_map_sprite.x = self.dyn_assets.line_map_sprite.mouse_target_x
-                        self.dyn_assets.line_map_sprite.y = self.dyn_assets.line_map_sprite.mouse_target_y
-                        self.robot.line_sensor_map.set_line_map(self.dyn_assets.line_map_sprite)
+                        self.dyn_assets.line_map_sprite.x = (
+                            self.dyn_assets.line_map_sprite.mouse_target_x
+                        )
+                        self.dyn_assets.line_map_sprite.y = (
+                            self.dyn_assets.line_map_sprite.mouse_target_y
+                        )
+                        self.robot.line_sensor_map.set_line_map(
+                            self.dyn_assets.line_map_sprite
+                        )
                         # print("moving line map" + str(self.objects_detected_for_move))
 
             # update the robot position
@@ -707,20 +836,25 @@ class Simulator(pyglet.window.Window):
         self.dyn_assets.edit_menu_button_sprite.sety(y)
 
         # "save" menu button
-        x = left_margin + self.dyn_assets.edit_menu_button_sprite.width +2  # margin from the left edge of the window
+        x = (
+            left_margin + self.dyn_assets.edit_menu_button_sprite.width + 2
+        )  # margin from the left edge of the window
         y = top_margin  # margin from the top edge of the window
         self.dyn_assets.save_menu_button_sprite.setx(x)
         self.dyn_assets.save_menu_button_sprite.sety(y)
 
         # "close" menu button
-        x = left_margin + self.dyn_assets.edit_menu_button_sprite.width + self.dyn_assets.save_menu_button_sprite.width  # margin from the left edge of the window
+        x = (
+            left_margin
+            + self.dyn_assets.edit_menu_button_sprite.width
+            + self.dyn_assets.save_menu_button_sprite.width
+        )  # margin from the left edge of the window
         y = top_margin  # margin from the top edge of the window
         self.dyn_assets.close_menu_button_sprite.setx(x)
         self.dyn_assets.close_menu_button_sprite.sety(y)
 
-
     def on_mouse_release(self, x, y, button, modifiers):
-        """ Make some ancillary updates if needed e.g update the light ray if the light source was being 
+        """Make some ancillary updates if needed e.g update the light ray if the light source was being
         dragged around prior to the mouse release."""
         # update ray being dragged status
         if self.is_ray_being_dragged:
@@ -732,15 +866,25 @@ class Simulator(pyglet.window.Window):
             self.light_source_dragged = False
             self.ray_was_dragged = False
 
-            self.x_ray_end = self.robot.x - self.robot.image.width / 4 if self.light_source.x < self.robot.x else self.robot.x + self.robot.image.width / 4
-            self.y_ray_end = self.robot.y - self.robot.image.height / 4 if self.light_source.y < self.robot.y else self.robot.y + self.robot.image.height / 4
+            self.x_ray_end = (
+                self.robot.x - self.robot.image.width / 4
+                if self.light_source.x < self.robot.x
+                else self.robot.x + self.robot.image.width / 4
+            )
+            self.y_ray_end = (
+                self.robot.y - self.robot.image.height / 4
+                if self.light_source.y < self.robot.y
+                else self.robot.y + self.robot.image.height / 4
+            )
 
             # point the light ray to the robot - by default - once the light ray is dropped
             angle_sep, thresh_theta = self.robot_lightray_area_cover()
 
             # compute the ray end based on the direction of the ray: if it is touching the robot, stop it on the body
             # of the robot; but if it is not touching the robot, allow it to continue to the boundaries of the window
-            if angle_sep > thresh_theta + LIGHT_BEAM_ANGWIDTH / 2:  # set sensor values to zero only when the ray is not touching the robot at all
+            if (
+                angle_sep > thresh_theta + LIGHT_BEAM_ANGWIDTH / 2
+            ):  # set sensor values to zero only when the ray is not touching the robot at all
                 self.robot.receiving_light_focus = False
                 self.robot.reset_light_sensors()
             else:
@@ -779,7 +923,7 @@ class Simulator(pyglet.window.Window):
             obj.delete()
         if self.dyn_assets.line_map_sprite != None:
             self.dyn_assets.line_map_sprite.delete()
-        del(self.dyn_assets)
+        del self.dyn_assets
         self.close_menu_button_handler()
         super().close()
         # print("window closed")

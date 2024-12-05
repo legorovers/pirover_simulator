@@ -1,0 +1,2 @@
+def fname():
+    print("hello")

@@ -1,34 +1,34 @@
 import agent.bdiagent as agent, simclient.simrobot as robohat
 
-class Pi2GoAgent(agent.Agent):
 
+class Pi2GoAgent(agent.Agent):
     def __init__(self):
         robohat.init()
         agent.Agent.__init__(self)
 
     def getpercepts(self, beliefbase):
         dist = 50
-        beliefbase['distance'] = dist
+        beliefbase["distance"] = dist
         irR = robohat.irRight()
-        beliefbase['obstacle_right'] = irR
+        beliefbase["obstacle_right"] = irR
         irL = robohat.irLeft()
-        beliefbase['obstacle_left'] = irL
+        beliefbase["obstacle_left"] = irL
         irC = robohat.irCentre()
-        beliefbase['obstacle_centre'] = irC
+        beliefbase["obstacle_centre"] = irC
         irLL = robohat.irLeftLine()
-        beliefbase['no_line_left'] = irLL
+        beliefbase["no_line_left"] = irLL
         irRL = robohat.irRightLine()
-        beliefbase['no_line_right'] = irRL
+        beliefbase["no_line_right"] = irRL
         switch = robohat.getSwitch()
-        beliefbase['switch_pressed']= switch
+        beliefbase["switch_pressed"] = switch
         lightFL = robohat.getLightFL()
-        beliefbase['lightFL'] = lightFL
+        beliefbase["lightFL"] = lightFL
         lightFR = robohat.getLightFR()
-        beliefbase['lightFR'] = lightFR
+        beliefbase["lightFR"] = lightFR
         lightBL = robohat.getLightBL()
-        beliefbase['lightBL'] = lightBL
+        beliefbase["lightBL"] = lightBL
         lightBR = robohat.getLightBR()
-        beliefbase['lightBR'] = lightBR
+        beliefbase["lightBR"] = lightBR
         super()
         return
 

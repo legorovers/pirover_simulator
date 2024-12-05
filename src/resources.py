@@ -16,7 +16,7 @@ NUM_LINE_MAPS = 10
 NUM_BACKGROUNDS = 4
 
 # Tell pyglet where to find the resources
-pyglet.resource.path = ['resources']
+pyglet.resource.path = ["resources"]
 pyglet.resource.reindex()
 
 # Load the static resources
@@ -66,7 +66,7 @@ light_source_image.width = 50
 light_source_image.height = 48
 # </Maduka>
 
-    
+
 # Load all available line maps
 line_maps = []
 line_textures = []
@@ -94,10 +94,22 @@ for i in range(NUM_BACKGROUNDS):
 
 
 class DynamicAsssets:
-    def __init__(self, dynamic_assets_file, selected_robot_name, pyglet_sim_window, tk_start_window, bg_batch, fg_batch, bg_subgroup,
-                                                                                                    lm_subgroup, fg_subgroup):
+    def __init__(
+        self,
+        dynamic_assets_file,
+        selected_robot_name,
+        pyglet_sim_window,
+        tk_start_window,
+        bg_batch,
+        fg_batch,
+        bg_subgroup,
+        lm_subgroup,
+        fg_subgroup,
+    ):
         # load xml file
-        self.dynamic_assets_file = os.path.join(util.get_world_path(), dynamic_assets_file)
+        self.dynamic_assets_file = os.path.join(
+            util.get_world_path(), dynamic_assets_file
+        )
         tree = ET.parse(self.dynamic_assets_file)
         root = tree.getroot()
 
@@ -115,19 +127,29 @@ class DynamicAsssets:
         self.current_file_str = None
 
         # load the background image
-        background_image_idx = int(root.attrib['background_index'])
+        background_image_idx = int(root.attrib["background_index"])
         if 0 <= background_image_idx < len(backgrounds):
             self.background_image = backgrounds[background_image_idx]
-            self.background_image.width = int(root.attrib['width'])
-            self.background_image.height = int(root.attrib['height'])
+            self.background_image.width = int(root.attrib["width"])
+            self.background_image.height = int(root.attrib["height"])
             util.center_image(self.background_image)
-            self.background_sprite = BasicSprite(self.background_image, self.background_image.width / 2,
-                                                 self.background_image.height / 2,
-                                                 bg_batch, bg_subgroup, "background", background_image_idx)
+            self.background_sprite = BasicSprite(
+                self.background_image,
+                self.background_image.width / 2,
+                self.background_image.height / 2,
+                bg_batch,
+                bg_subgroup,
+                "background",
+                background_image_idx,
+            )
 
         # get the sonar map resolution and create the map
-        self.sonar_resolution = int(root.attrib['sonar_resolution'])
-        self.sonar_map = Map(self.background_image.width, self.background_image.height, self.sonar_resolution)
+        self.sonar_resolution = int(root.attrib["sonar_resolution"])
+        self.sonar_map = Map(
+            self.background_image.width,
+            self.background_image.height,
+            self.sonar_resolution,
+        )
 
         # create line map members
         self.line_map_position = [0, 0]
@@ -151,25 +173,40 @@ class DynamicAsssets:
         for child in root:
             if child.tag == "robot":
                 # extract the robot position
-                self.robot_position = [int(child.attrib["position_x"]), int(child.attrib["position_y"])]
+                self.robot_position = [
+                    int(child.attrib["position_x"]),
+                    int(child.attrib["position_y"]),
+                ]
                 self.robot_rotation = int(child.attrib["rotation"])
             elif child.tag == "line_map":
                 # load the line map if one exists
-                line_map_index = int(child.attrib['index'])
+                line_map_index = int(child.attrib["index"])
                 if 0 <= line_map_index < len(line_maps):
-                    self.line_map_position = [int(child.attrib['position_x']), int(child.attrib['position_y'])]
-                    self.line_map_sprite = BasicSprite(line_textures[line_map_index], self.line_map_position[0],
-                                                       self.line_map_position[1],
-                                                       bg_batch, lm_subgroup, "line_map", line_map_index, line_maps[line_map_index])
+                    self.line_map_position = [
+                        int(child.attrib["position_x"]),
+                        int(child.attrib["position_y"]),
+                    ]
+                    self.line_map_sprite = BasicSprite(
+                        line_textures[line_map_index],
+                        self.line_map_position[0],
+                        self.line_map_position[1],
+                        bg_batch,
+                        lm_subgroup,
+                        "line_map",
+                        line_map_index,
+                        line_maps[line_map_index],
+                    )
             elif child.tag == "static_object":
                 # load all static objects and create their sprites (objects are also added to the sonar map).
-                index = int(child.attrib['index'])
+                index = int(child.attrib["index"])
                 if 0 <= index < len(image_grid):
-                    x = int(child.attrib['position_x'])
-                    y = int(child.attrib['position_y'])
+                    x = int(child.attrib["position_x"])
+                    y = int(child.attrib["position_y"])
                     util.center_image(image_grid[index])
-                    self.sonar_map.insert_rectangle(x, y, image_grid[index].width, image_grid[index].height)
-                    '''
+                    self.sonar_map.insert_rectangle(
+                        x, y, image_grid[index].width, image_grid[index].height
+                    )
+                    """
                     **********************
                     # I'm loading the static objects in the foreground batch rather than in the background batch:
                     # this resolves the problem where sometimes the loaded static objects hide away under the background image
@@ -178,8 +215,10 @@ class DynamicAsssets:
                     # above them, but the this minor since the robot still collides with the objects and bumps around them
                     # anyway.
                     **********************
-                    '''
-                    sprt_obj = BasicSprite(image_grid[index], x, y, fg_batch, fg_subgroup, "object", index)
+                    """
+                    sprt_obj = BasicSprite(
+                        image_grid[index], x, y, fg_batch, fg_subgroup, "object", index
+                    )
                     self.static_objects.append(sprt_obj)
 
             # elif child.tag == "switch":
@@ -199,32 +238,73 @@ class DynamicAsssets:
         x = left_margin  # margin from the left edge of the window
         y = top_margin  # margin from the top edge of the window
         util.center_image(edit_menu_button)
-        sw_obj = SwitchSprite(edit_menu_button, x, y, fg_batch, fg_subgroup, self.start_window, "menu_edit_button", -1)
+        sw_obj = SwitchSprite(
+            edit_menu_button,
+            x,
+            y,
+            fg_batch,
+            fg_subgroup,
+            self.start_window,
+            "menu_edit_button",
+            -1,
+        )
         self.edit_menu_button_sprite = sw_obj
         self.static_objects.append(self.edit_menu_button_sprite)
 
         # "save" menu button
-        x = left_margin + edit_menu_button.width  # margin from the left edge of the window
+        x = (
+            left_margin + edit_menu_button.width
+        )  # margin from the left edge of the window
         y = top_margin  # margin from the top edge of the window
         util.center_image(save_menu_button)
-        sw_obj = SwitchSprite(save_menu_button, x, y, fg_batch, fg_subgroup, self.start_window, "menu_save_button", -1)
+        sw_obj = SwitchSprite(
+            save_menu_button,
+            x,
+            y,
+            fg_batch,
+            fg_subgroup,
+            self.start_window,
+            "menu_save_button",
+            -1,
+        )
         self.save_menu_button_sprite = sw_obj
         self.static_objects.append(self.save_menu_button_sprite)
 
         # "close" menu button
-        x = left_margin + edit_menu_button.width + save_menu_button.width  # margin from the left edge of the window
+        x = (
+            left_margin + edit_menu_button.width + save_menu_button.width
+        )  # margin from the left edge of the window
         y = top_margin  # margin from the top edge of the window
         util.center_image(close_menu_button)
-        sw_obj = SwitchSprite(close_menu_button, x, y, fg_batch, fg_subgroup, self.start_window, "menu_close_button",
-                              -1)
+        sw_obj = SwitchSprite(
+            close_menu_button,
+            x,
+            y,
+            fg_batch,
+            fg_subgroup,
+            self.start_window,
+            "menu_close_button",
+            -1,
+        )
         self.close_menu_button_sprite = sw_obj
         self.static_objects.append(self.close_menu_button_sprite)
 
         if selected_robot_name == "Pi2Go":
-            x = self.background_image.width / 2.0  # Position the switch button at the lower center of the simulator window.
+            x = (
+                self.background_image.width / 2.0
+            )  # Position the switch button at the lower center of the simulator window.
             y = 35.0
             util.center_image(switch_image_on)
-            sw_obj = SwitchSprite(switch_image_on, x, y, fg_batch, fg_subgroup, self.start_window, "switch", -1)
+            sw_obj = SwitchSprite(
+                switch_image_on,
+                x,
+                y,
+                fg_batch,
+                fg_subgroup,
+                self.start_window,
+                "switch",
+                -1,
+            )
             self.switch_sprite = sw_obj
             self.static_objects.append(sw_obj)
             # let the switch stay above every other object
@@ -258,8 +338,9 @@ class DynamicAsssets:
             line_map_element.set("index", str(self.line_map_sprite.idx))
 
         for sprite_object in self.static_objects:
-            if (sprite_object.object_type.startswith("switch")
-                    or sprite_object.object_type.startswith("menu")):
+            if sprite_object.object_type.startswith(
+                "switch"
+            ) or sprite_object.object_type.startswith("menu"):
                 print("skipped menu or switch")
                 continue  # No need to save the menu buttons and the switch buttons
 
@@ -273,7 +354,7 @@ class DynamicAsssets:
             static_element.set("index", str(sprite_object.idx))
 
         # tree.decode("UTF-8")
-        tree.write(open(self.dynamic_assets_file, 'w'), encoding="unicode")
+        tree.write(open(self.dynamic_assets_file, "w"), encoding="unicode")
         current_file = open(self.dynamic_assets_file, "r")
         self.current_file_str = current_file.read()
         current_file.close()

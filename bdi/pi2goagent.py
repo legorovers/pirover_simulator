@@ -1,6 +1,7 @@
 import bdi.bdiagent as agent
 import simclient.simrobot as pi2go
 
+
 class Pi2GoAgent(agent.Agent):
     def __init__(self):
         agent.Agent.__init__(self)
@@ -9,33 +10,33 @@ class Pi2GoAgent(agent.Agent):
 
     def getpercepts(self, beliefbase):
         dist = pi2go.getDistance()
-        beliefbase['distance'] = dist
+        beliefbase["distance"] = dist
         irR = pi2go.irRight()
-        beliefbase['obstacle_right'] = irR
+        beliefbase["obstacle_right"] = irR
         irL = pi2go.irLeft()
-        beliefbase['obstacle_left'] = irL
+        beliefbase["obstacle_left"] = irL
         irC = pi2go.irCentre()
-        beliefbase['obstacle_centre'] = irC
+        beliefbase["obstacle_centre"] = irC
         irLL = pi2go.irLeftLine()
-        beliefbase['line_left'] = irLL
+        beliefbase["line_left"] = irLL
         irRL = pi2go.irRightLine()
-        beliefbase['line_right'] = irRL
+        beliefbase["line_right"] = irRL
         switch = pi2go.getSwitch()
-        beliefbase['switch_pressed']= switch
+        beliefbase["switch_pressed"] = switch
         lightFL = pi2go.getLightFL()
-        beliefbase['lightFL'] = lightFL
+        beliefbase["lightFL"] = lightFL
         lightFR = pi2go.getLightFR()
-        beliefbase['lightFR'] = lightFR
+        beliefbase["lightFR"] = lightFR
         lightBL = pi2go.getLightBL()
-        beliefbase['lightBL'] = lightBL
+        beliefbase["lightBL"] = lightBL
         lightBR = pi2go.getLightBR()
-        beliefbase['lightBR'] = lightBR
+        beliefbase["lightBR"] = lightBR
         super()
         return
-        
+
     def getPercepts(self):
         self.getpercepts(self.beliefbase)
-        
+
     def run_agent(self):
         if not (self.initialised):
             pi2go.init()
@@ -44,8 +45,6 @@ class Pi2GoAgent(agent.Agent):
 
     def init(self):
         pi2go.init()
-        
+
     def cleanup(self):
         pi2go.cleanup()
-        
-        

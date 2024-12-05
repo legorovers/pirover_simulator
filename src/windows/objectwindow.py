@@ -15,11 +15,15 @@ PADDING = 8
 
 class ObjectWindow(pyglet.window.Window):
     def __init__(self, window_width, window_height, dyn_assets):
-        super(ObjectWindow, self).__init__(window_width, window_height, fullscreen=False,
-                                           style=pyglet.window.Window.WINDOW_STYLE_TOOL)
+        super(ObjectWindow, self).__init__(
+            window_width,
+            window_height,
+            fullscreen=False,
+            style=pyglet.window.Window.WINDOW_STYLE_TOOL,
+        )
         pyglet.gl.glClearColor(100, 100, 100, 255)
         self.dyn_assets = dyn_assets
-        self.set_caption('Objects')
+        self.set_caption("Objects")
         self.main_batch = pyglet.graphics.Batch()
         self.sprites = []
         self.close_me = False
@@ -33,20 +37,29 @@ class ObjectWindow(pyglet.window.Window):
             self.sprites.append(sp)
 
             y -= image.height + PADDING
-            if y < (SPACING/2.0):
+            if y < (SPACING / 2.0):
                 x += image.width + PADDING
                 y = window_height - SPACING
             if x > (window_width - SPACING):
                 break
-		  
+
         # Add line map thumbnails to the toolbar
         for idx, image in enumerate(src.resources.line_textures):
             scale = 48.0 / image.width
-            sp = SelectSprite("line_map", idx, image, x, y, self.main_batch, scale, image_data=src.resources.line_maps[idx])
+            sp = SelectSprite(
+                "line_map",
+                idx,
+                image,
+                x,
+                y,
+                self.main_batch,
+                scale,
+                image_data=src.resources.line_maps[idx],
+            )
             self.sprites.append(sp)
 
             y -= 48.0 + PADDING
-            if y < (SPACING/2.0):
+            if y < (SPACING / 2.0):
                 x += 48.0 + PADDING
                 y = window_height - SPACING
 
@@ -57,23 +70,27 @@ class ObjectWindow(pyglet.window.Window):
             self.sprites.append(sp)
 
             y -= 48.0 + PADDING
-            if y < (SPACING/2.0):
+            if y < (SPACING / 2.0):
                 x += 48.0 + PADDING
                 y = window_height - SPACING
 
         # Add the delete icon to the toolbar
-        sp = SelectSprite("delete", -1, src.resources.erase_image, x, y, self.main_batch)
+        sp = SelectSprite(
+            "delete", -1, src.resources.erase_image, x, y, self.main_batch
+        )
         self.sprites.append(sp)
-        		
+
         # Update placement x, y coordinates again
         y -= src.resources.light_source_image.height + PADDING
-        if y < (SPACING/2.0):
-        	x += src.resources.light_source_image.width + PADDING
-        	y = window_height - SPACING
-			
+        if y < (SPACING / 2.0):
+            x += src.resources.light_source_image.width + PADDING
+            y = window_height - SPACING
+
         # Add the light icon to the toolbar
-        ls = SelectSprite("light", -1, src.resources.light_source_image, x, y, self.main_batch)
-        self.sprites.append(ls)       
+        ls = SelectSprite(
+            "light", -1, src.resources.light_source_image, x, y, self.main_batch
+        )
+        self.sprites.append(ls)
 
         # Add all the mouse handlers to the window
         for sprite in self.sprites:
@@ -108,5 +125,3 @@ class ObjectWindow(pyglet.window.Window):
 
     def on_mouse_enter(self, x, y):
         self.activate()  # activate this window whenever the mouse enters it
-
-
