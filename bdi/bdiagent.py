@@ -1,6 +1,7 @@
 import time
 from inspect import signature
 
+
 class Agent:
     def __init__(self):
         self.beliefbase = {}
@@ -20,8 +21,8 @@ class Agent:
         self.running = 1
         # dummy_rule is a catch all if no other rule applies
         self.add_rule(self.dummy_rule)
-        while (self.running):
-            self.reason('no platform', 'no rule info')
+        while self.running:
+            self.reason("no platform", "no rule info")
 
     def reason(self, platform, rule_info):
         # Note this was originally part of the agent but we now anticipate different applications will
@@ -34,29 +35,29 @@ class Agent:
     def getpercepts(self, beliefbase):
         time.sleep(0.1)
         return
-        
+
     def perception(self):
         self.getpercepts(self.beliefbase)
 
     def manage_goals(self, beliefbase, goalbase):
         for goal in self.goalbase:
-            if (self.is_achieved(goal)):
+            if self.is_achieved(goal):
                 print(goal, " Goal Achieved!")
                 self.achieved_goal(goal, goalbase)
         return
-        
+
     def check_goals(self):
         self.manage_goals(self.beliefbase, self.goalbase)
 
     # A goal is achieved if either it shares a name with a belief and the belief is true or its associated function returns true
     def is_achieved(self, goal):
-        if (goal in self.beliefbase.keys()):
-            if (self.beliefbase[goal] == 1):
+        if goal in self.beliefbase.keys():
+            if self.beliefbase[goal] == 1:
                 return 1
             return 0
-        elif (goal in self.goal_functions.keys()):
+        elif goal in self.goal_functions.keys():
             goalfunc = self.goal_functions[goal]
-            if (goalfunc()):
+            if goalfunc():
                 return 1
             return 0
         else:
@@ -65,12 +66,12 @@ class Agent:
     # When a goal is achieved it is removed from the goalbase, if it is a subgoal of some other goal then the next subgoal should now be attempted
     def achieved_goal(self, goal, goalbase):
         goalbase.remove(goal)
-        if (goal in self.pending_goals.keys()):
+        if goal in self.pending_goals.keys():
             next_goallist = self.pending_goals[goal]
             next_goal = next_goallist.pop(0)
             self.add_goal(next_goal)
             self.pending_goals.pop(goal, None)
-            if (len(next_goallist) > 0):
+            if len(next_goallist):
                 self.pending_goals[next_goal] = next_goallist
         return
 
@@ -79,19 +80,19 @@ class Agent:
             tuple = self.rules[key]
             guard = tuple[0]
             evaluated_guard = guard()
-            if (evaluated_guard == 1):
+            if evaluated_guard == 1:
                 selected_rule = tuple[1]
                 return selected_rule
-            elif (type(evaluated_guard) == list):
+            elif type(evaluated_guard) is list:
                 rule = tuple[1]
-                if (len(evaluated_guard) > 0):
-                    selected_rule = lambda: rule(evaluated_guard[0])
+                if len(evaluated_guard):
+                    def selected_rule(): return rule(evaluated_guard[0])
                     return selected_rule
 
     def execute(self, rule, robot, rule_info):
         sig = signature(rule)
         params = sig.parameters
-        if (len(params) == 0):
+        if len(params) == 0:
             rule()
         else:
             rule(robot, rule_info)
@@ -106,7 +107,7 @@ class Agent:
 
     def believe_support(self, key, beliefbase):
         # print('checking '), key
-        if (key in beliefbase):
+        if key in beliefbase:
             return beliefbase[key]
         return 0
 
@@ -118,13 +119,13 @@ class Agent:
 
     def and_support(self, belief1, belief2):
         b1 = belief1()
-        if (b1 == 1):
+        if b1 == 1:
             return belief2()
-        elif (type(b1) == list):
+        elif type(b1) == list:
             b2 = belief2()
-            if (b2 == 1):
+            if b2 == 1:
                 return b1
-            elif (b2 == 0):
+            elif b2 == 0:
                 return 0
             else:
                 return self.intersect(b1, b2)
@@ -135,7 +136,7 @@ class Agent:
         return lambda: self.not_support(belief)
 
     def not_support(self, belief):
-        if (belief() == 0):
+        if belief() == 0:
             return 1
         else:
             return 0
@@ -144,14 +145,14 @@ class Agent:
         return lambda: self.or_support(belief1, belief2)
 
     def or_support(self, belief1, belief2):
-        if (belief1() == 1):
+        if belief1() == 1:
             return 1
-        elif (belief1() == 0):
+        elif belief1() == 0:
             return belief2()
         else:
-            if (belief2() == 1):
+            if belief2() == 1:
                 return belief1()
-            elif (belief2() == 0):
+            elif belief2() == 0:
                 return belief1()
             else:
                 return belief1().extend(belief2())
@@ -160,9 +161,9 @@ class Agent:
 
     def intersect(self, s1, s2):
         out = []
-        i  = 0
+        i = 0
         for m1 in s1:
-            if (m1 in s2):
+            if m1 in s2:
                 out[i] = m1
                 i = i + 1
         return out
@@ -176,7 +177,7 @@ class Agent:
         return lambda: self.goal_support(key, self.goalbase)
 
     def goal_support(self, key, goalbase):
-        if (key in goalbase):
+        if key in goalbase:
             return 1
         return 0
 
@@ -190,28 +191,27 @@ class Agent:
         self.num_rules = self.num_rules + 1
 
     def add_pick_best_rule(self, set, cmp_function, rule):
-        bestof = lambda: self.best_of(set, cmp_function)
+        def bestof(): return self.best_of(set, cmp_function)
         self.rules[self.num_rules] = (bestof, rule)
         self.num_rules = self.num_rules + 1
 
     def best_of(self, listb, comp_function):
         best = listb()[0]
         for x in listb():
-            if (comp_function(x, best)):
+            if comp_function(x, best):
                 best = x
         return [best]
 
-
     # Functions for inclusion in rules
     def sensor_value(self, key):
-        if (key in self.beliefbase):
+        if key in self.beliefbase:
             return self.beliefbase[key]
         else:
             print("ERROR: No value from sensors for ", key)
             return 0
 
     def done(self):
-        self.running = 0;
+        self.running = 0
 
     #  BELIEF MANAGEMENT
     def add_belief(self, key):
@@ -236,7 +236,7 @@ class Agent:
         self.pending_goals[first_goal] = goallist
 
     def drop_goal(self, key):
-        if (key in self.goalbase):
+        if key in self.goalbase:
             self.goalbase.remove(key)
 
     def goal_is_achieved_when(self, key, function):

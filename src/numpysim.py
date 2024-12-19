@@ -1,4 +1,4 @@
-"""Compatibility functions for numpy 
+"""Compatibility functions for numpy
 
 np.arange
 ---------
@@ -13,12 +13,13 @@ Note: the 'dtype' parameter is ignored
 
 try:
     import numpy as np
-    def arange( start, stop, step=1 ):
-        np.arange( start, stop, step )
+
+    def arange(start, stop, step=1):
+        np.arange(start, stop, step)
 
 except ImportError:
-    def arange( start, stop, step=1 ):
+
+    def arange(start, stop, step=1):
         while start < stop:
             yield start
             start += step
-

@@ -21,8 +21,12 @@ class LineSensorMap(object):
             self.y_offset = 0
         else:
             self.line_map_sprite = line_map_sprite
-            self.x_offset = self.line_map_sprite.x - int(self.line_map_sprite.image.width / 2.0)
-            self.y_offset = self.line_map_sprite.y - int(self.line_map_sprite.image.height / 2.0)
+            self.x_offset = self.line_map_sprite.x - int(
+                self.line_map_sprite.image.width / 2.0
+            )
+            self.y_offset = self.line_map_sprite.y - int(
+                self.line_map_sprite.image.height / 2.0
+            )
             self.line_data = self.line_map_sprite.image_data
 
     def set_line_map(self, line_map_sprite):
@@ -36,10 +40,13 @@ class LineSensorMap(object):
             self.y_offset = 0
         else:
             self.line_map_sprite = line_map_sprite
-            self.x_offset = self.line_map_sprite.x - int(self.line_map_sprite.image.width / 2.0)
-            self.y_offset = self.line_map_sprite.y - int(self.line_map_sprite.image.height / 2.0)
+            self.x_offset = self.line_map_sprite.x - int(
+                self.line_map_sprite.image.width / 2.0
+            )
+            self.y_offset = self.line_map_sprite.y - int(
+                self.line_map_sprite.image.height / 2.0
+            )
             self.line_data = self.line_map_sprite.image_data
-                        
 
     def check_triggered(self, x, y):
         """Takes as input the current xy position of the line sensor in screen coordinates, this function will then
@@ -50,7 +57,9 @@ class LineSensorMap(object):
             if self.line_data is not None:
                 theta = -math.radians(self.line_map_sprite.rotation)
 
-                px, py = src.util.rotate_around_og((self.line_map_sprite.x, self.line_map_sprite.y), (x, y), -theta)
+                px, py = src.util.rotate_around_og(
+                    (self.line_map_sprite.x, self.line_map_sprite.y), (x, y), -theta
+                )
                 # print(px)
                 # print(py)
                 px -= self.x_offset
@@ -59,27 +68,27 @@ class LineSensorMap(object):
                 # print(py)
 
                 if px < 0 or px > self.line_map_sprite.width:
-                     # print("out of region")
+                    # print("out of region")
                     return False
 
                 if py < 0 or py > self.line_map_sprite.height:
-                     # print("out of region")
+                    # print("out of region")
                     return False
 
-                if ((int(px), int(py)) in self.pixel_cache):
+                if (int(px), int(py)) in self.pixel_cache:
                     a = int(self.pixel_cache[(int(px), int(py))])
                     # print("cached " + str(a))
                     return a > 0
                 else:
-                    pix = self.line_data.get_region(int(px), int(py), 1, 1).get_data("RGBA", 4)
+                    pix = self.line_data.get_region(int(px), int(py), 1, 1).get_data(
+                        "RGBA", 4
+                    )
                     self.pixel_cache[(int(px), int(py))] = 1
                     # print(pix)
                     # print (self.line_data.get_data("RGBA", 4))
                     # print ('r = ' + str(pix[0]))
                     # print ('g = ' + str(pix[1]))
                     # print ('b = ' + str(pix[2]))
-                    
-                    
 
                     if len(pix) > 3:
                         r = int(pix[0])
@@ -89,12 +98,12 @@ class LineSensorMap(object):
                         # print(a)
                         # print ('a = ' + str(pix[3]))
                         self.pixel_cache[(int(px), int(py))] = a
-                    # avg = float(r + g + b + a) / 4.0
-                    # print(x, y, px, py, self.x_offset, self.y_offset)
-                    # print (r, g, b, a)
-                    # pprint(px)
-                    # print(avg)
-                    # return avg > 0
+                        # avg = float(r + g + b + a) / 4.0
+                        # print(x, y, px, py, self.x_offset, self.y_offset)
+                        # print (r, g, b, a)
+                        # pprint(px)
+                        # print(avg)
+                        # return avg > 0
                         return a > 0
                     else:
                         return False
@@ -125,25 +134,35 @@ class FixedLineSensor(object):
         angle_radians = -math.radians(self.parent_robot.rotation)
 
         self.sensor_x = self.parent_robot.x + (
-            self.offset_x * math.cos(angle_radians) - (self.offset_y * math.sin(angle_radians)))
+            self.offset_x * math.cos(angle_radians)
+            - (self.offset_y * math.sin(angle_radians))
+        )
         self.sensor_y = self.parent_robot.y + (
-            self.offset_x * math.sin(angle_radians) + (self.offset_y * math.cos(angle_radians)))
+            self.offset_x * math.sin(angle_radians)
+            + (self.offset_y * math.cos(angle_radians))
+        )
 
         # print(self.sensor_x)
-        self.line_sensor_triggered = self.sensor_map.check_triggered(int(self.sensor_x), int(self.sensor_y))
+        self.line_sensor_triggered = self.sensor_map.check_triggered(
+            int(self.sensor_x), int(self.sensor_y)
+        )
 
     def draw_sensor_position(self):
         """Draws a circle at the origin of the sensor."""
         src.util.circle(self.sensor_x, self.sensor_y, 5)
-        
+
     def make_circle(self):
         verts = []
         for i in range(100):
-            angle = math.radians(float(i)/100 * 360.0)
-            x = 5*math.cos(angle) + self.sensor_x
-            y = 5*math.sin(angle) + self.sensor_y
-            verts += [x,y]
-        outline_rep = self.parent_robot.batch.add(int(len(verts)/2), pyglet.gl.GL_POINTS, None,
-        ('v2f', verts),
-        ('c4B', (255, 255, 255, 255)*int(len(verts)/2)))
+            angle = math.radians(float(i) / 100 * 360.0)
+            x = 5 * math.cos(angle) + self.sensor_x
+            y = 5 * math.sin(angle) + self.sensor_y
+            verts += [x, y]
+        outline_rep = self.parent_robot.batch.add(
+            int(len(verts) / 2),
+            pyglet.gl.GL_POINTS,
+            None,
+            ("v2f", verts),
+            ("c4B", (255, 255, 255, 255) * int(len(verts) / 2)),
+        )
         """ return verts """

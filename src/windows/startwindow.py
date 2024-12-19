@@ -4,7 +4,8 @@ interface. It allows the user to select the world model and robot on startup.
 """
 import os
 from tkinter import *
-import tkinter.simpledialog, tkinter.messagebox
+import tkinter.simpledialog
+import tkinter.messagebox
 import src.util as util
 
 ROBOTS = ["Initio", "Pi2Go"]
@@ -12,22 +13,28 @@ WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 500
 SPACING = 50
 PADDING = 5
-DEFAULT_XML = "<?xml version='1.0' encoding='UTF-8'?>" + \
-              "<world background_index='0' height='600' sonar_resolution='10' width='800'>" + \
-              "<robot position_x='180' position_y='180' rotation='0' /> </world>"
+DEFAULT_XML = (
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    + "<world background_index='0' height='600' sonar_resolution='10' width='800'>"
+    + "<robot position_x='180' position_y='180' rotation='0' /> </world>"
+)
 
 
 class StartWindow(object):
     def __init__(self):
         self.window = Tk()
         self.window.title("Python Simulator")
-        #w, h = self.window.winfo_screenwidth(), self.window.winfo_screenheight()
-        #self.window.geometry("%dx%d" % (w, h))
+        # w, h = self.window.winfo_screenwidth(), self.window.winfo_screenheight()
+        # self.window.geometry("%dx%d" % (w, h))
         self.window.geometry("%dx%d" % (WINDOW_WIDTH, WINDOW_HEIGHT))
 
-        self.lbl1 = Label(self.window, text="World Files:", fg='black', font=("Helvetica", 16, "bold"))
+        self.lbl1 = Label(
+            self.window, text="World Files:", fg="black", font=("Helvetica", 16, "bold")
+        )
         self.lbl1.grid(row=0, column=0, sticky=W)
-        self.lbl2 = Label(self.window, text="Robot:", fg='black', font=("Helvetica", 16, "bold"))
+        self.lbl2 = Label(
+            self.window, text="Robot:", fg="black", font=("Helvetica", 16, "bold")
+        )
         self.lbl2.grid(row=0, column=1, sticky=W)
 
         self.frm = Frame(self.window)
@@ -38,8 +45,14 @@ class StartWindow(object):
         self.scrollbar = Scrollbar(self.frm, orient="vertical")
         self.scrollbar.pack(side=RIGHT, fill=Y)
 
-        self.files_listbox = Listbox(self.frm, width=40, yscrollcommand=self.scrollbar.set, font=("Helvetica", 12))
-        self.files_listbox.pack(expand=True, fill=Y, padx=PADDING, pady=PADDING)
+        self.files_listbox = Listbox(
+            self.frm,
+            width=40,
+            yscrollcommand=self.scrollbar.set,
+            font=("Helvetica", 12),
+        )
+        self.files_listbox.pack(expand=True, fill=Y,
+                                padx=PADDING, pady=PADDING)
 
         self.scrollbar.config(command=self.files_listbox.yview)
 
@@ -61,34 +74,53 @@ class StartWindow(object):
 
         self.frm2 = Frame(self.window)
         self.frm2.grid(row=2, column=0, sticky=N + S)
-        self.delete_button = Button(self.frm2, text="Delete File", command=self.delete_file_callback)
+        self.delete_button = Button(
+            self.frm2, text="Delete File", command=self.delete_file_callback
+        )
         self.delete_button.pack(side=RIGHT, padx=PADDING, pady=PADDING)
-        self.new_button = Button(self.frm2, text="New File", command=self.new_file_callback)
+        self.new_button = Button(
+            self.frm2, text="New File", command=self.new_file_callback
+        )
         self.new_button.pack(side=RIGHT, padx=PADDING, pady=PADDING)
 
         self.frm3 = Frame(self.window)
         self.frm3.grid(row=2, column=1, sticky=N + S)
-        self.quit_button = Button(self.frm3, text="Quit", command=self.quit_callback)
+        self.quit_button = Button(
+            self.frm3, text="Quit", command=self.quit_callback)
 
         self.quit_button.pack(side=RIGHT, padx=PADDING, pady=PADDING)
-        self.start_button = Button(self.frm3, text="Start Simulation", command=self.start_callback)
+        self.start_button = Button(
+            self.frm3, text="Start Simulation", command=self.start_callback
+        )
         self.start_button.pack(side=RIGHT, padx=PADDING, pady=PADDING)
 
         self.frm4 = Frame(self.window)
         self.frm4.grid(row=1, column=1, sticky=N + S)
-        rover_path = os.path.join(util.get_resource_path(), "robot", "rover_small.gif")
-        pi2go_path = os.path.join(util.get_resource_path(), "robot", "pi2go_small.gif")
+        rover_path = os.path.join(
+            util.get_resource_path(), "robot", "rover_small.gif")
+        pi2go_path = os.path.join(
+            util.get_resource_path(), "robot", "pi2go_small.gif")
         self.rover_image = PhotoImage(file=rover_path)
         self.pi2go_image = PhotoImage(file=pi2go_path)
         self.selected_robot = IntVar()
         self.selected_robot.set(-1)
-        self.rover_radio = Radiobutton(self.frm4, text="simclient", image=self.rover_image, variable=self.selected_robot,
-                                       value=0,
-                                       relief=GROOVE)
+        self.rover_radio = Radiobutton(
+            self.frm4,
+            text="simclient",
+            image=self.rover_image,
+            variable=self.selected_robot,
+            value=0,
+            relief=GROOVE,
+        )
         self.rover_radio.pack(padx=PADDING, pady=PADDING)
-        self.pi2go_radio = Radiobutton(self.frm4, text="pi2go", image=self.pi2go_image, variable=self.selected_robot,
-                                       value=1,
-                                       relief=GROOVE)
+        self.pi2go_radio = Radiobutton(
+            self.frm4,
+            text="pi2go",
+            image=self.pi2go_image,
+            variable=self.selected_robot,
+            value=1,
+            relief=GROOVE,
+        )
         self.pi2go_radio.pack(padx=PADDING, pady=PADDING)
         self.rover_radio.select()
 
@@ -97,10 +129,9 @@ class StartWindow(object):
         self.selected_file = "None"
         self.selected_robot_name = "None"
 
-
     def refresh_world_filelist(self):
         """Refreshes files by clearing the word_files_list, going through the current directory and removing all .xml
-         files"""
+        files"""
         self.world_files_list.clear()
         self.files_listbox.delete(0, END)
         self.world_file_path = util.get_world_path()
@@ -124,24 +155,24 @@ class StartWindow(object):
 
     def quit_callback(self):
         """Callback for the quit button."""
-        self.selected_file = "None"     # readying to quit app loop in pysimosx/pysim
+        self.selected_file = "None"  # readying to quit app loop in pysimosx/pysim
         self.selected_robot = None
         self.window.destroy()
-        #self.window.quit()
+        # self.window.quit()
 
     def start_callback(self):
         """Start button callback, the function extract the users selection from the world file listbox and robot
         radio buttons. Once extracted the window will be closed."""
         print("starting simulator")
         selected_items = list(map(int, self.files_listbox.curselection()))
-        if len(selected_items) > 0:
+        if len(selected_items):
             self.selected_file = self.world_files_list[selected_items[0]]
             selected_robot_idx = self.selected_robot.get()
             if 0 <= selected_robot_idx < len(ROBOTS):
                 self.selected_robot_name = ROBOTS[selected_robot_idx]
             else:
                 self.selected_robot_name = "None"
-            #self.window.destroy()
+            # self.window.destroy()
             self.window.quit()
         else:
             print("no world file selected")
@@ -149,7 +180,8 @@ class StartWindow(object):
     def new_file_callback(self):
         """New file callback, this spawns a dialog box to allow the user to enter the new world file name. The new file
         is created with some default values and added to the list of available world files."""
-        new_file = tkinter.simpledialog.askstring("New File", "Enter new filename")
+        new_file = tkinter.simpledialog.askstring(
+            "New File", "Enter new filename")
         if new_file is None:
             return
         new_file += ".xml"
@@ -167,13 +199,16 @@ class StartWindow(object):
         """Delete file callback, this extracts the selected world file and deletes the file from both the disk and
         the available world file list."""
         selected_items = list(map(int, self.files_listbox.curselection()))
-        if len(selected_items) > 0:
+        if len(selected_items):
             selected_file = self.world_files_list[selected_items[0]]
-            result = tkinter.messagebox.askquestion("Delete", "Delete world file:" + selected_file + "?", icon='warning')
-            if result == 'yes':
+            result = tkinter.messagebox.askquestion(
+                "Delete", "Delete world file:" + selected_file + "?", icon="warning"
+            )
+            if result == "yes":
                 try:
                     self.files_listbox.delete(selected_items[0])
-                    to_remove = os.path.join(self.world_file_path, selected_file)
+                    to_remove = os.path.join(
+                        self.world_file_path, selected_file)
                     print(to_remove)
                     os.remove(to_remove)
                     self.world_files_list.remove(selected_file)

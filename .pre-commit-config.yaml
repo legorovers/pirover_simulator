@@ -1,0 +1,20 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+-   repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+    -   id: black
+
+# TODO update linter, seems like a big job, I've only put flake8 due to experience with it
+# but other options have been discussed:
+# https://github.com/legorovers/pirover_simulator/pull/35?notification_referrer_id=NT_kwDOA3tzSbQxMzYzOTk2OTEwOTo1ODQyMjA4OQ#discussion_r1867405276
+        
+# -   repo: https://github.com/PyCQA/flake8
+#     rev: 5.0.4
+#     hooks:
+#     -   id: flake8
