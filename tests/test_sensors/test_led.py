@@ -1,9 +1,4 @@
 import pytest
-from src.sensors.led import FixedLED
-
-@pytest.fixture
-def init_led():
-    return FixedLED(None, 0, 0)
 
 @pytest.mark.parametrize("led, red, green, blue, expected", [
     ("init_led", 0, 0, 0, 0),
@@ -39,8 +34,10 @@ def test_set_colour_blue(led, red, green, blue, expected, request):
     assert led.blue_value == expected
     
 def test_turn_off(init_led):
-    init_led.turn_off
-    assert (init_led.red_value == 0 and init_led.blue_value == 0 and init_led.green_value == 0)
+    init_led.turn_off()
+    assert init_led.red_value == 0 
+    assert init_led.blue_value == 0 
+    assert init_led.green_value == 0
 
 def test_get_color(init_led):
     init_led.set_colour(0, 0, 0)
