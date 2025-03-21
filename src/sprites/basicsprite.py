@@ -2,10 +2,11 @@
 basicsprite.py is a subclass of pyglets sprite class and adds some additional data members and convenience functions
 in particular it adds a velocity model, window bounds checking, mouse handlers and AABB collision checking.
 """
+from pyglet import math
 
 import src.resources
 from pyglet.event import EVENT_HANDLED
-from src.windows.simulator import *
+import pyglet
 
 
 class BasicSprite(pyglet.sprite.Sprite):
