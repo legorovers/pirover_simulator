@@ -1,15 +1,2 @@
-*.pyc
-.idea
-*.spec
-*.orig
-build/
-dist/
-.venv/
-__pycache__/
-**/.DS_Store
-venv/
-bin/
-lib/
-lib64
-pyvenv.cfg
-tags
+# Created by venv; see https://docs.python.org/3/library/venv.html
+*

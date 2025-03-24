@@ -48,11 +48,13 @@ try:
             # pyglet.app.EventLoop.has_exit = False
             pyglet.app.run()
             # Clean up when simulator window closes
-            # print("3")
+            print("3")
             pyglet.clock.unschedule(simulator.update)
-            # print("4")
+            print("4")
             simulator.clear()
+            print("5")
             simulator.close()
+            print("6")
             # del(simulator)
             # pyglet.app.EventLoop.has_exit = True
             pyglet.app.exit()
